@@ -9,7 +9,7 @@ def generate_launch_description():
 
     ld = LaunchDescription()
 
-    pkg_dir = '__RACECAR_ARCHIVE_ROOT__/src/racecar_simulator/'
+    pkg_dir = '/home/neo/racecar_simulator/src/racecar_simulator/'
 
 
     map_name = "iccas2025"

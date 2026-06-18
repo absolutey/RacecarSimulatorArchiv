@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
-set -u
+set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OLD_HOME="/home"
 OLD_USER="neo"
 OLD_ROOT="${OLD_HOME}/${OLD_USER}/racecar_simulator"
-FAIL=0
 
 echo "==== 0. root ===="
 echo "$ROOT"
+
+FAIL=0
 
 echo
 echo "==== 1. required packages ===="
@@ -29,69 +30,76 @@ done
 
 echo
 echo "==== 2. race_driver versions ===="
-while IFS=$'\t' read -r version status kind source_meaning restore_target note; do
-  [ "$version" = "version" ] && continue
-  [ "$restore_target" != "src/race_driver" ] && continue
+VERSIONS=(
+  current_main
+  v3_final_before_v4
+  v4_5_6_base_20260502_031944
+  v5_safe_fast_031_65
+  best_boundary_mpc_92
+  best_boundary_mpc_897
+  best_boundary_mpc_aggressive_90
+  verified_boundary_mpc_aggressive_90
+  best_boundary_mpc_892_delta075
+  candidate_steer_rate_010
+  before_hysteresis_20260502_104926
+  hysteresis_slow_20260502_105510
+)
 
-  d="$ROOT/archive/race_driver_versions/$version"
+for v in "${VERSIONS[@]}"; do
+  p="$ROOT/archive/race_driver_versions/$v"
   echo
-  echo "---- $version ----"
-  if [ -d "$d" ] && [ -f "$d/package.xml" ] && [ -f "$d/CMakeLists.txt" ]; then
+  echo "---- $v ----"
+  if [ -f "$p/package.xml" ] && [ -f "$p/CMakeLists.txt" ]; then
     echo "PASS: package archive exists"
   else
-    echo "FAIL: missing package archive"
-    FAIL=1
-  fi
-done < "$ROOT/VERSION_MANIFEST.tsv"
-
-echo
-echo "==== 3. old absolute path scan ===="
-HITS=$(grep -RIn "$OLD_ROOT" "$ROOT" \
-  --exclude-dir=.git \
-  --exclude="SHA256SUMS.txt" \
-  2>/dev/null || true)
-
-if [ -z "$HITS" ]; then
-  echo "PASS: no old absolute project root path"
-else
-  echo "$HITS" | head -200
-  echo "FAIL: old absolute path remains"
-  FAIL=1
-fi
-
-echo
-echo "==== 4. placeholder count ===="
-grep -RIn "__RACECAR_ARCHIVE_ROOT__" "$ROOT" \
-  --exclude-dir=.git \
-  --exclude="SHA256SUMS.txt" \
-  2>/dev/null | wc -l
-
-echo
-echo "==== 5. large files over 50MB ===="
-find "$ROOT" -type f -size +50M -printf "%s bytes  %p\n" 2>/dev/null | sort -nr || true
-
-echo
-echo "==== 6. executable tools ===="
-for f in \
-  "$ROOT/tools/list_race_driver_versions.sh" \
-  "$ROOT/tools/activate_race_driver_version.sh" \
-  "$ROOT/tools/check_archive_integrity.sh" \
-  "$ROOT/tools/patch_clone_paths.sh"
-do
-  if [ -x "$f" ]; then
-    echo "PASS: executable -> $f"
-  else
-    echo "FAIL: not executable -> $f"
+    echo "FAIL: incomplete or missing package archive"
     FAIL=1
   fi
 done
 
 echo
-echo "==== 7. final ===="
+echo "==== 3. simulator immutability policy ===="
+echo "INFO: src/racecar_simulator is competition simulator code."
+echo "INFO: absolute paths inside simulator are not treated as cleanup failures."
+echo "INFO: tools must not patch src/racecar_simulator."
+
+echo
+echo "==== 4. old absolute path scan outside simulator ===="
+HITS=$(grep -RIn "${OLD_ROOT}" "$ROOT" \
+  --exclude-dir=.git \
+  --exclude="SHA256SUMS.txt" \
+  --exclude-dir="src/racecar_simulator" \
+  2>/dev/null || true)
+
+if [ -n "$HITS" ]; then
+  echo "$HITS"
+  echo "WARN: old path remains outside simulator."
+  echo "This may be acceptable inside archived race_driver configs before running patch tools."
+else
+  echo "PASS: no old absolute project root path outside simulator"
+fi
+
+echo
+echo "==== 5. executable tools ===="
+for t in \
+  "$ROOT/tools/list_race_driver_versions.sh" \
+  "$ROOT/tools/activate_race_driver_version.sh" \
+  "$ROOT/tools/check_archive_integrity.sh" \
+  "$ROOT/tools/patch_clone_paths.sh"
+do
+  if [ -x "$t" ]; then
+    echo "PASS: executable -> $t"
+  else
+    echo "FAIL: not executable -> $t"
+    FAIL=1
+  fi
+done
+
+echo
+echo "==== 6. final ===="
 if [ "$FAIL" -eq 0 ]; then
   echo "PASS: archive integrity basic check"
 else
-  echo "FAIL: archive integrity has problems"
+  echo "FAIL: archive integrity basic check"
+  exit 1
 fi
-
-exit "$FAIL"

@@ -32,3 +32,14 @@ Basic check:
 ## Control archive policy
 
 This repository intentionally keeps multiple race driver versions because the exact best-performing controller may depend on the simulator state, map, and test run. The current active module is preserved, but historical modules can also be restored at any time.
+
+## Competition simulator immutability rule
+
+For the original competition rule, simulator files must not be modified. In this archive:
+
+- `src/racecar_simulator/` is preserved as simulator code.
+- `src/control_msgs/` is preserved as dependency/interface code.
+- `src/race_driver/` is the active control module.
+- `archive/race_driver_versions/` stores control-module versions only.
+- Tools are designed to replace or patch `src/race_driver` only.
+- Do not edit `src/racecar_simulator` for controller tuning.

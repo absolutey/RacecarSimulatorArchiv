@@ -28,10 +28,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # ====== Paths (edit here) ======
-CENTER_PATH = Path("__RACECAR_ARCHIVE_ROOT__/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_path.csv")
-LEFT_PATH   = Path("__RACECAR_ARCHIVE_ROOT__/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_left.csv")
-RIGHT_PATH  = Path("__RACECAR_ARCHIVE_ROOT__/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_right.csv")
-OUT_CSV     = Path("__RACECAR_ARCHIVE_ROOT__/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_centerline_c.csv")
+CENTER_PATH = Path("/home/neo/racecar_simulator/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_path.csv")
+LEFT_PATH   = Path("/home/neo/racecar_simulator/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_left.csv")
+RIGHT_PATH  = Path("/home/neo/racecar_simulator/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_right.csv")
+OUT_CSV     = Path("/home/neo/racecar_simulator/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_centerline_c.csv")
 # =================================
 
 # ---------------- I/O helpers ----------------

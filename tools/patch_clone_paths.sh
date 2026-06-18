@@ -1,17 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ACTIVE="$ROOT/src/race_driver"
+
 OLD_HOME="/home"
 OLD_USER="neo"
 OLD_ROOT="${OLD_HOME}/${OLD_USER}/racecar_simulator"
 
-echo "==== patch clone paths ===="
+echo "==== patch clone paths: race_driver only ===="
 echo "ROOT=$ROOT"
+echo "ACTIVE=$ACTIVE"
+echo "NOTE: src/racecar_simulator is intentionally not patched."
 
-grep -RIl "__RACECAR_ARCHIVE_ROOT__\|${OLD_ROOT}" "$ROOT" \
-  --exclude-dir=.git \
-  --exclude="SHA256SUMS.txt" \
+if [ ! -d "$ACTIVE" ]; then
+  echo "FAIL: missing active race_driver: $ACTIVE"
+  exit 1
+fi
+
+grep -RIl "__RACECAR_ARCHIVE_ROOT__\|${OLD_ROOT}" "$ACTIVE" \
+  --include="*.yaml" \
+  --include="*.py" \
+  --include="*.cpp" \
+  --include="*.hpp" \
+  --include="*.h" \
+  --include="*.txt" \
   2>/dev/null | while read -r f; do
     echo "PATCH: $f"
     sed -i \
@@ -20,4 +33,4 @@ grep -RIl "__RACECAR_ARCHIVE_ROOT__\|${OLD_ROOT}" "$ROOT" \
       "$f"
   done
 
-echo "PASS: clone paths patched to $ROOT"
+echo "PASS: race_driver paths patched only"

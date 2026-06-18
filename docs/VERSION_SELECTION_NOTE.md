@@ -22,3 +22,7 @@ Use:
     ./tools/activate_race_driver_version.sh current_main
 
 Activation replaces src/race_driver with the selected archived package and patches old __RACECAR_ARCHIVE_ROOT__ paths to the current clone root.
+
+## Competition safety note
+
+The simulator package must be treated as immutable. Version switching and path patching should target `src/race_driver` only. Do not modify `src/racecar_simulator` for control tuning.

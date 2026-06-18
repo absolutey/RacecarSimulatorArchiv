@@ -13,8 +13,8 @@ Params load_parameters(rclcpp::Node * node)
     node->declare_parameter("detect_car_mode", false);
     node->declare_parameter("state_noise_mode", false);
     node->declare_parameter("scan_noise_mode", false);
-    node->declare_parameter<std::string>("pgm_file_path", "__RACECAR_ARCHIVE_ROOT__/src/racecar_simulator/maps/map7.pgm");
-    node->declare_parameter<std::string>("yaml_file_path", "__RACECAR_ARCHIVE_ROOT__/src/racecar_simulator/maps/map7.yaml");
+    node->declare_parameter<std::string>("pgm_file_path", "/home/neo/racecar_simulator/src/racecar_simulator/maps/map7.pgm");
+    node->declare_parameter<std::string>("yaml_file_path", "/home/neo/racecar_simulator/src/racecar_simulator/maps/map7.yaml");
 
     node->get_parameter("simulator_frequency", params.simulator_frequency);
     node->get_parameter("pub_frequency", params.pub_frequency);
