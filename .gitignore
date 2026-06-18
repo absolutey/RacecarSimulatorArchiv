@@ -1,0 +1,16 @@
+build/
+install/
+log/
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+*.o
+*.so
+*.a
+*.bag
+*.db3
+*.sqlite3
+*.tmp
+.cache/

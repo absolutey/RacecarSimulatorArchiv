@@ -1,0 +1,45 @@
+race_driver_node:
+  ros__parameters:
+    control_rate_hz: 20.0
+
+    planning_horizon_m: 10.0
+    lookahead_distance: 2.0
+    obstacle_margin: 0.35
+    shift_pre_margin_m: 1.8
+    shift_post_margin_m: 2.4
+    max_peak_shift_m: 0.90
+    return_blend_length_m: 0.8
+    left_right_cost_bias: 0.0
+
+    max_speed: 2.5
+    min_speed: 0.5
+    curvature_speed_gain: 1.4
+    obstacle_slowdown_gain: 0.8
+    brake_distance: 2.2
+    stop_distance: 0.8
+    avoid_speed_scale: 0.75
+    narrow_corridor_speed_scale: 0.60
+    max_lateral_accel: 2.5
+
+    front_roi_min_x: 0.0
+    front_roi_max_x: 8.0
+    corridor_half_width: 1.2
+    cluster_distance_threshold: 0.30
+    min_cluster_points: 3
+    wall_length_threshold: 1.0
+    obstacle_width_margin: 0.25
+    corridor_block_threshold: 0.15
+    obstacle_forward_horizon_m: 10.0
+
+    speed_kp: 0.7
+    max_steer: 0.30
+    max_accel: 1.0
+    wheelbase: 0.33
+    steer_rate_limit: 1.5
+    low_speed_deadband: 0.15
+
+    odom_timeout_sec: 0.30
+    scan_timeout_sec: 0.30
+    track_timeout_sec: 1.00
+    stop_on_invalid_path: true
+    debug_logging: true

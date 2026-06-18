@@ -1,0 +1,105 @@
+race_driver_node:
+  ros__parameters:
+    # Control loop
+    control_rate_hz: 40.0
+
+    # Planning
+    planning_horizon_m: 14.0
+    planner_mode: "boundary_corridor"
+
+    # v4-4 map-based road-space planning infrastructure
+    use_map_safety_check: true
+    map_vehicle_radius_m: 0.12
+    map_safety_speed_cap: 3.6
+
+    # v4-5 map-only rollout planner
+    map_rollout_horizon_m: 5.2
+    map_rollout_step_m: 0.18
+    map_rollout_vehicle_radius_m: 0.22
+    map_rollout_max_steer: 0.30
+    map_rollout_wheelbase: 0.33
+    map_rollout_max_lateral_accel: 9.2
+    map_rollout_steer_samples: 15
+    map_rollout_fallback_to_boundary: true
+    boundary_wall_margin_m: 0.31
+    boundary_obstacle_margin_m: 0.32
+    boundary_max_lateral_accel: 9.2
+    lookahead_distance: 2.25
+
+
+    # v5 minimum-time raceline layer
+    # 기본값은 안전을 위해 map_rollout 유지.
+    # v5 테스트 시 planner_mode를 "v5_raceline"으로 변경.
+    v5_min_boundary_margin: 0.311
+    v5_smoothing_gain: 0.35
+    v5_planning_horizon_m: 6.5
+    v5_use_reference: false
+    v5_reference_csv_path: "__RACECAR_ARCHIVE_ROOT__/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_path_spline.csv"
+
+
+    # v5.2 MPC-lite trajectory sampling controller
+    use_mpc_lite: true
+    mpc_horizon_steps: 10
+    mpc_dt: 0.05
+    mpc_max_steer: 0.34
+    mpc_steer_samples: 13
+    mpc_speed_delta: 0.75
+    mpc_path_weight: 1.05
+    mpc_heading_weight: 0.55
+    mpc_steer_weight: 0.08
+    mpc_steer_rate_weight: 0.08
+    mpc_speed_reward_weight: 1.15
+    mpc_clearance_weight: 0.55
+    mpc_clearance_margin: 0.28
+
+    # Obstacle / racing line shift
+    obstacle_margin: 0.20
+    shift_pre_margin_m: 2.6
+    shift_post_margin_m: 3.2
+    max_peak_shift_m: 0.55
+    return_blend_length_m: 1.8
+    left_right_cost_bias: 0.0
+
+    # v4-2 racing reference
+    use_racing_reference: false
+    racing_reference_csv_path: "__RACECAR_ARCHIVE_ROOT__/src/racecar_simulator/maps/f1tenth_racetracks/iccas2025/iccas2025_path_spline.csv"
+    racing_reference_max_offset: 0.45
+    racing_reference_blend: 0.70
+    racing_reference_boundary_margin: 0.25
+
+    # Racing speed
+    max_speed: 5.20
+    min_speed: 2.4
+    curvature_speed_gain: 0.08
+    obstacle_slowdown_gain: 0.10
+    brake_distance: 1.2
+    stop_distance: 0.28
+    avoid_speed_scale: 0.97
+    narrow_corridor_speed_scale: 0.88
+    max_lateral_accel: 9.2
+
+    # LiDAR obstacle parsing
+    front_roi_min_x: 0.0
+    front_roi_max_x: 7.0
+    corridor_half_width: 0.62
+    cluster_distance_threshold: 0.30
+    min_cluster_points: 3
+    wall_length_threshold: 0.80
+    obstacle_width_margin: 0.14
+    corridor_block_threshold: 0.08
+    obstacle_forward_horizon_m: 6.5
+
+    # Controller
+    speed_kp: 2.5
+    max_steer: 0.43
+    max_accel: 4.2
+    wheelbase: 0.33
+    steer_rate_limit: 3.8
+    low_speed_deadband: 0.15
+
+    # Safety / debug
+    odom_timeout_sec: 0.30
+    scan_timeout_sec: 0.30
+    track_timeout_sec: 1.00
+    stop_on_invalid_path: false
+    debug_logging: true

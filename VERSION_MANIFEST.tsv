@@ -1,0 +1,14 @@
+version	status	kind	source_meaning	restore_target	note
+current_main	ACTIVE_CURRENT	full_package	current closed working tree	src/race_driver	current latest local module
+v3_final_before_v4	ARCHIVE	full_package	pre-v4 stable race_driver	src/race_driver	before map rollout/boundary corridor expansion
+v4_5_6_base_20260502_031944	ARCHIVE	full_package	map rollout + boundary corridor base	src/race_driver	occupancy grid/map safety introduced
+v5_safe_fast_031_65	ARCHIVE	full_package	v5 raceline safe/fast experiment	src/race_driver	v5_raceline planner introduced
+best_boundary_mpc_92	ARCHIVE	full_package	boundary corridor + MPC-lite conservative	src/race_driver	MPC-lite introduced, speed_delta 0.35
+best_boundary_mpc_897	ARCHIVE	full_package	boundary MPC speed_delta 0.65 variant	src/race_driver	intermediate tuning
+best_boundary_mpc_aggressive_90	ARCHIVE	full_package	aggressive MPC parameter variant	src/race_driver	config-tuned aggressive branch
+verified_boundary_mpc_aggressive_90	ARCHIVE	full_package	verified aggressive MPC parameter variant	src/race_driver	code same family, config tuned
+best_boundary_mpc_892_delta075	ARCHIVE	full_package	direct parent of current	src/race_driver	same as current except controller valid flag
+candidate_steer_rate_010	ARCHIVE	full_package	steer-rate penalty experiment	src/race_driver	config-only experiment, steer_rate_weight 0.10
+before_hysteresis_20260502_104926	ARCHIVE	full_package	before hysteresis experiment	src/race_driver	baseline before candidate hysteresis
+hysteresis_slow_20260502_105510	ARCHIVE	full_package	candidate hysteresis experiment	src/race_driver	not current, but important experimental branch
+pure_pursuit_reference	REFERENCE	full_package	early/simple pure pursuit reference	src/pure_pursuit	reference only, not current race_driver

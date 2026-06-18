@@ -1,0 +1,53 @@
+race_driver_node:
+  ros__parameters:
+    # Control loop
+    control_rate_hz: 40.0
+
+    # Planning
+    planning_horizon_m: 14.0
+    lookahead_distance: 2.25
+
+    # Obstacle / racing line shift
+    obstacle_margin: 0.20
+    shift_pre_margin_m: 2.6
+    shift_post_margin_m: 3.2
+    max_peak_shift_m: 0.55
+    return_blend_length_m: 1.8
+    left_right_cost_bias: 0.0
+
+    # Racing speed
+    max_speed: 5.6
+    min_speed: 2.4
+    curvature_speed_gain: 0.08
+    obstacle_slowdown_gain: 0.10
+    brake_distance: 1.2
+    stop_distance: 0.28
+    avoid_speed_scale: 0.97
+    narrow_corridor_speed_scale: 0.88
+    max_lateral_accel: 9.5
+
+    # LiDAR obstacle parsing
+    front_roi_min_x: 0.0
+    front_roi_max_x: 7.0
+    corridor_half_width: 0.62
+    cluster_distance_threshold: 0.30
+    min_cluster_points: 3
+    wall_length_threshold: 0.80
+    obstacle_width_margin: 0.14
+    corridor_block_threshold: 0.08
+    obstacle_forward_horizon_m: 6.5
+
+    # Controller
+    speed_kp: 2.0
+    max_steer: 0.43
+    max_accel: 3.5
+    wheelbase: 0.33
+    steer_rate_limit: 3.6
+    low_speed_deadband: 0.15
+
+    # Safety / debug
+    odom_timeout_sec: 0.30
+    scan_timeout_sec: 0.30
+    track_timeout_sec: 1.00
+    stop_on_invalid_path: false
+    debug_logging: true
