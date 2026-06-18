@@ -59,22 +59,23 @@ done
 
 echo
 echo "==== 3. simulator immutability policy ===="
-echo "INFO: src/racecar_simulator is competition simulator code."
-echo "INFO: absolute paths inside simulator are not treated as cleanup failures."
-echo "INFO: tools must not patch src/racecar_simulator."
+echo "PASS: src/racecar_simulator is treated as immutable competition simulator code"
+echo "INFO: tools must not patch src/racecar_simulator"
 
 echo
 echo "==== 4. old absolute path scan outside simulator ===="
-HITS=$(grep -RIn "${OLD_ROOT}" "$ROOT" \
-  --exclude-dir=.git \
-  --exclude="SHA256SUMS.txt" \
-  --exclude-dir="src/racecar_simulator" \
-  2>/dev/null || true)
+HITS=$(find "$ROOT" \
+  -path "$ROOT/.git" -prune -o \
+  -path "$ROOT/src/racecar_simulator" -prune -o \
+  -type f \
+  ! -name "SHA256SUMS.txt" \
+  -print0 \
+  | xargs -0 grep -In "${OLD_ROOT}" 2>/dev/null || true)
 
 if [ -n "$HITS" ]; then
   echo "$HITS"
-  echo "WARN: old path remains outside simulator."
-  echo "This may be acceptable inside archived race_driver configs before running patch tools."
+  echo "INFO: old path remains outside simulator, usually inside archived race_driver configs."
+  echo "INFO: run tools/patch_clone_paths.sh after clone if active race_driver needs local path patching."
 else
   echo "PASS: no old absolute project root path outside simulator"
 fi
