@@ -1,0 +1,20 @@
+{
+  "schema": "dr-v2.1",
+  "workspace": "F1TENTH_DEEP_RACING_WS",
+  "global_limits": {"v_mps_max": 20.0, "original_guard_required": true, "actuator_authorized": false},
+  "learning": {"episode_start": "START_GRID", "initial_speed_mps": 0.0,
+    "terminal_conditions": ["collision", "off_track", "lap_finished", "time_limit"],
+    "optimizer": "MLP+PPO_OR_SAC_RESEARCH_NOT_INSTALLED"},
+  "layers": [
+    {"id":"L0", "name":"Map & Asset Adapter", "purpose":"Normalize map, geometry and SHA; unseen map fail closed"},
+    {"id":"L1", "name":"World & Sensor Features", "purpose":"Map/LiDAR/ego observation and OOD guards"},
+    {"id":"L2", "name":"Neural Solo Planner", "purpose":"Target line and speed, future learned MLP"},
+    {"id":"L3", "name":"Neural Driver", "purpose":"MLP steering and acceleration proposal"},
+    {"id":"L4", "name":"Vehicle Physics & Safety", "purpose":"Original Pacejka, independent Guard and speed <=20 m/s"},
+    {"id":"L5", "name":"Episode/Trainer/Evaluator", "purpose":"Fixed start, crash/finish reward and multi-map train/heldout"},
+    {"id":"L6", "name":"ROS Ego Adapter", "purpose":"Observe first; actuator admission independently qualified"},
+    {"id":"L7", "name":"Overtake & Race Tactics", "purpose":"Future separate opponent C/D/E stack; disabled in solo"}
+  ],
+  "legacy": {"R_A_V7_V8":"teacher and baseline only", "R_B_PPO":"offline baseline", "R_CDE":"archived for future", "RG2_RG3":"source-pinned evidence"},
+  "completion": {"architecture_installed":true,"solo_policy_trained":false,"ros_ego_drives":false,"overtaking_certified":false}
+}

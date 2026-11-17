@@ -1,0 +1,448 @@
+{
+  "maps": {
+    "Austin": {
+      "schema": "dr-v2.1",
+      "name": "Austin",
+      "image": "Austin_map.png",
+      "image_sha256": "78faa005f1446e997cfaa5ad697c7d6b6a38b0af9d481462be7e2a44acb562f3",
+      "yaml": "Austin_map.yaml",
+      "yaml_sha256": "047b64a29679a0e15bfeb126399bd6f0f46ae77ca273aa3023a1520c7bb35a45",
+      "resolution_m": 0.08089,
+      "origin_xyyaw": [
+        -21.25772567260448,
+        -70.80398789934522,
+        0.0
+      ],
+      "centerline": "Austin_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "BrandsHatch": {
+      "schema": "dr-v2.1",
+      "name": "BrandsHatch",
+      "image": "BrandsHatch_map.png",
+      "image_sha256": "83519e4b4dbd0cc92c456831396a3de2c21b3e2f30ee3cd2314be6b6d1a6049c",
+      "yaml": "BrandsHatch_map.yaml",
+      "yaml_sha256": "7e8395f16b78b3baccdbf73ed8859f96eb876ccf6c6846cf077f4a6dcbb24cbf",
+      "resolution_m": 0.05005,
+      "origin_xyyaw": [
+        -39.42711136508635,
+        -88.20832098289893,
+        0.0
+      ],
+      "centerline": "BrandsHatch_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Budapest": {
+      "schema": "dr-v2.1",
+      "name": "Budapest",
+      "image": "Budapest_map.png",
+      "image_sha256": "c520abb411ecf855c1703adb75f8b57832440b592107ff6aeb1b11b8ff026793",
+      "yaml": "Budapest_map.yaml",
+      "yaml_sha256": "e0a20945b7d34439fc96e512a5b88478c1eed21163eff44c9f4207ffeda0eea7",
+      "resolution_m": 0.06446,
+      "origin_xyyaw": [
+        -60.229461062734515,
+        -21.68761063512184,
+        0.0
+      ],
+      "centerline": "Budapest_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Catalunya": {
+      "schema": "dr-v2.1",
+      "name": "Catalunya",
+      "image": "Catalunya_map.png",
+      "image_sha256": "d11b58ec8fe37d2afb09330c1af1864559b09409ab923b817ab6629dbc70f693",
+      "yaml": "Catalunya_map.yaml",
+      "yaml_sha256": "22aa71894ce1973af7e0423ee10a0611fe774ea124df59e4951b2c014d1a42bf",
+      "resolution_m": 0.06016,
+      "origin_xyyaw": [
+        -91.90749878749725,
+        -75.75284314488522,
+        0.0
+      ],
+      "centerline": "Catalunya_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Hockenheim": {
+      "schema": "dr-v2.1",
+      "name": "Hockenheim",
+      "image": "Hockenheim_map.png",
+      "image_sha256": "7f0643a22c9ba1d647e307b0409e450bdf4b46a6ea2723a96e0856b3b61a49c1",
+      "yaml": "Hockenheim_map.yaml",
+      "yaml_sha256": "1d883171b48cf65a04a5133a22274de5f54371a664a5ae1b699627cd8c732058",
+      "resolution_m": 0.06702,
+      "origin_xyyaw": [
+        -19.911213834397966,
+        -50.87622999687852,
+        0.0
+      ],
+      "centerline": "Hockenheim_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "IMS": {
+      "schema": "dr-v2.1",
+      "name": "IMS",
+      "image": "IMS_map.png",
+      "image_sha256": "d699568f53cd9d8156a909028684f0179ede0f90c986ce36cb80184dd3b99d86",
+      "yaml": "IMS_map.yaml",
+      "yaml_sha256": "cb3af8a30567efef4e0044361fcaeee67a5d043a8a2eaebe24d7e64e666e339e",
+      "resolution_m": 0.06367,
+      "origin_xyyaw": [
+        -39.03821531719723,
+        -49.23719918529264,
+        0.0
+      ],
+      "centerline": "IMS_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Melbourne": {
+      "schema": "dr-v2.1",
+      "name": "Melbourne",
+      "image": "Melbourne_map.png",
+      "image_sha256": "6b0a34ec8e7c632233c5d055afc8da3bb727ef580d5910a0e80817dec4119c6b",
+      "yaml": "Melbourne_map.yaml",
+      "yaml_sha256": "51aa81fc65e6e129b36bed45842514f6075e3ab0d39e3033a107468f478b2a4f",
+      "resolution_m": 0.09009,
+      "origin_xyyaw": [
+        -81.75675943118459,
+        -49.98378618463543,
+        0.0
+      ],
+      "centerline": "Melbourne_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "MexicoCity": {
+      "schema": "dr-v2.1",
+      "name": "MexicoCity",
+      "image": "MexicoCity_map.png",
+      "image_sha256": "9f4b97303189f2cd739ac79e567adda1b6914d828139975335d2cea75e49a566",
+      "yaml": "MexicoCity_map.yaml",
+      "yaml_sha256": "00fce5da256231ed21dd490b9b9a35dcf115e6153313f71bbc70b34c94736e69",
+      "resolution_m": 0.06991,
+      "origin_xyyaw": [
+        -47.26438405496835,
+        -110.2481836331018,
+        0.0
+      ],
+      "centerline": "MexicoCity_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Montreal": {
+      "schema": "dr-v2.1",
+      "name": "Montreal",
+      "image": "Montreal_map.png",
+      "image_sha256": "1081befd0add1ff1672151a2bbc3a48777109dbfd5e9002ff4b8b504b7184e9d",
+      "yaml": "Montreal_map.yaml",
+      "yaml_sha256": "d9760286cef74ed9497e52d93ef7f52f8e7ca002db0084422e6b9bc1e2331565",
+      "resolution_m": 0.07134,
+      "origin_xyyaw": [
+        -89.38488117741169,
+        -31.937534079976547,
+        0.0
+      ],
+      "centerline": "Montreal_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Monza": {
+      "schema": "dr-v2.1",
+      "name": "Monza",
+      "image": "Monza_map.png",
+      "image_sha256": "9b091cf4ab7a70505fdf40f670490f0a94767b31bd1d4a00cdb34e6eaca9a2e7",
+      "yaml": "Monza_map.yaml",
+      "yaml_sha256": "8b26c3b3036726f8f37c9df0dd12c273f37b570e287eb8ffe5a7a7645e5e0101",
+      "resolution_m": 0.09585,
+      "origin_xyyaw": [
+        -49.83928924498067,
+        -50.50904922690367,
+        0.0
+      ],
+      "centerline": "Monza_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "MoscowRaceway": {
+      "schema": "dr-v2.1",
+      "name": "MoscowRaceway",
+      "image": "MoscowRaceway_map.png",
+      "image_sha256": "ad5e09f7ddbe684cfdf75867918e3ef03ad8c95bfc90f5bc904aa26f86484631",
+      "yaml": "MoscowRaceway_map.yaml",
+      "yaml_sha256": "235f837e4e63bc2ca2847dc1a0680619a50877f55f9f5ab4f96fb05d23caaf39",
+      "resolution_m": 0.0554,
+      "origin_xyyaw": [
+        -100.98046127566786,
+        -36.346689411228084,
+        0.0
+      ],
+      "centerline": "MoscowRaceway_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Nuerburgring": {
+      "schema": "dr-v2.1",
+      "name": "Nuerburgring",
+      "image": "Nuerburgring_map.png",
+      "image_sha256": "d2b8015583845fe6ad3da3414cf797c0966f7ea2468525e009f195c34124fe24",
+      "yaml": "Nuerburgring_map.yaml",
+      "yaml_sha256": "fcd451ee80f8cd8581403869fb104f01e3f382602539dd1d986f694c59b43e32",
+      "resolution_m": 0.07542,
+      "origin_xyyaw": [
+        -98.11326416920916,
+        -106.53776182200401,
+        0.0
+      ],
+      "centerline": "Nuerburgring_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Oschersleben": {
+      "schema": "dr-v2.1",
+      "name": "Oschersleben",
+      "image": "Oschersleben_map.png",
+      "image_sha256": "0bbc9c7a3821931eea8118f3cabca684da3ef8b44b41ec48d488f51dcf3101d4",
+      "yaml": "Oschersleben_map.yaml",
+      "yaml_sha256": "1cb2a0fa0e1e35090488d0115a6c45786c1b530764522c9b24ea96a4a4ebaf45",
+      "resolution_m": 0.04295,
+      "origin_xyyaw": [
+        -55.07650228661655,
+        -33.57884064395765,
+        0.0
+      ],
+      "centerline": "Oschersleben_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Sakhir": {
+      "schema": "dr-v2.1",
+      "name": "Sakhir",
+      "image": "Sakhir_map.png",
+      "image_sha256": "23389a9428d457d49ac683a034b8906cc8436751ecabe65efe4aac44e2514dfc",
+      "yaml": "Sakhir_map.yaml",
+      "yaml_sha256": "f24f04998becd72e4fa4c8dea7ff2177a9035a691d944804cd0e6278c201cf44",
+      "resolution_m": 0.05695,
+      "origin_xyyaw": [
+        -26.16613846019197,
+        -46.60161969973893,
+        0.0
+      ],
+      "centerline": "Sakhir_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "SaoPaulo": {
+      "schema": "dr-v2.1",
+      "name": "SaoPaulo",
+      "image": "SaoPaulo_map.png",
+      "image_sha256": "d754cffb629e517c5ad0672253bc13139eee5531df5d9da36e140eba3ca0fd92",
+      "yaml": "SaoPaulo_map.yaml",
+      "yaml_sha256": "bd0e2017983e315be9e0290bb383e329fc067260aca2b8d2524175e57f70e458",
+      "resolution_m": 0.04877,
+      "origin_xyyaw": [
+        -27.988851027944648,
+        -33.41588383183014,
+        0.0
+      ],
+      "centerline": "SaoPaulo_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Sepang": {
+      "schema": "dr-v2.1",
+      "name": "Sepang",
+      "image": "Sepang_map.png",
+      "image_sha256": "658761bdeaca61104f9cc6a128809daed0edcba43396d22255882e0225750264",
+      "yaml": "Sepang_map.yaml",
+      "yaml_sha256": "94840e988243ed5263544bc98f6c9ea99ccba299683c53fc8b2612a6b5001bd9",
+      "resolution_m": 0.05944,
+      "origin_xyyaw": [
+        -66.15462837870969,
+        -58.7392475352799,
+        0.0
+      ],
+      "centerline": "Sepang_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Shanghai": {
+      "schema": "dr-v2.1",
+      "name": "Shanghai",
+      "image": "Shanghai_map.png",
+      "image_sha256": "4e31829d8e9be59c79cc20a6846abe33b8aacb418c5063b1a7e72fb217da3a3e",
+      "yaml": "Shanghai_map.yaml",
+      "yaml_sha256": "f2ba4aaa40a09cde424a239d255e0b63b2a2243ea17c024e0128865fc385b4ef",
+      "resolution_m": 0.06505,
+      "origin_xyyaw": [
+        -75.7934346866365,
+        -35.95358066976158,
+        0.0
+      ],
+      "centerline": "Shanghai_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Silverstone": {
+      "schema": "dr-v2.1",
+      "name": "Silverstone",
+      "image": "Silverstone_map.png",
+      "image_sha256": "3a1924c0f7edfa4e9842cc5d8a50803c2c37d16c565dfc5ad42e04283ed2f039",
+      "yaml": "Silverstone_map.yaml",
+      "yaml_sha256": "4e29dd02649b98f94f4676bc9542f367de6de895ec6e0884751476ff03d78d40",
+      "resolution_m": 0.07712,
+      "origin_xyyaw": [
+        -43.82482139791572,
+        -52.30388391024793,
+        0.0
+      ],
+      "centerline": "Silverstone_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Sochi": {
+      "schema": "dr-v2.1",
+      "name": "Sochi",
+      "image": "Sochi_map.png",
+      "image_sha256": "7e109b35fadb4b808bafc2fe4c56f50c85310cfb4f7a48865f5f09cf3d6a7fe4",
+      "yaml": "Sochi_map.yaml",
+      "yaml_sha256": "256a9648bdddc256bb5bcc22dffeb062de19555f1e2950f9654c70f0b0178558",
+      "resolution_m": 0.08501,
+      "origin_xyyaw": [
+        -156.29705697778897,
+        -120.87730224217698,
+        0.0
+      ],
+      "centerline": "Sochi_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Spa": {
+      "schema": "dr-v2.1",
+      "name": "Spa",
+      "image": "Spa_map.png",
+      "image_sha256": "acf3677216f8eed6a5b3bb4bff0ecc4053f06edc99ada7d7f20fd2a2777846e5",
+      "yaml": "Spa_map.yaml",
+      "yaml_sha256": "149dc534c6eabb7e44c3d8156553cfd1d54ae1dfc7512cceb447d60b842320ee",
+      "resolution_m": 0.09267,
+      "origin_xyyaw": [
+        -76.27387694462932,
+        -147.33397683885576,
+        0.0
+      ],
+      "centerline": "Spa_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Spielberg": {
+      "schema": "dr-v2.1",
+      "name": "Spielberg",
+      "image": "Spielberg_map.png",
+      "image_sha256": "ef04183de32f06a27f29f547a154d9f4bc0af3760b833dcc939bc7dea89a5eec",
+      "yaml": "Spielberg_map.yaml",
+      "yaml_sha256": "86c0eb7546bb035ee6e0173eddc8a2953f8c079944acd28374856f8cc245f6f1",
+      "resolution_m": 0.05796,
+      "origin_xyyaw": [
+        -84.85359914210505,
+        -36.30299725862132,
+        0.0
+      ],
+      "centerline": "Spielberg_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "YasMarina": {
+      "schema": "dr-v2.1",
+      "name": "YasMarina",
+      "image": "YasMarina_map.png",
+      "image_sha256": "b569174e1b2b9f1197e976e8838a43e80372ed8f2e3a4aa91a36b33d83dfdfca",
+      "yaml": "YasMarina_map.yaml",
+      "yaml_sha256": "b2ca848ce94d55cfe6238d5e6c111c8892328096b6da3c91eaed978a749dfd82",
+      "resolution_m": 0.07314,
+      "origin_xyyaw": [
+        -63.668374337708805,
+        -64.68282000152614,
+        0.0
+      ],
+      "centerline": "YasMarina_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "Zandvoort": {
+      "schema": "dr-v2.1",
+      "name": "Zandvoort",
+      "image": "Zandvoort_map.png",
+      "image_sha256": "83c65136f953ef55c174e92bd6a34e72a05b370c66961bec1225527695b41c4e",
+      "yaml": "Zandvoort_map.yaml",
+      "yaml_sha256": "cec2760ad8e3b9deb36ca66bec56c17b6c6d02f358f05b3eca6e1eeb1e946d7b",
+      "resolution_m": 0.05109,
+      "origin_xyyaw": [
+        -19.704744951133563,
+        -57.90249552267154,
+        0.0
+      ],
+      "centerline": "Zandvoort_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "berlin": {
+      "schema": "dr-v2.1",
+      "name": "berlin",
+      "image": "berlin_map.png",
+      "image_sha256": "d438dd812dc21505a2871f2d3e3910bf96584261a62b0bdad2a5c6ecda017ad3",
+      "yaml": "berlin_map.yaml",
+      "yaml_sha256": "ade41f87e0a99c1c5c1f1baf4bac449a414fb89b76a68f456700b7857d8adc13",
+      "resolution_m": 0.05,
+      "origin_xyyaw": [
+        -11.60654,
+        -26.520793,
+        0.0
+      ],
+      "centerline": "berlin_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "iccas2025": {
+      "schema": "dr-v2.1",
+      "name": "iccas2025",
+      "image": "iccas2025_map.pgm",
+      "image_sha256": "471a7c09112458358a4e1b8b540622ea4341abf931c5cfc009ed4d9a9af2350d",
+      "yaml": "iccas2025_map.yaml",
+      "yaml_sha256": "e19770f26d669d25c19d1fd706301efc4baa827a0891d0856e5ace67d93dcce4",
+      "resolution_m": 0.05,
+      "origin_xyyaw": [
+        -9.2,
+        -4.39,
+        0.0
+      ],
+      "centerline": "iccas2025_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    },
+    "icra2025": {
+      "schema": "dr-v2.1",
+      "name": "icra2025",
+      "image": "icra2025_map.pgm",
+      "image_sha256": "109505b06578c7dfd29c8a175b6a42e34235cdd80de44f0bdea8b71b85774edb",
+      "yaml": "icra2025_map.yaml",
+      "yaml_sha256": "490edd33a8f5723d0712c68df8f0df921ad652f2e1d96b871b3593b668381a49",
+      "resolution_m": 0.07,
+      "origin_xyyaw": [
+        -16.3,
+        -14.5,
+        0.0
+      ],
+      "centerline": "icra2025_centerline.csv",
+      "centerline_state": "PRESENT",
+      "qualification": "INPUT_ONLY_NOT_DRIVABLE"
+    }
+  },
+  "map_count": 26,
+  "qualified_for_actuation": false
+}
