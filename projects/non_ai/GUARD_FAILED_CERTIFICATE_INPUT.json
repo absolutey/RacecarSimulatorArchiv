@@ -1,0 +1,83 @@
+{
+  "collision_latched": false,
+  "dynamics_limits": {
+    "acceleration_max_m_s2": 40.0,
+    "deceleration_max_m_s2": 40.0,
+    "jerk_abs_max_m_s3": 100.0,
+    "speed_abs_max_m_s": 20.0,
+    "steering_angle_abs_max_rad": 4.0,
+    "steering_rate_abs_max_rad_s": 4.0
+  },
+  "identity": {
+    "epoch": "7bc5365e-9518-4d6a-80ab-08541d945ee7",
+    "map_sha256": "471a7c09112458358a4e1b8b540622ea4341abf931c5cfc009ed4d9a9af2350d",
+    "producer": "R_B",
+    "track": "iccas2025"
+  },
+  "intent": {
+    "acceleration_mps2": -2.0,
+    "active_reference_id": "sha256:99992243805d58494a368b57d934210a789e1209aded9316a6e08cbfeb3a08d4",
+    "active_revision": 1,
+    "candidate_mode": "FALLBACK_STOP_PREFLIGHT_UNPROVEN",
+    "created_ros_ns": 1792250776702331568,
+    "expires_ros_ns": 1792250776777331568,
+    "map_sha256": "471a7c09112458358a4e1b8b540622ea4341abf931c5cfc009ed4d9a9af2350d",
+    "run_epoch": "7bc5365e-9518-4d6a-80ab-08541d945ee7",
+    "sequence": 218,
+    "source_id": "R_B",
+    "source_state_sequence": 591,
+    "source_state_stamp_ns": 1792250776686382646,
+    "steering_rad": 0.12633475791749182,
+    "track_id": "iccas2025"
+  },
+  "last_state": {
+    "a": -2.0,
+    "accel": -2.0,
+    "ax": -1.7712014173354471,
+    "ay": 4.113898145470246,
+    "jerk": 0.0,
+    "omega": 1.2481830304679695,
+    "physics_sequence": 591,
+    "physics_stamp_ns": 1792250776686382646,
+    "px": 1.9827457218513265,
+    "py": 0.9759305504815876,
+    "slip_angle": -0.05632864312377217,
+    "steer": 0.1263347566127777,
+    "steer_vel": 0.0,
+    "v": 3.210792508395384,
+    "vx": 3.2057000675802763,
+    "vy": -0.18076395847550597,
+    "yaw": 1.1400121528888691
+  },
+  "last_state_sequence": 591,
+  "max_speed_cap_mps": 20.0,
+  "now_ros_ns": 1792250776711269721,
+  "previous_state": {
+    "a": -2.0,
+    "accel": -2.0,
+    "ax": -1.7473627085901309,
+    "ay": 4.272912621232288,
+    "jerk": 0.0,
+    "omega": 1.2759646717157564,
+    "physics_sequence": 590,
+    "physics_stamp_ns": 1792250776658647387,
+    "px": 1.9420579236051168,
+    "py": 0.9052907391983573,
+    "slip_angle": -0.059894398760452106,
+    "steer": 0.1263347566127777,
+    "steer_vel": 0.0,
+    "v": 3.260792508395384,
+    "vx": 3.2549454725777616,
+    "vy": -0.19518645791394182,
+    "yaw": 1.1081130360959754
+  },
+  "reason": "STOP_CERTIFICATE_NOT_VERIFIED",
+  "reference_revision": 1,
+  "schema": "F1TENTH_GUARD_CERT_FORENSIC_V1",
+  "source_sha_original": "0e2525fc6aad02be61e94ac2cebeb2a08dae3542e5f59eb0d68480a5d4180fc2",
+  "stop_envelope_result": {
+    "branch": "GUARD_15MS_DEADLINE",
+    "elapsed_us": 17315.968,
+    "slow_count": 1
+  }
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>f1tenth_racing_tools</name>
+  <version>0.0.0</version>
+  <description>Short control clients and workspace utilities.</description>
+  <maintainer email="neo@example.com">neo</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>f1tenth_racing_bringup</exec_depend>
+  <exec_depend>builtin_interfaces</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  <exec_depend>f1tenth_racing_telemetry</exec_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>f1tenth_racing_reference</name>
+  <version>0.1.0</version>
+  <description>Shared active trajectory reference selection.</description>
+  <maintainer email="neo@example.com">neo</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <depend>ament_index_python</depend>
+  <depend>control_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>f1tenth_racing_sim</depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <depend>f1tenth_racing_raceline</depend>
+  <depend>rclpy</depend>
+  <exec_depend>python3-setuptools</exec_depend>
+  <test_depend>python3-pytest</test_depend>
+  <export><build_type>ament_python</build_type></export>
+</package>

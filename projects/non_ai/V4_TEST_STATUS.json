@@ -1,0 +1,21 @@
+{
+  "v3_ubuntu": {
+    "packages": 16,
+    "tests": 338,
+    "errors": 0,
+    "failures": 0,
+    "skips": 0,
+    "origin": "user provided ROS log"
+  },
+  "v4_offline": {
+    "new_package_test_cases_pass": 36,
+    "new_qualification_test_cases_pass": 7,
+    "related_offline_regression_tests_pass": 86,
+    "ros": "NOT_AVAILABLE",
+    "python_ast": "PASS"
+  },
+  "v4_ros": "NOT_EXECUTED",
+  "h2h_e2e": "NOT_QUALIFIED",
+  "guard_15ms_e2e": "NOT_QUALIFIED",
+  "guard_ahead_7ms_e2e": "NOT_QUALIFIED"
+}

@@ -1,0 +1,646 @@
+--- FIRSTPASS/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py
++++ SECONDPASS/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py
+@@ -35,6 +35,7 @@
+ from .fallback_safety import FallbackSafetyTransitionSupervisor
+ from .guard_ahead import GuardAheadAdmission
+ from .control_worker import LatestOnlyControlWorker
++from .primary_worker import MpcPrimaryWorker
+ from .execution_speed_authority import derive_closed_loop_execution_speed
+ from .final_preflight import admit_final_command
+ from .dynamic_admission import PostBootstrapDynamicAdmission
+@@ -68,6 +69,7 @@
+         self._control_lock = threading.RLock()
+         self._state_receipt_lock = threading.Lock()
+         self._control_worker = None
++        self._primary_worker = None
+         control_share = Path(get_package_share_directory("f1tenth_racing_control"))
+         sim_share = Path(get_package_share_directory("f1tenth_racing_sim"))
+         settings = yaml.safe_load((control_share / "config/r_b0.yaml").read_text())
+@@ -79,6 +81,7 @@
+         self.declare_parameter("controller_kind", "pursuit")
+         # Default: off-executor latest-only control computation. No realtime claim.
+         self.declare_parameter("control_worker_enabled", True)
++        self.declare_parameter("primary_worker_enabled", True)
+         self.declare_parameter("controller_profile", "default")
+         self.declare_parameter("fallback_speed_cap_mps", 0.0)
+         self.declare_parameter("diagnostic_withhold_primary", False)
+@@ -181,6 +184,16 @@
+             limits,
+             MpcConfig(**mpc_settings),
+         )
++        # Isolate the MPC solver's warm-start, speed-envelope memoization and
++        # mutable QP state from the fallback/recoverability worker. A slow
++        # solver never owns the actuator and may not block the safety path.
++        self.primary_worker_enabled = (self.controller_kind == 'mpc' and
++            bool(self.get_parameter('primary_worker_enabled').value))
++        self._primary_solver = (LtvDynamicBicycleMpc(
++            dynamics, limits, MpcConfig(**mpc_settings))
++            if self.primary_worker_enabled else self.primary)
++        if self.primary_worker_enabled:
++            self._primary_worker = MpcPrimaryWorker()
+         self.primary_gate = PrimaryAdoptionGate(
+             self.primary.config.horizon_steps * self.primary.config.timestep_s
+         )
+@@ -332,6 +345,9 @@
+ 
+     def destroy_node(self):
+         # Never destroy publishers while the dedicated worker can use them.
++        primary_worker = getattr(self, '_primary_worker', None)
++        if primary_worker is not None and not primary_worker.close(timeout_s=5.0):
++            raise RuntimeError('PRIMARY_WORKER_SHUTDOWN_UNPROVEN')
+         worker = getattr(self, '_control_worker', None)
+         if worker is not None and not worker.close(timeout_s=5.0):
+             # Fail safely: callers must not silently consider ROS shutdown clean
+@@ -353,6 +369,9 @@
+             'threaded': True,
+             'hard_realtime_qualified': False,
+         })
++        primary_worker = getattr(self, '_primary_worker', None)
++        if primary_worker is not None:
++            facts['primary_worker'] = asdict(primary_worker.counters())
+         payload = String()
+         payload.data = json.dumps(facts, sort_keys=True)
+         self.worker_diagnostics_pub.publish(payload)
+@@ -609,10 +628,32 @@
+         primary_b0_profile = {}  # capture immediately; Stability may call B0 later
+         fallback_prepared = None
+         fallback_first_us = 0.0
++        primary_sequence = int(message.physics_sequence)
++        primary_deadline_ns = cycle_started_ns + self.mpc_cycle_slot_ns
++        primary_job_submitted = False
++        if (self._primary_worker is not None and self.reference_valid and
++                state.finite and not diagnostic_withheld and
++                self.startup_primary_phase_complete):
++            # Capture all the proposal inputs before yielding to the distinct
++            # primary worker. Do not copy a mutable controller or query its
++            # warm start from this thread.
++            primary_ref = self.reference
++            primary_stamp = message
++            primary_station = station
++            primary_previous = (self.previous_steering, self.previous_acceleration)
++            primary_cap = self.primary_speed_cap_mps
++            primary_solver = self._primary_solver
++            primary_job_submitted = self._primary_worker.submit(
++                primary_sequence,
++                lambda: primary_solver.solve(
++                    primary_ref, primary_stamp, primary_station,
++                    primary_previous, primary_cap,
++                    deadline_ns=primary_deadline_ns),
++                primary_deadline_ns)
+         # The V3 failure record proves that running Primary+B0 FIRST leaves
+         # the safety fallback's +15 ms preview deadline already expired.
+-        # Independently pre-prove one fresh-state fallback candidate while
+-        # control has wall-clock budget, then spend REMAINING budget on MPC.
++        # Pre-prove fresh fallback in the control worker while the independent
++        # primary solver runs. A primary timeout never bypasses fallback or Guard.
+         # Do not cache across callbacks, states, reference revisions or ticks.
+         if (self.controller_kind == "mpc" and self.reference_valid and
+                 state.finite and envelope is not None and
+@@ -664,17 +705,26 @@
+             mpc_started_ns = time.perf_counter_ns()
+             mpc_call_running = True
+             try:
+-                primary = self.primary.solve(
+-                    self.reference,
+-                    message,
+-                    station,
+-                    (self.previous_steering, self.previous_acceleration),
+-                    self.primary_speed_cap_mps,
+-                    deadline_ns=min(
+-                        cycle_started_ns + self.mpc_cycle_slot_ns,
+-                        mpc_started_ns + int(self.primary.config.primary_deadline_s * 1e9),
+-                    ),
+-                )
++                if self._primary_worker is not None:
++                    if not primary_job_submitted:
++                        raise RuntimeError('MPC_WORKER_BUSY_OR_DEADLINE')
++                    primary = self._primary_worker.take(
++                        primary_sequence,
++                        deadline_ns=min(
++                            primary_deadline_ns,
++                            mpc_started_ns + int(self.primary.config.primary_deadline_s * 1e9),
++                        ),
++                    )
++                else:
++                    primary = self.primary.solve(
++                        self.reference, message, station,
++                        (self.previous_steering, self.previous_acceleration),
++                        self.primary_speed_cap_mps,
++                        deadline_ns=min(
++                            primary_deadline_ns,
++                            mpc_started_ns + int(self.primary.config.primary_deadline_s * 1e9),
++                        ),
++                    )
+                 mpc_call_running = False
+                 primary_status = primary.status
+                 solver_iterations = primary.iterations
+@@ -746,6 +796,10 @@
+                     "MPC_QP_ITERATION_LIMIT": "PRIMARY_ITERATION_LIMIT",
+                     "MPC_QP_CONSTRAINT_RESIDUAL": "PRIMARY_CONSTRAINT_REJECTED",
+                     "MPC_CYCLE_BUDGET_EXCEEDED": "PRIMARY_BUDGET_EXHAUSTED",
++                    "MPC_WORKER_BUSY_OR_DEADLINE": "PRIMARY_WORKER_BUSY",
++                    "MPC_WORKER_RESULT_LATE": "PRIMARY_WORKER_DEADLINE",
++                    "MPC_WORKER_RESULT_MISSING_OR_EXPIRED": "PRIMARY_WORKER_EXPIRED",
++                    "MPC_WORKER_DEADLINE_EXPIRED": "PRIMARY_WORKER_DEADLINE",
+                 }
+                 primary_status = known.get(failure, "PRIMARY_INFEASIBLE")
+                 _, admission_state, feasible_duration_s = self.primary_gate.update(
+@@ -944,7 +998,7 @@
+             "mpc_attempt_us": primary_solve_us,
+             "mpc_failure_stage": self.last_mpc_failure_stage,
+             "mpc_failure_elapsed_ns": self.last_mpc_failure_elapsed_ns,
+-            "mpc_microstages": (getattr(self.primary, 'last_microstage_times', {})
++            "mpc_microstages": (getattr(self._primary_solver, 'last_microstage_times', {})
+                                 if self.controller_kind == 'mpc' else {}),
+             "stage_cumulative_us": stages_us,
+             "deadline_us": 25000,
+--- /dev/null
++++ SECONDPASS/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/primary_worker.py
+@@ -0,0 +1,135 @@
++"""Bounded, one-flight, independently scheduled MPC solver.
++
++A slow primary cannot stall fallback proof in the controller thread. No result
++may be consumed after the tick's hard monotonic request deadline, including
++results completed concurrently with timeout. Python threads are not realtime
++and do NOT confer actuator approval; the independent Guard still certifies.
++"""
++from dataclasses import dataclass
++import threading
++import time
++
++
++@dataclass(frozen=True)
++class PrimaryWorkerCounters:
++    submitted: int
++    completed: int
++    busy_rejected: int
++    late_rejected: int
++    exceptions: int
++    outstanding_sequence: int
++    last_completed_sequence: int
++    last_compute_ns: int
++    max_compute_ns: int
++
++
++class MpcPrimaryWorker:
++    """Exactly one in-flight job, no queueing or replay of stale work."""
++    def __init__(self, name='r_b_mpc_primary'):
++        self._condition = threading.Condition()
++        self._job = None
++        self._running = False
++        self._closing = False
++        self._result = None
++        self._submitted = self._completed = self._busy_rejected = 0
++        self._late_rejected = self._exceptions = 0
++        self._last_sequence = -1
++        self._last_completed = -1
++        self._active_sequence = -1
++        self._last_compute_ns = self._max_compute_ns = 0
++        self._thread = threading.Thread(target=self._loop, name=name, daemon=True)
++        self._thread.start()
++
++    def submit(self, sequence, calculation, deadline_ns):
++        seq = int(sequence)
++        deadline = int(deadline_ns)
++        with self._condition:
++            if (self._closing or not callable(calculation) or
++                    seq <= self._last_sequence or self._job is not None or
++                    self._running or time.perf_counter_ns() >= deadline):
++                self._busy_rejected += 1
++                return False
++            self._result = None
++            self._last_sequence = seq
++            self._job = (seq, calculation, deadline)
++            self._submitted += 1
++            self._condition.notify_all()
++            return True
++
++    def _loop(self):
++        while True:
++            with self._condition:
++                while self._job is None and not self._closing:
++                    self._condition.wait()
++                if self._closing:
++                    self._job = None
++                    return
++                sequence, calculation, deadline_ns = self._job
++                self._job = None
++                self._running = True
++                self._active_sequence = sequence
++            started = time.perf_counter_ns()
++            try:
++                if started >= deadline_ns:
++                    raise RuntimeError('MPC_WORKER_DEADLINE_EXPIRED')
++                result = (calculation(), None)
++            except Exception as error:
++                result = (None, error)
++            finished = time.perf_counter_ns()
++            with self._condition:
++                self._running = False
++                self._active_sequence = -1
++                self._completed += 1
++                self._last_completed = sequence
++                self._last_compute_ns = max(0, finished-started)
++                self._max_compute_ns = max(self._max_compute_ns, self._last_compute_ns)
++                if result[1] is not None:
++                    self._exceptions += 1
++                # Do not even retain tardy outcomes as a possible next-tick input.
++                self._result = (sequence, result, finished, deadline_ns) if finished <= deadline_ns else None
++                self._condition.notify_all()
++
++    def take(self, sequence, *, deadline_ns):
++        seq = int(sequence)
++        deadline = int(deadline_ns)
++        with self._condition:
++            while True:
++                now = time.perf_counter_ns()
++                if self._closing:
++                    raise RuntimeError('MPC_WORKER_CLOSED')
++                if now >= deadline:
++                    self._late_rejected += 1
++                    raise RuntimeError('MPC_WORKER_RESULT_LATE')
++                if self._result is not None and self._result[0] == seq:
++                    _, (value, error), finished, original_deadline = self._result
++                    self._result = None
++                    if finished > deadline or now >= original_deadline:
++                        self._late_rejected += 1
++                        raise RuntimeError('MPC_WORKER_RESULT_LATE')
++                    if error is not None:
++                        raise error
++                    return value
++                if self._last_completed >= seq:
++                    self._late_rejected += 1
++                    raise RuntimeError('MPC_WORKER_RESULT_MISSING_OR_EXPIRED')
++                if (self._last_sequence < seq or
++                        self._last_sequence > seq):
++                    raise RuntimeError('MPC_WORKER_TICK_IDENTITY_UNPROVEN')
++                self._condition.wait(timeout=min((deadline-now)*1e-9, 0.002))
++
++    def counters(self):
++        with self._condition:
++            return PrimaryWorkerCounters(
++                self._submitted,self._completed,self._busy_rejected,
++                self._late_rejected,self._exceptions,self._active_sequence,
++                self._last_completed,self._last_compute_ns,self._max_compute_ns)
++
++    def close(self, timeout_s=2.0):
++        with self._condition:
++            self._closing = True
++            self._job = None
++            self._result = None
++            self._condition.notify_all()
++        if threading.current_thread() is not self._thread:
++            self._thread.join(timeout=max(0.,float(timeout_s)))
++        return not self._thread.is_alive()
+--- FIRSTPASS/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/red_dynamic_guard.py
++++ SECONDPASS/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/red_dynamic_guard.py
+@@ -49,7 +49,10 @@
+                 min(margin_m,red_acceleration_uncertainty_mps2)<0):
+             raise ValueError('RED_IDENTITY_AGE_OR_NUMERIC_UNPROVEN')
+         if (prediction.source_lifecycle!='TRACKED' or
+-                prediction.source_confidence<=0 or prediction.source_hit_count<2):
++                not _finite(prediction.source_confidence) or
++                not (0.0<float(prediction.source_confidence)<=1.0) or
++                isinstance(prediction.source_hit_count, bool) or
++                prediction.source_hit_count<2):
+             raise ValueError('RED_SOURCE_NOT_CONFIRMED')
+         samples=tuple(prediction.samples)
+         if len(samples)<2:raise ValueError('RED_PREDICTION_EMPTY')
+--- /dev/null
++++ SECONDPASS/src/driving/algorithms/f1tenth_racing_control/test/test_primary_worker_secondpass.py
+@@ -0,0 +1,118 @@
++"""Independent MPC scheduler: no older, late or busy primary may gain authority."""
++from threading import Event
++import time
++
++import pytest
++from f1tenth_racing_control.primary_worker import MpcPrimaryWorker
++
++
++def deadline(milliseconds=150):
++    return time.perf_counter_ns()+int(milliseconds*1e6)
++
++
++def test_primary_runs_separately_and_returns_exact_tick():
++    w=MpcPrimaryWorker()
++    try:
++        d=deadline()
++        assert w.submit(7,lambda: 'a',d)
++        assert w.take(7,deadline_ns=d)=='a'
++        assert w.counters().completed==1
++    finally:
++        assert w.close()
++
++
++def test_duplicate_and_backward_sequences_denied():
++    w=MpcPrimaryWorker()
++    try:
++        d=deadline()
++        assert w.submit(8,lambda: 1,d)
++        assert w.take(8,deadline_ns=d)==1
++        assert not w.submit(8,lambda: 99,deadline())
++        assert not w.submit(7,lambda: 99,deadline())
++        assert w.counters().busy_rejected==2
++    finally:
++        assert w.close()
++
++
++def test_blocking_primary_does_not_block_fallback():
++    start,release=Event(),Event()
++    w=MpcPrimaryWorker()
++    try:
++        def work():
++            start.set()
++            release.wait(1)
++            return 'late'
++        d=deadline(30)
++        assert w.submit(1,work,d)
++        assert start.wait(0.5)
++        # This path is executed by the independent fallback control worker.
++        observed=[]
++        observed.append('fallback_proof_independent')
++        assert observed==['fallback_proof_independent']
++        assert not w.submit(2,lambda: 'wrong',deadline())
++        with pytest.raises(RuntimeError,match='LATE'):
++            w.take(1,deadline_ns=d)
++        release.set()
++    finally:
++        release.set()
++        assert w.close()
++
++
++def test_timeout_results_cannot_be_reused_on_new_tick():
++    start,release=Event(),Event()
++    w=MpcPrimaryWorker()
++    try:
++        d=deadline(20)
++        def slow():
++            start.set(); release.wait(1)
++            return 'stale primary'
++        assert w.submit(10,slow,d)
++        assert start.wait(0.5)
++        time.sleep(0.03)
++        release.set()
++        end=time.monotonic()+0.5
++        while w.counters().completed<1 and time.monotonic()<end:
++            time.sleep(0.001)
++        assert w.counters().completed==1
++        with pytest.raises(RuntimeError):
++            w.take(10,deadline_ns=deadline())
++        d2=deadline()
++        assert w.submit(11,lambda: 'fresh',d2)
++        assert w.take(11,deadline_ns=d2)=='fresh'
++    finally:
++        release.set()
++        assert w.close()
++
++
++def test_calculation_failure_fail_closed_and_next_tick_works():
++    w=MpcPrimaryWorker()
++    try:
++        def broken(): raise ValueError('infeasible')
++        d=deadline()
++        assert w.submit(15,broken,d)
++        with pytest.raises(ValueError,match='infeasible'):
++            w.take(15,deadline_ns=d)
++        d=deadline()
++        assert w.submit(16,lambda: 'fallback_remains',d)
++        assert w.take(16,deadline_ns=d)=='fallback_remains'
++        assert w.counters().exceptions==1
++    finally:
++        assert w.close()
++
++
++def test_shutdown_disposes_unrun_requests():
++    w=MpcPrimaryWorker()
++    assert w.close()
++    assert not w.submit(1,lambda: True,deadline())
++
++
++def test_result_from_another_tick_never_admitted():
++    w=MpcPrimaryWorker()
++    try:
++        d=deadline()
++        assert w.submit(21,lambda: 'a',d)
++        with pytest.raises(RuntimeError,match='TICK_IDENTITY'):
++            w.take(22,deadline_ns=d)
++        assert w.take(21,deadline_ns=d)=='a'
++    finally:
++        assert w.close()
+--- /dev/null
++++ SECONDPASS/src/driving/algorithms/f1tenth_racing_control/test/test_red_confidence_secondpass.py
+@@ -0,0 +1,26 @@
++"""Red lifecycle confidence must never bypass Guard with NaN comparison."""
++from types import SimpleNamespace as N
++import math
++import pytest
++from f1tenth_racing_control.red_dynamic_guard import RedDynamicWitness
++
++
++def red(confidence):
++    samples=[N(dt_s=i*0.1,x_m=100.0,y_m=0.,vx_mps=0.,vy_mps=0.,
++        occupancy_half_length_m=0.4,occupancy_half_width_m=0.2)
++        for i in range(1,61)]
++    return N(valid=True,schema_version=1,frame_id='map',track_id='spielberg',
++        source_opponent_id='red',source_lifecycle='TRACKED',
++        source_confidence=confidence,source_hit_count=3,
++        source_observation_time=N(sec=100,nanosec=0),samples=samples)
++
++
++def proof(conf):
++    return RedDynamicWitness(red(conf),now_s=100.1,track_id='spielberg',
++        max_age_s=0.35,minimum_horizon_s=3.0,ego_radius_m=.3)
++
++
++@pytest.mark.parametrize('confidence',[math.nan,math.inf,-math.inf,1.2])
++def test_nonfinite_or_out_of_range_confidence_denied(confidence):
++    with pytest.raises(ValueError,match='RED_SOURCE_NOT_CONFIRMED'):
++        proof(confidence)
+--- FIRSTPASS/src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/foundation_adapter.py
++++ SECONDPASS/src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/foundation_adapter.py
+@@ -29,15 +29,37 @@
+                         else simulator_share / "config/competition_environment.yaml")
+     environment = yaml.safe_load(environment_path.read_text())
+     def resolve_asset(rel):
++        """Resolve registered map assets from a supplied official config.
++
++        An environment override under <sim_share>/config must still resolve
++        ``maps/`` relative to the package root, never the config directory.
++        This fixes the old silent ICCAS-only fallback for Spielberg R-A.
++        """
+         asset = Path(rel)
+-        if asset.is_absolute(): return asset
+-        return (environment_path.parent if environment_path_override is not None
+-                else simulator_share) / asset
++        if asset.is_absolute():
++            return asset.resolve(strict=True)
++        candidates = [environment_path.parent / asset]
++        if environment_path.parent.name == 'config':
++            candidates.append(environment_path.parent.parent / asset)
++        candidates.append(simulator_share / asset)
++        for candidate in candidates:
++            if candidate.is_file():
++                return candidate.resolve(strict=True)
++        raise FileNotFoundError('OFFLINE_RACELINE_ASSET_NOT_FOUND:' + str(rel))
+     centerline_path = resolve_asset(environment["map"]["centerline_file"])
+     map_path = resolve_asset(environment["map"]["image_file"])
+     map_metadata_path = resolve_asset(environment["map"]["metadata_file"])
+     optimizer_path = Path(config_path) if config_path else package_share / "config/r_a0_baseline.json"
+     optimizer_data = json.loads(optimizer_path.read_text())
++    # The geometry solver must not optimize an asset from the wrong map, even
++    # when a caller supplied an override path that happens to exist.
++    for path, declared in (
++        (centerline_path, 'centerline_sha256'),
++        (map_path, 'image_sha256'),
++        (map_metadata_path, 'metadata_sha256'),
++    ):
++        if sha256(path) != environment['map'][declared]:
++            raise ValueError('OFFLINE_RACELINE_MAP_SHA_MISMATCH:' + declared)
+ 
+     with centerline_path.open(newline="") as stream:
+         rows = list(csv.DictReader(stream))
+--- /dev/null
++++ SECONDPASS/src/driving/algorithms/f1tenth_racing_raceline/test/test_spielberg_source_secondpass.py
+@@ -0,0 +1,27 @@
++"""Spielberg R-A must bind exact map/centerline assets under config override."""
++import copy
++from pathlib import Path
++import yaml
++import pytest
++from ament_index_python.packages import get_package_share_directory
++from f1tenth_racing_raceline.foundation_adapter import load_problem
++
++
++def test_qualified_source_inputs_resolve_registered_spielberg():
++    sim=Path(get_package_share_directory('f1tenth_racing_sim'))
++    p=load_problem(environment_path_override=sim/'config/spielberg_environment.yaml')
++    assert p['environment']['environment_identity']['active_track']=='spielberg'
++    assert len(p['corridor'].centerline)==864
++    assert p['hashes']['map']==p['environment']['map']['image_sha256']
++    assert p['hashes']['centerline']==p['environment']['map']['centerline_sha256']
++    assert p['hashes']['map_metadata']==p['environment']['map']['metadata_sha256']
++
++
++def test_corrupted_spielberg_map_identity_denied(tmp_path):
++    sim=Path(get_package_share_directory('f1tenth_racing_sim'))
++    env=yaml.safe_load((sim/'config/spielberg_environment.yaml').read_text())
++    env['map']['image_sha256']='0'*64
++    staged=tmp_path/'env.yaml'
++    staged.write_text(yaml.safe_dump(env))
++    with pytest.raises(ValueError,match='OFFLINE_RACELINE_MAP_SHA_MISMATCH'):
++        load_problem(environment_path_override=staged)
+--- FIRSTPASS/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py
++++ SECONDPASS/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py
+@@ -140,10 +140,29 @@
+         now_ns = self.get_clock().now().nanoseconds
+         valid_until_ns = plan.valid_until.sec * 1_000_000_000 + plan.valid_until.nanosec
+         if not plan.valid:
+-            if matching_complete(plan, self._plan or self._expired_plan):
+-                self._plan = None
+-                self._expired_plan = None
+-                self.publish(self._nominal)
++            accepted = self._plan or self._expired_plan
++            if matching_complete(plan, accepted):
++                # COMPLETE is *not* a bypass around the ABORT fail-closed
++                # recovery gate. A corresponding COMPLETE from R-E only
++                # acknowledges the old plan, not safe vehicle alignment or
++                # Red swept occupancy. Keep the expired ABORT identity so
++                # the parked S0-R gate can prove a new nominal publication.
++                if accepted.maneuver_state == 'ABORT':
++                    self._plan = None
++                    self._expired_plan = accepted
++                    self._recovery_good_ticks = 0
++                    self._recovery_last_sequence = -1
++                    self.publish(invalid_active_reference(
++                        'H2H_ABORT_COMPLETE_NOT_AUTHORIZED_FOR_NOMINAL'))
++                elif accepted.maneuver_state == 'BLOCKING_HOLD':
++                    self._plan = None
++                    self._expired_plan = accepted
++                    self.publish(invalid_active_reference(
++                        'H2H_BLOCKING_HOLD_COMPLETE_REQUIRES_NEW_SAFETY_PLAN'))
++                else:
++                    self._plan = None
++                    self._expired_plan = None
++                    self.publish(self._nominal)
+             return
+         if valid_until_ns <= now_ns:
+             return
+@@ -165,11 +184,23 @@
+     def receive_prediction(self, prediction):
+         now_ns = self.get_clock().now().nanoseconds
+         maximum_age_ns = round(self.get_parameter("prediction_max_age_s").value * 1_000_000_000)
++        source_ns = (prediction.source_observation_time.sec * 1_000_000_000 +
++                     prediction.source_observation_time.nanosec)
++        if (not 0 <= now_ns - source_ns <= maximum_age_ns or
++                prediction.track_id != self._nominal.track_id or
++                prediction.frame_id != self._nominal.frame_id):
++            # A future sample must not survive even briefly in the override
++            # cache, and must not replace the last fresh Red recovery witness.
++            self._predictions = {
++                identity: message for identity, message in self._predictions.items()
++                if 0 <= now_ns - (message.source_observation_time.sec*1_000_000_000 +
++                         message.source_observation_time.nanosec) <= maximum_age_ns}
++            return
+         self._recovery_prediction = prediction
+         self._predictions[prediction_identity(prediction)] = prediction
+         self._predictions = {
+             identity: message for identity, message in self._predictions.items()
+-            if now_ns - (message.source_observation_time.sec * 1_000_000_000 +
++            if 0 <= now_ns - (message.source_observation_time.sec * 1_000_000_000 +
+                          message.source_observation_time.nanosec) <= maximum_age_ns
+         }
+ 
+--- FIRSTPASS/src/platform/f1tenth_racing_reference/test/test_reference.py
++++ SECONDPASS/src/platform/f1tenth_racing_reference/test/test_reference.py
+@@ -316,3 +316,51 @@
+     assert override_expiry_action(plan, 10_400_000_000) == "FRESH"
+     assert override_expiry_action(plan, 10_500_000_000) == "CONTINUE"
+     assert override_expiry_action(plan, 20_000_000_000) == "DEGRADE"
++
++
++def test_abort_complete_cannot_bypass_parked_recovery_gate(monkeypatch):
++    """Even an identity-matched COMPLETE is not a new safety certificate."""
++    import f1tenth_racing_reference.node as adapter
++    monkeypatch.setattr(adapter, 'matching_complete', lambda *_: True)
++    accepted = SimpleNamespace(maneuver_state='ABORT',plan_id='a',plan_revision=4)
++    completed = SimpleNamespace(valid=False,maneuver_state='COMPLETE')
++    published=[]
++    node=SimpleNamespace(
++        _plan=accepted,_expired_plan=None,_nominal='unrestricted_nominal',
++        _recovery_good_ticks=2,_recovery_last_sequence=42,
++        get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(nanoseconds=1)),
++        publish=published.append)
++    NominalActiveReferenceNode.receive_plan(node,completed)
++    assert node._plan is None and node._expired_plan is accepted
++    assert node._recovery_good_ticks==0 and node._recovery_last_sequence==-1
++    assert len(published)==1 and not published[0].active_reference_valid
++    assert published[0].status_reason=='H2H_ABORT_COMPLETE_NOT_AUTHORIZED_FOR_NOMINAL'
++
++
++def test_blocking_hold_complete_cannot_grant_nominal(monkeypatch):
++    import f1tenth_racing_reference.node as adapter
++    monkeypatch.setattr(adapter, 'matching_complete', lambda *_: True)
++    accepted=SimpleNamespace(maneuver_state='BLOCKING_HOLD')
++    published=[]
++    node=SimpleNamespace(
++        _plan=accepted,_expired_plan=None,_nominal='unrestricted_nominal',
++        get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(nanoseconds=1)),
++        publish=published.append)
++    NominalActiveReferenceNode.receive_plan(node,
++        SimpleNamespace(valid=False,maneuver_state='COMPLETE'))
++    assert node._expired_plan is accepted
++    assert len(published)==1 and not published[0].active_reference_valid
++
++
++def test_future_prediction_never_inserted_in_nominal_override_cache():
++    clock=SimpleNamespace(now=lambda: SimpleNamespace(nanoseconds=10_000_000_000))
++    nominal=SimpleNamespace(track_id='iccas2025',frame_id='map')
++    node=SimpleNamespace(
++        _nominal=nominal,_predictions={},_recovery_prediction=None,
++        get_clock=lambda: clock,
++        get_parameter=lambda _: SimpleNamespace(value=0.5))
++    p=SimpleNamespace(
++        source_observation_time=SimpleNamespace(sec=11,nanosec=0),
++        track_id='iccas2025',frame_id='map')
++    NominalActiveReferenceNode.receive_prediction(node,p)
++    assert node._predictions=={} and node._recovery_prediction is None

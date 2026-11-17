@@ -1,0 +1,61 @@
+{
+  "artifact_version": "r_a0_v1",
+  "centerline_sha256": "a4d07292b7a265fe68e27f5691fabd4ff8b4e9548a8d349bde03895e12b3f623",
+  "competition_environment_sha256": "94892e369cd050c0c9060eedd427ed1405c9a7c64ba6a1694aa8269561ee3798",
+  "generator_config_sha256": "ec7903e4d97fd55beb3cf6fc3b00cdae23f657648f57564644a601739310fbe2",
+  "map_metadata_sha256": "e19770f26d669d25c19d1fd706301efc4baa827a0891d0856e5ace67d93dcce4",
+  "map_sha256": "471a7c09112458358a4e1b8b540622ea4341abf931c5cfc009ed4d9a9af2350d",
+  "metrics": {
+    "centerline": {
+      "length": 43.047053928419324,
+      "maximum_absolute_curvature": 0.6606780375531265,
+      "objective": 3.252074182339315,
+      "rms_curvature": 0.274858077583679
+    },
+    "dense_sample_count": 4314,
+    "maximum_absolute_lateral_offset_m": 0.4593749999999997,
+    "maximum_absolute_projected_d_m": 0.4590860156874378,
+    "maximum_projected_progress_step_m": 0.04921784536202978,
+    "minimum_footprint_adjusted_corridor_margin_m": 0.3299614717503132,
+    "minimum_projected_progress_step_m": 0.0,
+    "objective_delta": -0.5373531229494684,
+    "optimized": {
+      "length": 43.13760460863884,
+      "maximum_absolute_curvature": 0.4563151947525883,
+      "objective": 2.7147210593898468,
+      "rms_curvature": 0.25086183415665936
+    },
+    "seam_curvature_error_1_m": 0.0,
+    "seam_heading_error_rad": 0.0,
+    "seam_position_error_m": 0.0,
+    "self_intersection_count": 0,
+    "wall_collision_corner_hits": 0
+  },
+  "output_csv_sha256": "38e5a070066d5a7f37832029ae256ba12ec044979ac3d4cd24fc49eb1f34aa9c",
+  "sample_count": 66,
+  "solver": {
+    "accepted_moves": 820,
+    "composite_objective": 2.720240590639847,
+    "config": {
+      "artifact_version": "r_a0_v1",
+      "dense_validation_spacing_m": 0.01,
+      "maximum_sweeps_per_step": 12,
+      "minimum_improvement_epsilon": 1e-14,
+      "smoothness_weight": 0.05,
+      "step_schedule_m": [
+        0.2,
+        0.1,
+        0.05,
+        0.025,
+        0.0125,
+        0.00625,
+        0.003125
+      ]
+    },
+    "iterations": 51,
+    "name": "deterministic_projected_coordinate_descent",
+    "termination_reason": "STEP_SCHEDULE_EXHAUSTED"
+  },
+  "source_track": "iccas2025",
+  "valid": true
+}

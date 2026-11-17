@@ -1,0 +1,658 @@
+--- /dev/null
++++ V6/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/control_worker.py
+@@ -0,0 +1,128 @@
++"""Latest-only controller worker, independent from the rclpy callback executor.
++
++This separates heavy MPC/Fallback/GuardAhead computation from ROS message
++receipt. Python threading does NOT provide hard realtime scheduling or a hard
++7 ms / 15 ms safety proof. Guard remains the only actuator authority.
++"""
++from dataclasses import dataclass
++import threading
++import time
++
++
++@dataclass(frozen=True)
++class WorkerCounters:
++    submitted: int
++    processed: int
++    overwritten: int
++    rejected: int
++    errors: int
++    pending_sequence: int
++    active_sequence: int
++    last_completed_sequence: int
++    last_error: str
++    last_queue_wait_ns: int
++    max_queue_wait_ns: int
++    last_cycle_ns: int
++    max_cycle_ns: int
++
++
++class LatestOnlyControlWorker:
++    """Consume the newest single physics state on a dedicated daemon thread.
++
++    Monotonicity is enforced both at submit and completion boundaries. Never
++    replay a superseded item, and do not invoke callbacks after close starts.
++    Callback failures are caught and reported, never treated as safe commands.
++    """
++
++    def __init__(self, callback, on_error=None, *, name='r_b_control_worker'):
++        self._callback = callback
++        self._on_error = on_error
++        self._condition = threading.Condition()
++        self._pending = None
++        self._pending_sequence = -1
++        self._pending_at_ns = 0
++        self._last_queue_wait_ns = self._max_queue_wait_ns = 0
++        self._last_cycle_ns = self._max_cycle_ns = 0
++        self._last_submitted = -1
++        self._active_sequence = -1
++        self._last_completed = -1
++        self._closing = False
++        self._submitted = self._processed = self._overwritten = 0
++        self._rejected = self._errors = 0
++        self._last_error = ''
++        self._thread = threading.Thread(target=self._run, name=name, daemon=True)
++        self._thread.start()
++
++    def submit(self, sequence, item):
++        sequence = int(sequence)
++        with self._condition:
++            if self._closing or item is None or sequence <= self._last_submitted:
++                self._rejected += 1
++                return False
++            if self._pending is not None:
++                self._overwritten += 1
++            self._last_submitted = sequence
++            self._pending = item
++            self._pending_sequence = sequence
++            self._pending_at_ns = time.monotonic_ns()
++            self._submitted += 1
++            self._condition.notify()
++            return True
++
++    def _run(self):
++        while True:
++            with self._condition:
++                while self._pending is None and not self._closing:
++                    self._condition.wait()
++                if self._closing:
++                    self._pending = None
++                    self._pending_sequence = -1
++                    return
++                item = self._pending
++                sequence = self._pending_sequence
++                self._pending = None
++                self._pending_sequence = -1
++                self._active_sequence = sequence
++                callback_started_ns = time.monotonic_ns()
++                self._last_queue_wait_ns = max(0, callback_started_ns - self._pending_at_ns)
++                self._max_queue_wait_ns = max(self._max_queue_wait_ns,
++                                              self._last_queue_wait_ns)
++            try:
++                self._callback(item)
++            except Exception as exc:
++                with self._condition:
++                    self._errors += 1
++                    self._last_error = type(exc).__name__ + ':' + str(exc)[:160]
++                if self._on_error is not None:
++                    try:
++                        self._on_error(exc)
++                    except Exception:
++                        pass  # independent Guard still expires old intent
++            finally:
++                with self._condition:
++                    self._processed += 1
++                    self._last_cycle_ns = max(0, time.monotonic_ns() - callback_started_ns)
++                    self._max_cycle_ns = max(self._max_cycle_ns, self._last_cycle_ns)
++                    self._last_completed = sequence
++                    self._active_sequence = -1
++                    self._condition.notify_all()
++
++    def counters(self):
++        with self._condition:
++            return WorkerCounters(
++                self._submitted, self._processed, self._overwritten,
++                self._rejected, self._errors, self._pending_sequence,
++                self._active_sequence, self._last_completed, self._last_error,
++                self._last_queue_wait_ns, self._max_queue_wait_ns,
++                self._last_cycle_ns, self._max_cycle_ns,
++            )
++
++    def close(self, timeout_s=2.0):
++        with self._condition:
++            self._closing = True
++            self._pending = None
++            self._pending_sequence = -1
++            self._condition.notify_all()
++        if threading.current_thread() is not self._thread:
++            self._thread.join(timeout=max(0.0, float(timeout_s)))
++        return not self._thread.is_alive()
+--- V5/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/guard_ahead.py
++++ V6/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/guard_ahead.py
+@@ -58,7 +58,10 @@
+         )
+ 
+     def _admissible(self, initial, steer, accel):
+-        vals=(steer,accel,initial.steering,initial.requested_acceleration)
++        # Reject ALL non-finite measured and predicted physics fields before
++        # consulting the stopping model. Even a buggy/custom proof backend
++        # returning qualified=True cannot bless a poisoned CarState.
++        vals=(float(steer),float(accel),*(float(v) for v in vars(initial).values()))
+         if not all(math.isfinite(x) for x in vals):return False
+         limits=self.limits
+         dt=self.PHYSICS_DT_S
+@@ -72,6 +75,10 @@
+     def _certificate(self, initial, steer, accel, *, deadline_ns=None):
+         z=replace(initial)
+         self.stop.dynamics.step(z,steer,accel,self.PHYSICS_DT_S)
++        if not all(math.isfinite(float(v)) for v in vars(z).values()):
++            return False
++        if deadline_ns is not None and time.perf_counter_ns() >= deadline_ns:
++            return False
+         # Test doubles/legacy models may expose evaluate() only; the
+         # installed StoppingEnvelope exposes a fail-closed bounded variant.
+         if deadline_ns is not None and hasattr(self.stop,'evaluate_bounded'):
+--- V5/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py
++++ V6/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py
+@@ -1,6 +1,7 @@
+ import json
+ import math
+ import time
++import threading
+ from dataclasses import replace
+ from pathlib import Path
+ from types import SimpleNamespace
+@@ -33,6 +34,7 @@
+ from .stability import StabilityRecoverySupervisor
+ from .fallback_safety import FallbackSafetyTransitionSupervisor
+ from .guard_ahead import GuardAheadAdmission
++from .control_worker import LatestOnlyControlWorker
+ from .execution_speed_authority import derive_closed_loop_execution_speed
+ from .final_preflight import admit_final_command
+ from .dynamic_admission import PostBootstrapDynamicAdmission
+@@ -61,6 +63,11 @@
+ class RacingPursuitController(Node):
+     def __init__(self):
+         super().__init__("r_b0_racing_pursuit")
++        # Serializes controller history, reference adoption, START and watchdog
++        # against the off-executor computation worker. Receipt remains O(1).
++        self._control_lock = threading.RLock()
++        self._state_receipt_lock = threading.Lock()
++        self._control_worker = None
+         control_share = Path(get_package_share_directory("f1tenth_racing_control"))
+         sim_share = Path(get_package_share_directory("f1tenth_racing_sim"))
+         settings = yaml.safe_load((control_share / "config/r_b0.yaml").read_text())
+@@ -70,6 +77,8 @@
+         self.last_source_state_stamp = Time()
+         self.last_source_state_sequence = 0
+         self.declare_parameter("controller_kind", "pursuit")
++        # Default: off-executor latest-only control computation. No realtime claim.
++        self.declare_parameter("control_worker_enabled", True)
+         self.declare_parameter("controller_profile", "default")
+         self.declare_parameter("fallback_speed_cap_mps", 0.0)
+         self.declare_parameter("diagnostic_withhold_primary", False)
+@@ -300,8 +309,15 @@
+         # Poll the latest-only mailbox every 5ms instead. A state is consumed
+         # at most once; this DOES NOT create extra controller commands or
+         # guarantee scheduling under CPU contention.
+-        self.create_timer(0.005, self.run_latest_state_cycle)
++        self.control_worker_enabled = bool(self.get_parameter(
++            "control_worker_enabled").value)
++        if not self.control_worker_enabled:
++            # Legacy execution mode for controlled comparisons only.
++            self.create_timer(0.005, self.run_latest_state_cycle)
+         self.create_timer(0.01, self.flush_stage_diagnostics)
++        self.worker_diagnostics_pub = self.create_publisher(
++            String, 'control_worker_metrics', 10)
++        self.create_timer(0.25, self.publish_worker_diagnostics)
+         start_qos = QoSProfile(
+             depth=1,
+             reliability=ReliabilityPolicy.RELIABLE,
+@@ -309,8 +325,49 @@
+         )
+         self.create_subscription(Time, "race_start_time", self.receive_start, start_qos)
+         self.create_timer(0.025, self.watchdog)
++        if self.control_worker_enabled:
++            self._control_worker = LatestOnlyControlWorker(
++                self.run_latest_state_cycle,
++                on_error=self._control_worker_error)
++
++    def destroy_node(self):
++        # Never destroy publishers while the dedicated worker can use them.
++        worker = getattr(self, '_control_worker', None)
++        if worker is not None and not worker.close(timeout_s=5.0):
++            # Fail safely: callers must not silently consider ROS shutdown clean
++            # if the worker is still running. Guard/Simulator leases expire.
++            raise RuntimeError('CONTROL_WORKER_SHUTDOWN_UNPROVEN')
++        return super().destroy_node()
++
++    def publish_worker_diagnostics(self):
++        # Observability only. Never used to authorize any actuator command.
++        worker = self._control_worker
++        if worker is None:
++            return
++        from dataclasses import asdict
++        facts = asdict(worker.counters())
++        facts.update({
++            'schema_version': 1,
++            'type': 'R_B_CONTROL_WORKER_SCHEDULING',
++            'receipt_time_ns': self.get_clock().now().nanoseconds,
++            'threaded': True,
++            'hard_realtime_qualified': False,
++        })
++        payload = String()
++        payload.data = json.dumps(facts, sort_keys=True)
++        self.worker_diagnostics_pub.publish(payload)
++
++    def _control_worker_error(self, error):
++        # Do not synthesize an intent or a positive safety receipt on failure.
++        self._last_dropped_compute_reason = (
++            'WORKER_EXCEPTION_UNPROVEN:' + type(error).__name__)
++        self.get_logger().error(self._last_dropped_compute_reason)
+ 
+     def receive_reference(self, message):
++        with self._control_lock:
++            return self._receive_reference_locked(message)
++
++    def _receive_reference_locked(self, message):
+         try:
+             if not message.active_reference_valid or message.source_kind not in ("NOMINAL", "OVERTAKE_OVERRIDE"):
+                 raise ValueError(message.status_reason or "invalid active reference")
+@@ -418,6 +475,10 @@
+         self.execution_receipt_pub.publish(msg)
+ 
+     def receive_start(self, message):
++        with self._control_lock:
++            return self._receive_start_locked(message)
++
++    def _receive_start_locked(self, message):
+         next_start_ns = message.sec * 1_000_000_000 + message.nanosec
+         if self.start_ns == next_start_ns:
+             # TRANSIENT_LOCAL replay of the same START is not a new race.
+@@ -433,42 +494,51 @@
+         self.dynamic_admission.reset()
+ 
+     def receive_state_snapshot(self, message):
+-        """Constant-work state receipt; no MPC/GuardAhead on the DDS callback.
+-
+-        Out-of-order observations have no control authority. Missing states are
+-        not synthesized. State can be coalesced, but never replayed as current.
++        """Fast callback: validate monotonic identity, enqueue newest only.
++
++        The expensive cycle runs on a dedicated thread when configured. A
++        replaced state is never replayed. Guard independently sees all states.
+         """
+         seq = int(message.physics_sequence)
+-        stamp_ns = int(message.physics_stamp.sec)*1_000_000_000 + int(message.physics_stamp.nanosec)
+-        if seq <= self._received_state_sequence or stamp_ns <= self._last_received_physics_stamp_ns:
+-            self._last_dropped_compute_reason = 'RECEIPT_NON_MONOTONIC_UNPROVEN'
+-            return
+-        self._received_state_sequence = seq
+-        self._last_received_physics_stamp_ns = stamp_ns
+-        self._pending_state = message
+-        self._pending_state_steady_ns = time.monotonic_ns()
+-        # Watchdog freshness is based on receipt, not completion of a heavy solve.
+-        self.last_state_ns = self.get_clock().now().nanoseconds
+-
+-    def run_latest_state_cycle(self):
+-        """Single-owned expensive control cycle; no duplicate/outdated work."""
+-        message = self._pending_state
++        stamp_ns = (int(message.physics_stamp.sec)*1_000_000_000
++                    + int(message.physics_stamp.nanosec))
++        with self._state_receipt_lock:
++            if (seq <= self._received_state_sequence or
++                    stamp_ns <= self._last_received_physics_stamp_ns):
++                self._last_dropped_compute_reason = 'RECEIPT_NON_MONOTONIC_UNPROVEN'
++                return
++            self._received_state_sequence = seq
++            self._last_received_physics_stamp_ns = stamp_ns
++            self.last_state_ns = self.get_clock().now().nanoseconds
++            if self.control_worker_enabled:
++                if not self._control_worker.submit(seq, message):
++                    self._last_dropped_compute_reason = 'WORKER_QUEUE_REJECTED'
++            else:
++                self._pending_state = message
++                self._pending_state_steady_ns = time.monotonic_ns()
++
++    def run_latest_state_cycle(self, message=None):
++        """Run one expensive cycle; all mutable controller state is serialized."""
++        if message is None:
++            with self._state_receipt_lock:
++                message = self._pending_state
++                self._pending_state = None
+         if message is None:
+             return
+-        self._pending_state = None
+-        seq = int(message.physics_sequence)
+-        if seq <= self._processed_state_sequence:
+-            self._last_dropped_compute_reason = 'ALREADY_PROCESSED_UNPROVEN'
+-            return
+-        self._processed_state_sequence = seq
+-        now = self.get_clock().now().nanoseconds
+-        stamp_ns = int(message.physics_stamp.sec)*1_000_000_000 + int(message.physics_stamp.nanosec)
+-        if stamp_ns <= 0 or now < stamp_ns or now - stamp_ns > min(self.state_freshness_ns,75_000_000):
+-            # Never publish a command from aged data; independent Guard deadman
+-            # remains authoritative. This branch is not a certificate.
+-            self._last_dropped_compute_reason = 'PRECOMPUTE_STATE_AGE_UNPROVEN'
+-            return
+-        self.receive_state(message)
++        with self._control_lock:
++            seq = int(message.physics_sequence)
++            if seq <= self._processed_state_sequence:
++                self._last_dropped_compute_reason = 'ALREADY_PROCESSED_UNPROVEN'
++                return
++            self._processed_state_sequence = seq
++            now = self.get_clock().now().nanoseconds
++            stamp_ns = (int(message.physics_stamp.sec)*1_000_000_000
++                        + int(message.physics_stamp.nanosec))
++            if (stamp_ns <= 0 or now < stamp_ns or
++                    now - stamp_ns > min(self.state_freshness_ns, 75_000_000)):
++                self._last_dropped_compute_reason = 'PRECOMPUTE_STATE_AGE_UNPROVEN'
++                return
++            self.receive_state(message)
+ 
+     def flush_stage_diagnostics(self):
+         """Keep optional JSON serialization outside the intent critical path."""
+@@ -833,7 +903,12 @@
+         # refresh a completed command's physics source stamp to a newer state.
+         source_stamp_ns = int(message.physics_stamp.sec)*1_000_000_000 + int(message.physics_stamp.nanosec)
+         publication_now_ns = self.get_clock().now().nanoseconds
+-        if (publication_now_ns < source_stamp_ns or
++        # With an off-executor worker, a newer physics receipt may supersede
++        # this source while the long solve runs. Do not publish an old intent.
++        with self._state_receipt_lock:
++            source_superseded = (int(message.physics_sequence) <
++                                 self._received_state_sequence)
++        if (source_superseded or publication_now_ns < source_stamp_ns or
+                 publication_now_ns - source_stamp_ns > min(self.state_freshness_ns,75_000_000) or
+                 time.perf_counter_ns()-cycle_started_ns > 25_000_000):
+             self._last_dropped_compute_reason = 'POSTCOMPUTE_EXPIRED_UNPROVEN'
+@@ -955,6 +1030,10 @@
+         return braking, assessment
+ 
+     def watchdog(self):
++        with self._control_lock:
++            return self._watchdog_locked()
++
++    def _watchdog_locked(self):
+         now_ns = self.get_clock().now().nanoseconds
+         if self.start_ns is None or now_ns < self.start_ns:
+             return
+--- /dev/null
++++ V6/src/driving/algorithms/f1tenth_racing_control/test/test_control_worker_v6.py
+@@ -0,0 +1,204 @@
++"""V6 off-executor latest-only R-B worker: deterministic fault injection."""
++from threading import Event
++
++from f1tenth_racing_control.control_worker import LatestOnlyControlWorker
++
++
++def test_one_receipt_runs_exactly_once():
++    completed = Event()
++    done = []
++    worker = LatestOnlyControlWorker(lambda x: (done.append(x), completed.set()))
++    try:
++        assert worker.submit(1, 's1')
++        assert completed.wait(2)
++        assert done == ['s1']
++        assert worker.counters().processed == 1
++    finally:
++        assert worker.close()
++
++
++def test_mailbox_superseded_work_never_replayed():
++    active = Event()
++    release = Event()
++    done = Event()
++    seen = []
++    def process(x):
++        seen.append(x)
++        if x == 1:
++            active.set()
++            assert release.wait(2)
++        if x == 3:
++            done.set()
++    worker = LatestOnlyControlWorker(process)
++    try:
++        assert worker.submit(1, 1)
++        assert active.wait(2)
++        assert worker.submit(2, 2)
++        assert worker.submit(3, 3)
++        assert worker.counters().overwritten == 1
++        release.set()
++        assert done.wait(2)
++        assert seen == [1, 3]
++        assert worker.counters().last_completed_sequence == 3
++    finally:
++        release.set()
++        assert worker.close()
++
++
++def test_duplicate_and_regressive_sequences_rejected_even_when_busy():
++    active = Event()
++    release = Event()
++    def process(_):
++        active.set()
++        assert release.wait(2)
++    worker = LatestOnlyControlWorker(process)
++    try:
++        assert worker.submit(42, 42)
++        assert active.wait(2)
++        assert not worker.submit(42, 43)
++        assert not worker.submit(41, 43)
++        assert worker.counters().rejected == 2
++    finally:
++        release.set()
++        assert worker.close()
++
++
++def test_caught_worker_exception_notifies_but_never_promotes():
++    failed = Event()
++    completed = Event()
++    errors = []
++    seen = []
++    def process(x):
++        seen.append(x)
++        if x == 1:
++            raise ValueError('poison')
++        completed.set()
++    def on_error(exc):
++        errors.append(type(exc).__name__)
++        failed.set()
++    worker = LatestOnlyControlWorker(process, on_error=on_error)
++    try:
++        assert worker.submit(1, 1)
++        assert failed.wait(2)
++        assert worker.submit(2, 2)
++        assert completed.wait(2)
++        counters = worker.counters()
++        assert counters.errors == 1
++        assert counters.last_error == 'ValueError:poison'
++        assert seen == [1, 2]
++        assert errors == ['ValueError']
++    finally:
++        assert worker.close()
++
++
++def test_error_reporting_exception_does_not_kill_consumer():
++    failed = Event()
++    first_exception = Event()
++    def process(x):
++        if x == 1:
++            raise RuntimeError('bad')
++        failed.set()
++    def broken_logger(_):
++        first_exception.set()
++        raise RuntimeError('logger failure')
++    worker = LatestOnlyControlWorker(process, on_error=broken_logger)
++    try:
++        assert worker.submit(1, 1)
++        assert first_exception.wait(2)
++        # The callback continues despite secondary logging failure.
++        assert worker.submit(2, 'ok')
++        assert failed.wait(2)
++    finally:
++        assert worker.close()
++
++
++def test_close_discards_waiting_command_not_drain_to_actuator():
++    active = Event()
++    release = Event()
++    seen = []
++    def process(x):
++        seen.append(x)
++        active.set()
++        assert release.wait(2)
++    worker = LatestOnlyControlWorker(process)
++    try:
++        assert worker.submit(1, 1)
++        assert active.wait(2)
++        assert worker.submit(2, 2)
++        assert not worker.close(timeout_s=0.005)
++        assert not worker.submit(3, 3)
++        release.set()
++        assert worker.close()
++        assert seen == [1]
++    finally:
++        release.set()
++        worker.close()
++
++
++def test_empty_close_clean_and_idempotent():
++    worker = LatestOnlyControlWorker(lambda _: None)
++    assert worker.close()
++    assert worker.close()
++    assert not worker.submit(1, 1)
++
++
++def test_slow_consumer_does_not_block_producer_receipt():
++    active = Event()
++    release = Event()
++    def process(_):
++        active.set()
++        release.wait(2)
++    worker = LatestOnlyControlWorker(process)
++    try:
++        assert worker.submit(1, 1)
++        assert active.wait(2)
++        assert worker.submit(2, 2)
++        assert worker.counters().active_sequence == 1
++        assert worker.counters().pending_sequence == 2
++    finally:
++        release.set()
++        assert worker.close()
++
++
++def test_concurrent_submitters_share_monotonic_sequence_boundary():
++    # Strictly increasing acceptance is enforced under a Condition lock.
++    barrier = Event()
++    worker = LatestOnlyControlWorker(lambda _: barrier.wait(1))
++    from concurrent.futures import ThreadPoolExecutor
++    try:
++        with ThreadPoolExecutor(max_workers=8) as executor:
++            results = list(executor.map(lambda x: worker.submit(x, x), range(1, 41)))
++        assert any(results)
++        assert worker.counters().submitted + worker.counters().rejected == 40
++        assert not worker.submit(1, 1)
++    finally:
++        barrier.set()
++        assert worker.close()
++
++
++def test_queue_wait_and_cycle_duration_measurements_are_monotonic():
++    done = Event()
++    worker = LatestOnlyControlWorker(lambda _: done.set())
++    try:
++        assert worker.submit(12, 'm')
++        assert done.wait(2)
++        # Completion counters update just after the callback signals done.
++        worker.close()
++        c = worker.counters()
++        assert c.last_queue_wait_ns >= 0
++        assert c.max_queue_wait_ns >= c.last_queue_wait_ns
++        assert c.last_cycle_ns >= 0
++        assert c.max_cycle_ns >= c.last_cycle_ns
++        assert c.processed == 1
++    finally:
++        worker.close()
++
++
++def test_null_payload_is_rejected_before_it_can_stall_the_consumer():
++    worker = LatestOnlyControlWorker(lambda _: None)
++    try:
++        assert not worker.submit(1, None)
++        assert worker.submit(1, 1)
++        assert worker.counters().rejected == 1
++    finally:
++        assert worker.close()
+--- /dev/null
++++ V6/src/driving/algorithms/f1tenth_racing_control/test/test_guard_ahead_v6_nonfinite.py
+@@ -0,0 +1,66 @@
++"""V6 GuardAhead: non-finite measured/stepped physics is never certified."""
++import math
++import time
++from types import SimpleNamespace
++import pytest
++from f1tenth_racing_control.guard_ahead import GuardAheadAdmission
++
++LIMITS = {
++    'steering_angle_abs_max_rad': 0.5,
++    'steering_rate_abs_max_rad_s': 4.0,
++    'jerk_abs_max_m_s3': 100.,
++    'deceleration_max_m_s2': 40.,
++    'acceleration_max_m_s2': 40.,
++}
++
++
++def car():
++    return SimpleNamespace(px=1., py=2., yaw=0.1, v=1., vx=1., vy=0.,
++        omega=0., a=0., ax=0., ay=0., slip_angle=0., accel=0.,
++        jerk=0., steer=0.02, steer_vel=0.)
++
++
++class NeverRejectProof:
++    def __init__(self, poison=False):
++        self.dynamics = SimpleNamespace(step=self.step)
++        self.calls = 0
++        self.poison = poison
++
++    def step(self, state, steer, accel, dt):
++        if self.poison:
++            state.x = math.nan
++        else:
++            state.x += state.speed * dt
++
++    def evaluate(self, state, steer, accel):
++        self.calls += 1
++        return SimpleNamespace(qualified=True)
++
++
++@pytest.mark.parametrize('field', [
++    'px','py','yaw','v','vx','vy','omega','a','ax','ay','slip_angle',
++    'accel','jerk','steer','steer_vel',
++])
++def test_nonfinite_carstate_never_reaches_authorizing_proof(field):
++    m = car()
++    setattr(m, field, math.nan)
++    proof = NeverRejectProof()
++    outcome = GuardAheadAdmission(proof, LIMITS).choose(m, 0.02, 0.0, time.perf_counter_ns())
++    assert not outcome.proved
++    assert proof.calls == 0
++
++
++def test_poisoned_one_tick_rollout_cannot_get_positive_certificate():
++    proof = NeverRejectProof(poison=True)
++    outcome = GuardAheadAdmission(proof, LIMITS).choose(car(), 0.02, 0.5,
++                                                        time.perf_counter_ns())
++    assert not outcome.proved
++    assert proof.calls == 0
++
++
++def test_finite_backend_still_requires_two_certificates():
++    proof = NeverRejectProof()
++    outcome = GuardAheadAdmission(proof, LIMITS).choose(car(), 0.02, 0.0,
++                                                        time.perf_counter_ns())
++    assert outcome.proved
++    assert outcome.checks == proof.calls == 2

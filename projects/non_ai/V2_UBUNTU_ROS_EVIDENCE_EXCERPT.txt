@@ -1,0 +1,4 @@
+User-provided on 2026-10-18, from V2 Ubuntu verification log:
+Summary: 16 packages finished [21.2s]
+Summary: 328 tests, 0 errors, 0 failures, 0 skipped
+V2 ROS build/tests completed; H2H/Guard E2E qualification NOT asserted.

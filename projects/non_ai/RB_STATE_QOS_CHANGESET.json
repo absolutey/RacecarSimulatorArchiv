@@ -1,0 +1,24 @@
+{
+  "changed_paths": [
+    "PREFLIGHT_LIVE.py",
+    "RB_STATE_QOS_CHANGESET.json",
+    "RB_STATE_QOS_RCA_IMPLEMENTATION_20261019.md",
+    "RUN_FINAL_INTEGRATED_ROS_VERIFY.sh",
+    "RUN_RB_STATE_QOS_CLOSURE_VERIFY.sh",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/rb_state_qos_contract.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_rb_state_qos_regression_20261019.py"
+  ],
+  "new_registered_tests": 27,
+  "parent_sha256": "6c56636a6152839603cf963820da24a179454ae1b2a97849a7a0f66cf30124de",
+  "parent_zip": "F1TENTH_RAB_SOLO_RUNTIME_RCA_REPAIR_20261019.zip",
+  "previous_latest_ubuntu_ros_regression": 610,
+  "repaired_qos": "BEST_EFFORT depth=1",
+  "runtime_qualified": false,
+  "safety_bounds_unchanged": {
+    "guard_stop_deadline_ms": 15,
+    "guardahead_deadline_ms": 7,
+    "rb_state_age_max_ms": 75
+  },
+  "schema": "R_B_QOS_RUNTIME_CLOSURE_V1"
+}

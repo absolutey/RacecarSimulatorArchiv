@@ -1,0 +1,22 @@
+--- SECONDPASS/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py
++++ FIX/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py
+@@ -138,7 +138,8 @@
+ 
+     def receive_plan(self, plan):
+         now_ns = self.get_clock().now().nanoseconds
+-        valid_until_ns = plan.valid_until.sec * 1_000_000_000 + plan.valid_until.nanosec
++        # A cancellation/COMPLETE is governed by matched plan identity, not
++        # by an active lease. Do not read a valid_until field on this branch.
+         if not plan.valid:
+             accepted = self._plan or self._expired_plan
+             if matching_complete(plan, accepted):
+@@ -164,6 +165,9 @@
+                     self._expired_plan = None
+                     self.publish(self._nominal)
+             return
++        # An active override alone requires a live lease. Expired plans must
++        # never reach override selection or gain actuation authority.
++        valid_until_ns = plan.valid_until.sec * 1_000_000_000 + plan.valid_until.nanosec
+         if valid_until_ns <= now_ns:
+             return
+         if plan.maneuver_state == "ABORT" and self._plan is None:

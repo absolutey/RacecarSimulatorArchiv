@@ -1,0 +1,30 @@
+{
+  "acceleration_semantics": "KINEMATIC_REACHABILITY_OUTGOING_SEGMENT",
+  "artifact_type": "RacingTrajectory",
+  "canonical_direction": "counterclockwise",
+  "closed_loop": true,
+  "csv_sha256": "3f369ba3372f799f27126033ba258fa0413c2fcb1f31764afa914ffefc66dd6f",
+  "frame_id": "map",
+  "generation_method": "CENTERLINE_FROM_REGISTERED_SPIELBERG_MAP_PRELIMINARY",
+  "generator_code_sha256": "b0ba8ce54fad5ff82299e0523ea516623d2b0c396eae02ce32367499e9ffabaf",
+  "geometry_qualification_status": "NOT_YET_VERIFIED",
+  "jerk_tracking_qualification": "NOT_YET_VERIFIED",
+  "path_length_m": 343.32261693378734,
+  "product_valid": true,
+  "qualification_state": "OFFLINE_CENTERLINE_PRELIMINARY_UNQUALIFIED",
+  "runtime_lap_time_status": "NOT_VERIFIED",
+  "runtime_tracking_qualified": false,
+  "sample_count": 864,
+  "schema_version": 1,
+  "source": {
+    "environment_sha256": "58401761f4bf4c2ee73640fd77af3b1282fa0c5900bae6d2ed5c5d2cee717afe",
+    "map_image_sha256": "c712fd1ecce1b548b5579fa01da3ea6bbdcc91de4f28877deb34d11e9e003c2d",
+    "source_centerline_sha256": "4bcaf1658902e3e976d82049e6009e352c25124cba9bd0cc1d8b06f3a35a9c97"
+  },
+  "speed_envelope_qualification_status": "KINEMATIC_NECESSARY_ONLY",
+  "station_period_m": 343.32261693378734,
+  "track_id": "spielberg",
+  "trajectory_id": "sha256:0619224bab83cbf71d7c2a03190f4a4b6cee619ab035ed68ee4982543c1ca8ad",
+  "trajectory_tier": "UNQUALIFIED_EXPERIMENTAL",
+  "units": "SI"
+}

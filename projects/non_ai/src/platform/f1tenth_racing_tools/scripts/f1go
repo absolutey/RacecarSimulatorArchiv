@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -eo pipefail
+set -u
+exec ros2 run f1tenth_racing_tools race_start "$@"

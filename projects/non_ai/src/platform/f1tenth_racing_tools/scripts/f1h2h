@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Explicit experimental H2H. No override may disable Red safety admission.
+declare -A value=(
+ [solo]=false [use_r_b0]=true
+ [execution_profile]=H2H_MPC_DYNAMIC_EXPERIMENTAL
+ [trajectory_candidate]=scp [controller_kind]=mpc
+ [use_opponent_perception]=true [use_opponent_prediction]=true
+ [opponent_prediction_horizon_s]=9.0 [use_overtaking]=true
+ [dynamic_red_guard_enabled]=true [speed_cap_mps]=AUTO
+ [interaction_speed_cap_mps]=AUTO [use_rviz]=false
+)
+for argument in "$@"; do
+  case "$argument" in
+    use_rviz:=*|speed_cap_mps:=*|interaction_speed_cap_mps:=*|    environment_file:=*|controller_profile:=*|use_flight_recorder:=*|    record_rosbag:=*|telemetry_run_root:=*|telemetry_run_id:=*)
+      key="${argument%%:=*}"; val="${argument#*:=}"
+      if [[ -z "$val" ]]; then
+        printf 'f1h2h: empty %s\n' "$key" >&2; exit 2
+      fi
+      value[$key]="$val";;
+    *) printf 'f1h2h: unsupported/unsafe H2H override: %s\n' "$argument" >&2; exit 2;;
+  esac
+done
+keys=(solo use_r_b0 execution_profile trajectory_candidate controller_kind
+      use_opponent_perception use_opponent_prediction opponent_prediction_horizon_s
+      use_overtaking dynamic_red_guard_enabled speed_cap_mps interaction_speed_cap_mps
+      use_rviz environment_file controller_profile use_flight_recorder record_rosbag
+      telemetry_run_root telemetry_run_id)
+args=()
+for key in "${keys[@]}"; do
+  [[ -v "value[$key]" ]] && args+=("$key:=${value[$key]}")
+done
+exec ros2 launch f1tenth_racing_bringup race_foundation.launch.py "${args[@]}"

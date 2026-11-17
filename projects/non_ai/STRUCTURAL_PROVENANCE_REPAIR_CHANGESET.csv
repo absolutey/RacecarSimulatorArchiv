@@ -1,0 +1,7 @@
+path,action,purpose
+src/platform/f1tenth_racing_reference/f1tenth_racing_reference/contract_guard.py,modified,Nested Downloads stage admission while retaining executing-source identity and SHA checks
+src/platform/f1tenth_racing_reference/test/test_nested_stage_provenance_fix.py,added,17 independent provenance and real Spielberg artifact admission tests
+RUN_STRUCTURAL_IMPLEMENTATION_ROS_VERIFY.sh,modified,Run offline provenance tests before ROS and demand 535 registered tests
+RUN_STRUCTURAL_PROVENANCE_REPAIR_ROS_VERIFY.sh,added,Ubuntu single-entry complete verification
+STRUCTURAL_PROVENANCE_REPAIR_RCA_KO.md,added,"Failure RCA, evidence, and completion limitations"
+STRUCTURAL_PROVENANCE_REPAIR.patch,added,Source change patch

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -eo pipefail
+set -u
+for argument in "$@"; do
+  case "$argument" in
+    use_rviz:=true|use_rviz:=false) ;;
+    *) printf 'f1safe: unsupported SAFE-BASELINE profile override: %s\n' "$argument" >&2; exit 2 ;;
+  esac
+done
+gate="$(dirname "$0")/resource_preflight.py"
+if [[ ! -f "$gate" ]]; then
+  printf '%s: installed resource_preflight.py not found: %s\n' "$(basename "$0")" "$gate" >&2
+  exit 2
+fi
+exec python3 "$gate" --run-id F1SIM-SAFE-BASELINE -- \
+  ros2 launch f1tenth_racing_bringup race_foundation.launch.py \
+  solo:=true execution_profile:=SOLO_BASELINE \
+  trajectory_candidate:=baseline controller_kind:=pursuit speed_cap_mps:=3.0 \
+  use_opponent_perception:=false opponent_tracker:=cv \
+  use_opponent_prediction:=false opponent_predictor:=track_cv \
+  use_overtaking:=false publish_red_lidar:=false "$@"

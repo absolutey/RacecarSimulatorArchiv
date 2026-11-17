@@ -1,0 +1,10 @@
+uint32 sample_index
+float64 s_m
+float64 x_m
+float64 y_m
+float64 heading_rad
+float64 curvature_per_m
+float64 lateral_offset_m
+float64 target_speed_mps
+float64 target_accel_mps2
+float64 ds_to_next_m

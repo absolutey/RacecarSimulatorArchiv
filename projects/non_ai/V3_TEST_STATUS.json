@@ -1,0 +1,21 @@
+{
+  "v2_ubuntu": {
+    "packages_finished": 16,
+    "tests": 328,
+    "errors": 0,
+    "failures": 0,
+    "skips": 0,
+    "origin": "user-supplied ROS log"
+  },
+  "v3_offline": {
+    "focused_pass": 69,
+    "focused_skipped": 1,
+    "new_v3_tests_pass": 10,
+    "ast": "PASS",
+    "bash": "PASS"
+  },
+  "v3_ros": "NOT_EXECUTED",
+  "h2h_e2e": "NOT_QUALIFIED",
+  "guard_15ms_e2e": "NOT_QUALIFIED",
+  "guard_ahead_7ms_e2e": "NOT_QUALIFIED"
+}

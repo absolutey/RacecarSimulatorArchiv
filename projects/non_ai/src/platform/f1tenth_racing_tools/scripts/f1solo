@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Ordered launch argument ownership: verified CLI values override defaults.
+# No H2H enabling here. The launch validator independently rejects every
+# profile/controller/reference mismatch.
+declare -A value=(
+  [solo]=true [use_r_b0]=true [execution_profile]=SOLO_MPC_EXPERIMENTAL
+  [trajectory_candidate]=scp [controller_kind]=mpc [speed_cap_mps]=AUTO
+  [use_rviz]=false
+)
+for argument in "$@"; do
+  case "$argument" in
+    solo:=true) value[solo]=true ;;
+    solo:=*) printf "f1solo: H2H forbidden via SOLO wrapper\n" >&2; exit 2 ;;
+    use_rviz:=*|speed_cap_mps:=*|fallback_speed_cap_mps:=*|    trajectory_candidate:=*|controller_kind:=*|execution_profile:=*|    controller_profile:=*|candidate_id:=*|environment_file:=*|    use_flight_recorder:=*|record_rosbag:=*|review_phase:=*|    telemetry_run_root:=*|telemetry_run_id:=*|diagnostic_withhold_primary:=*)
+      key="${argument%%:=*}"
+      val="${argument#*:=}"
+      if [[ -z "$val" ]]; then
+        printf 'f1solo: empty launch value: %s\n' "$key" >&2; exit 2
+      fi
+      value[$key]="$val"
+      ;;
+    *) printf 'f1solo: unsupported argument: %s\n' "$argument" >&2; exit 2 ;;
+  esac
+done
+# Deterministic ordering and each key occurs EXACTLY once.
+keys=(solo use_r_b0 execution_profile trajectory_candidate controller_kind speed_cap_mps
+      fallback_speed_cap_mps controller_profile candidate_id environment_file
+      use_rviz use_flight_recorder record_rosbag review_phase telemetry_run_root
+      telemetry_run_id diagnostic_withhold_primary)
+args=()
+for key in "${keys[@]}"; do
+  [[ -v "value[$key]" ]] && args+=("$key:=${value[$key]}")
+done
+exec ros2 launch f1tenth_racing_bringup race_foundation.launch.py "${args[@]}"

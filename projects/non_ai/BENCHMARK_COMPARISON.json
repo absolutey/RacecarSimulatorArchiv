@@ -1,0 +1,21 @@
+{
+  "scope": "CONTAINER_ONLY_NOT_ROS_WCET",
+  "scenario": "Intent508 61-step valid physical stop",
+  "before": {
+    "variant": "before",
+    "runs": 350,
+    "median_us": 625.648,
+    "p95_us": 816.715,
+    "p99_us": 1128.162,
+    "max_us": 3070.955
+  },
+  "after": {
+    "variant": "after",
+    "runs": 350,
+    "median_us": 468.7575,
+    "p95_us": 567.23,
+    "p99_us": 653.51,
+    "max_us": 766.75
+  },
+  "caveat": "Independent batches of 350 unbounded calls, scheduling load not controlled"
+}

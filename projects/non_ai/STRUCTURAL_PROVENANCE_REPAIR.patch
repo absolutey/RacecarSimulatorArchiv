@@ -1,0 +1,56 @@
+--- a/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/contract_guard.py
++++ b/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/contract_guard.py
+@@ -20,24 +20,41 @@
+     return h.hexdigest()
+ 
+ 
++def _permitted_stage_location(stage, home):
++    """Recognize official source roots even under isolated Downloads staging.
++
++    ROS verification unpacks a F1TENTH source stage into a temporary directory
++    *inside* Downloads. Requiring stage.parent == Downloads rejects that
++    correctly isolated workspace. Do not trust arbitrary roots or source
++    names: a stage must be the expected named source directory under Downloads
++    (at any nesting depth), or the explicitly supported canonical workspace.
++    File-system and executing-module identity checks follow separately.
++    """
++    stage = Path(stage)
++    home = Path(home)
++    if stage == home / 'F1TENTH_NEXT_WORKSPACE':
++        return True
++    if not stage.name.startswith('F1TENTH_'):
++        return False
++    try:
++        relative = stage.relative_to(home / 'Downloads')
++    except ValueError:
++        return False
++    return bool(relative.parts)
++
++
+ def _trusted_stage_provenance(stage, module_file):
+-    """Require the installed registry to belong to the *executing* source stage.
++    """Accept only same-stage installed artifacts and the *executing* module.
+ 
+-    This accepts no path from ROS parameters as an authority, and does not
+-    trust a directory solely by prefix. It is intentionally specific to
+-    symlink-install F1TENTH stage layout, not a general filesystem sandbox.
+-    Source/content SHA and map/reference hashes are separately checked by
+-    candidate verification and load_nominal_policy.
++    Neither ROS parameters nor an artifact registry may nominate a foreign
++    stage as trusted. Paths must be canonical (no symlinked ancestors), and
++    the executing reference module must resolve to this stage's source file.
++    Contents and reference/map SHA are checked independently by the loader.
+     """
+     try:
+         stage = Path(stage)
+         module = Path(module_file).resolve(strict=True)
+-        home = Path.home()
+-        permitted_location = (
+-            stage == home / 'F1TENTH_NEXT_WORKSPACE' or
+-            (stage.parent == home / 'Downloads' and
+-             stage.name.startswith('F1TENTH_'))
+-        )
++        permitted_location = _permitted_stage_location(stage, Path.home())
+         expected = stage / ('src/platform/f1tenth_racing_reference/'
+                             'f1tenth_racing_reference/contract_guard.py')
+         return (permitted_location and not stage.is_symlink() and

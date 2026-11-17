@@ -1,0 +1,21 @@
+{
+  "v1_ubuntu": {
+    "ros_packages": 16,
+    "tests": 327,
+    "failures": 0,
+    "errors": 0,
+    "source": "user_supplied"
+  },
+  "v2_offline": {
+    "broad_collected_pass": 248,
+    "skipped": 1,
+    "collection_errors_due_to_missing_ros": 19,
+    "collected_failed": 0,
+    "focused_pass": 71,
+    "focused_skipped": 1,
+    "ast_pass": true,
+    "bash_syntax_pass": true
+  },
+  "v2_ubuntu_ros": "NOT_EXECUTED",
+  "ros_h2h_real_time": "NOT_QUALIFIED"
+}

@@ -1,0 +1,484 @@
+--- V2/INTEGRATION_35_ITEM_STATUS.csv
++++ V3/INTEGRATION_35_ITEM_STATUS.csv
+@@ -2,15 +2,15 @@
+ GAP-01,Guard,C++ Guard ROS 완전 실행기,NOT_IMPLEMENTED,기존 Python ROS Guard 계속 사용
+ GAP-02,Guard,native Guard 기본 경로,EXPERIMENT_ONLY,solo parity receipt 기반 실험 플래그 유지
+ GAP-03,Guard,15ms end-to-end,UNPROVEN,내부 15ms 정지증명 예산만 유지
+-GAP-04,Guard,watchdog 실행 독립,NOT_IMPLEMENTED,기존 Guard 내부 timer 유지
++GAP-04,Guard,watchdog 실행 독립,SIMULATOR_LOCAL_GUARD_LEASE_VETO_PARTIAL,"V3 simulator process checks fresh RUNNING Guard status at both command acceptance and physics step; local deadman braking on loss, separate standalone watchdog/native realtime not implemented"
+ GAP-05,Guard,native 운영 빌드 설치/승격,NOT_IMPLEMENTED,정식 배포 경로 미확보
+-GAP-06,Guard,Applied 원본 Intent 신원,PATCHED_ATOMIC_SIM_ROS_PENDING,Typed GuardedActuatorCommand (one transport) + Simulator source/epoch/map/state/seq lease validation; physical ROS qualification pending
++GAP-06,Guard,Applied 원본 Intent 신원,PATCHED_ATOMIC_WITH_SIM_WATCHDOG_V3_ROS_PENDING,"V2 atomic Guard→Simulator actuation plus V3 independently checked epoch/source/live status and serialized simulator command/physics; 328 V2 tests PASS, V3 needs Ubuntu ROS"
+ GAP-07,RB_GuardAhead,독립 제어 실행 worker,NOT_IMPLEMENTED,single rclpy spin 실행 유지
+ GAP-08,RB_GuardAhead,7ms GuardAhead 유계,UNPROVEN,7ms 예산 검사 유지; 전체 반복 E2E 증명 없음
+ GAP-09,RB_GuardAhead,native GuardAhead 정규 경로,EXPERIMENT_ONLY,기존 parity opt in
+ GAP-10,RB_GuardAhead,MPC fallback 실행 간섭,NOT_IMPLEMENTED,executor 병렬 분리 없음
+ GAP-11,RB_GuardAhead,MPC primary 기본 운용,PATCHED_NOT_ROS_TESTED,launch SOLO MPC SCP 실험 기본
+-GAP-12,RB_GuardAhead,RB Guard Applied 신원,PATCHED_ATOMIC_SIM_ROS_PENDING,R-B Intent -> Guard CERTIFIED -> Simulator Applied atomic identity; read-only lineage auditor; requires ROS verification
++GAP-12,RB_GuardAhead,RB Guard Applied 신원,PATCHED_ATOMIC_WITH_SIM_WATCHDOG_V3_ROS_PENDING,Guarded command source identity + simulator status veto prevents previous Certified lease surviving stale Guard; actual applied ROS E2E not demonstrated
+ GAP-13,RA_S0R,Spielberg 기본 참조 정책,IMPLEMENTED_PRELIMINARY,"정본 manifest 등록, 미자격"
+ GAP-14,RA_S0R,Spielberg 숫자 경로,IMPLEMENTED_PRELIMINARY,"centerline 기반 v(s), SCP 최적화 아님"
+ GAP-15,RA_S0R,실행 제안과 안전권한 구분,PARTIAL,"Guard 최종 인증 유지, 완전 authority 계약 아님"
+--- V2/README_V3_CODE_INTEGRATION_KO.md
++++ V3/README_V3_CODE_INTEGRATION_KO.md
+@@ -0,0 +1,21 @@
++# F1TENTH RAB — V3 안전 실행경로 통합 (2026-10-18)
++
++## 검증된 이전 기준선
++- V1 Ubuntu: ROS 16 packages / 327 tests PASS, 0 errors, 0 failures.
++- **V2 Ubuntu 사용자 실제 로그: ROS 16 packages / 328 tests PASS, 0 errors, 0 failures, 0 skipped.**
++- V2 ROS 빌드 성공이 H2H 완주/Guard 15ms/GuardAhead 7ms의 증거라는 뜻은 아님.
++
++## V3 실제 추가·수정 코드
++1. `guard_status_lease.py`: Simulator process is independent of Guard ROS process; verify status epoch, source, monotonically increasing timestamp/sequence, local ROS and steady clock freshness, `RUNNING`, `ready`, and `certificate_verified`. Never infer stop proof from status alone.
++2. `simulator.py`: A CERTIFIED command is admitted only with independently received, live Guard heartbeat, on top of V2 atomic GuardedActuatorCommand identity/proof/replay check. Any non-running, stale, invalid Guard status revokes previous CERTIFIED command lease, triggering existing simulator-local deadman deceleration at next physics tick. Minimum-risk brake is not gated by running status. Physics step also rechecks live status so Guard process death does not leave a previous actuator lease active until full command timeout. Threading RLock serializes status, command, reset, and physics callbacks, protecting command/receipt consistency under MultiThreadedExecutor.
++3. `test_guard_status_lease_v3.py`: 10 pure unit tests, placed under real ROS sim package test tree so colcon should discover them. Covers no-status denial, clock delay/regression, Guard SAFE_HOLD, identities, monotonic rollback, hard fault, and structural wiring.
++4. `INTEGRATION_35_ITEM_STATUS.csv`: precisely statuses GAP-04/06/12 only. **No other GAP is closed or officially qualified by V3.**
++
++## V3 evidence and constraints
++- V3 nonROS focused suite: 69 PASS, 1 SKIP (ROS-only), AST PASS. The 10 new tests are included within 69.
++- V3 Ubuntu ROS build/full test NOT executed here; expected 328 baseline + 10 new discovered tests = 338, subject to real discovery.
++- This is **simulator-internal independent enforcement**, NOT an independent C++ Guard executable, real-time watchdog process, cryptographic DDS authentication, 15ms/7ms scheduling guarantee, physical stop certificate, or H2H qualification.
++- No change to `~/f1tenth_racing`, no automatic merge or live vehicle commands.
++
++## Next
++Run `bash RUN_V3_ROS_VERIFY.sh` inside an extracted isolated V3 root, with ROS 2 Humble. Requires 338/338 registered tests PASS. Do not claim full 4-layer completion. Then continue native Guard execution isolation, MPC/Fallback isolation, complete H2H abort/rejoin with independent Red proof, dual-map numerical racing policy qualification, and official G0–G9 gates. Failure of any ROS test must be classified by root cause; do not mass rollback.
+--- V2/RUN_V3_ROS_VERIFY.sh
++++ V3/RUN_V3_ROS_VERIFY.sh
+@@ -0,0 +1,34 @@
++#!/usr/bin/env bash
++set -eo pipefail
++cd "$(dirname "$(readlink -f "$0")")"
++EVIDENCE="${EVIDENCE_ROOT:-$PWD/../RAB_V3_ROS_EVIDENCE}"
++mkdir -p "$EVIDENCE"
++echo '== V3 RELEASE CHECK =='
++python3 -B VERIFY_RELEASE.py 2>&1 | tee "$EVIDENCE/VERIFY_RELEASE.log"
++echo '== ROS2 HUMBLE =='
++set +u
++source /opt/ros/humble/setup.bash
++set -u
++: "${ROS_DISTRO:?ROS_ENVIRONMENT_NOT_LOADED}"
++echo '== ROS FULL BUILD =='
++colcon build --symlink-install --event-handlers console_direct+ 2>&1 | tee "$EVIDENCE/BUILD.log"
++set +u
++source install/setup.bash
++set -u
++echo '== FULL ROS TEST =='
++colcon test --event-handlers console_direct+ 2>&1 | tee "$EVIDENCE/TEST.log"
++echo '== TEST RESULT =='
++colcon test-result --verbose 2>&1 | tee "$EVIDENCE/TEST_RESULTS.log"
++python3 - "$EVIDENCE/TEST_RESULTS.log" <<'PYTEST'
++from pathlib import Path
++import re,sys
++s=Path(sys.argv[1]).read_text()
++m=re.search(r'Summary:\s*(\d+) tests?,\s*(\d+) errors?,\s*(\d+) failures?,\s*(\d+) skipped',s)
++if not m:
++    raise SystemExit('BLOCKED=NO_STRUCTURED_TEST_SUMMARY')
++count, errors, failures, skipped=map(int,m.groups())
++if errors or failures or skipped or count<338:
++    raise SystemExit(f'BLOCKED=V3_REGRESSION_COUNT_OR_FAILURE {count=} {errors=} {failures=} {skipped=}')
++print(f'V3_ROS_REGISTERED_TESTS_PASS={count} (baseline 328 + 10 new expected)')
++PYTEST
++printf '%s\n' 'H2H/Guard REALTIME QUALIFICATION NOT ASSERTED.' "EVIDENCE_ROOT=$EVIDENCE"
+--- V2/SOURCE_MANIFEST.json
++++ V3/SOURCE_MANIFEST.json
+@@ -1,6 +1,6 @@
+ {
+-  "schema": "F1TENTH_RAB_4_LAYER_INTEGRATION_V2",
+-  "count": 267,
++  "schema": "F1TENTH_RAB_4_LAYER_INTEGRATION_V3",
++  "count": 269,
+   "source_parent_zip_sha256": "47c539b2647225d629024f0bf23ae6b2b6671e7a6056349d84e9abada0a72c00",
+   "modified_files": [
+     "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_contract.py",
+@@ -12,10 +12,12 @@
+     "src/driving/algorithms/f1tenth_racing_control/test/test_guarded_atomic_wire.py",
+     "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.csv",
+     "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.json",
++    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py",
+     "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guarded_actuation_contract.py",
+     "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety/stopping_envelope.py",
+     "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+     "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/world/collision.py",
++    "src/environment/f1tenth_racing_sim/test/test_guard_status_lease_v3.py",
+     "src/interfaces/control_msgs/CMakeLists.txt",
+     "src/interfaces/control_msgs/msg/GuardedActuatorCommand.msg",
+     "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+@@ -1007,6 +1009,13 @@
+       "package": "f1tenth_racing_sim"
+     },
+     {
++      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py",
++      "original_sha256": null,
++      "candidate_sha256": "0d9b5f88302095884c1c37f9e98b1e632644023903d4b367b1ee821aa037d352",
++      "authority": "V3",
++      "package": "f1tenth_racing_sim"
++    },
++    {
+       "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guarded_actuation_contract.py",
+       "original_sha256": null,
+       "candidate_sha256": "3ac2a10a66e6b86d9b656abced59e99d75eee95800c843a806ee7f8e852487ca",
+@@ -1093,7 +1102,7 @@
+     {
+       "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+       "original_sha256": "92ae55d67741fad4f43cb3bf53deb97de9db585e208423ccbdcfdea9aec8a915",
+-      "candidate_sha256": "cd2831d51185028add4b7b57230cd1ff32d97b01c65522bd77c4237e1cb549ce",
++      "candidate_sha256": "c54b94e45f0dbbfd3664b648c244a6498058f420323d76465fecd8677d2d75a5",
+       "authority": "PHASE2",
+       "package": "f1tenth_racing_sim"
+     },
+@@ -1214,6 +1223,13 @@
+       "original_sha256": "bcb537d054433ff04da9413e585e17f43c92ef8d1ec4374ac7c2428145c275d9",
+       "candidate_sha256": "bcb537d054433ff04da9413e585e17f43c92ef8d1ec4374ac7c2428145c275d9",
+       "authority": "PHASE2",
++      "package": "f1tenth_racing_sim"
++    },
++    {
++      "path": "src/environment/f1tenth_racing_sim/test/test_guard_status_lease_v3.py",
++      "original_sha256": null,
++      "candidate_sha256": "6da8dbc90a635ae03d5cab796e6b45078e41c29e9cd19ff30484884fbbd4144e",
++      "authority": "V3",
+       "package": "f1tenth_racing_sim"
+     },
+     {
+@@ -1904,5 +1920,6 @@
+     }
+   ],
+   "qualification_notice": "CODE_INTEGRATION_ONLY_NOT_ROS_OR_H2H_QUALIFIED",
+-  "parent_v1_zip_sha256": "bf7a2312cd4f7d5cedaba6cd126ff240c27556a5002531913c05acbc8071eafe"
++  "parent_v1_zip_sha256": "bf7a2312cd4f7d5cedaba6cd126ff240c27556a5002531913c05acbc8071eafe",
++  "parent_v2_zip_sha256": "c1c106b9fd81df55851a8d632e97f9aaf1aa05132f210d9099f8348ed2a8f93a"
+ }
+--- V2/V2_UBUNTU_ROS_EVIDENCE_EXCERPT.txt
++++ V3/V2_UBUNTU_ROS_EVIDENCE_EXCERPT.txt
+@@ -0,0 +1,4 @@
++User-provided on 2026-10-18, from V2 Ubuntu verification log:
++Summary: 16 packages finished [21.2s]
++Summary: 328 tests, 0 errors, 0 failures, 0 skipped
++V2 ROS build/tests completed; H2H/Guard E2E qualification NOT asserted.
+--- V2/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py
++++ V3/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py
+@@ -0,0 +1,93 @@
++"""Independent simulator-side Guard status veto (no ROS imports).
++
++This does NOT replace a stopping certificate or guarantee a scheduling bound.
++It ensures a queued CERTIFIED command cannot remain active when Guard status
++expires or indicates SAFE_HOLD, with both ROS time and monotonic-clock checks.
++The simulator remains a separate process from the Python Guard ROS node.
++"""
++from dataclasses import dataclass
++import math
++
++
++def _stamp_ns(stamp):
++    sec, nanosec = int(stamp.sec), int(stamp.nanosec)
++    if sec < 0 or not 0 <= nanosec < 1_000_000_000:
++        raise ValueError('INVALID_ROS_STAMP')
++    return sec * 1_000_000_000 + nanosec
++
++
++@dataclass(frozen=True)
++class GuardHeartbeat:
++    ros_stamp_ns: int
++    steady_received_ns: int
++    accepted_sequence: int
++    mode: str
++    ready: bool
++    certificate_verified: bool
++    emergency_unrecoverable: bool
++
++
++class GuardStatusLease:
++    """Non-authorizing revocation gate; status never certifies actuation alone."""
++    def __init__(self, *, run_epoch, producer, max_age_ns=100_000_000):
++        if not run_epoch or not producer or not 0 < int(max_age_ns) <= 100_000_000:
++            raise ValueError('INVALID_GUARD_STATUS_LEASE_CONFIG')
++        self.run_epoch = str(run_epoch)
++        self.producer = str(producer)
++        self.max_age_ns = int(max_age_ns)
++        self.latest = None
++        self.invalid_updates = 0
++
++    def observe(self, message, *, now_ros_ns, now_steady_ns):
++        """Store fresh or revoked status; reject regression and provenance errors."""
++        try:
++            stamp = _stamp_ns(message.stamp)
++            now_ros_ns = int(now_ros_ns)
++            now_steady_ns = int(now_steady_ns)
++            seq = int(message.last_accepted_sequence)
++            old = self.latest
++            if (message.run_epoch != self.run_epoch or
++                    message.source_id != self.producer or
++                    not 0 < stamp <= now_ros_ns or
++                    now_ros_ns - stamp > self.max_age_ns or
++                    now_steady_ns < 0 or seq < 0 or
++                    (old is not None and (stamp <= old.ros_stamp_ns or
++                     seq < old.accepted_sequence))):
++                self.latest = None
++                self.invalid_updates += 1
++                return False
++            self.latest = GuardHeartbeat(
++                ros_stamp_ns=stamp, steady_received_ns=now_steady_ns,
++                accepted_sequence=seq, mode=str(message.mode),
++                ready=bool(message.ready),
++                certificate_verified=bool(message.certificate_verified),
++                emergency_unrecoverable=bool(message.emergency_unrecoverable))
++            return True
++        except (ValueError, TypeError, AttributeError, OverflowError):
++            self.latest = None
++            self.invalid_updates += 1
++            return False
++
++    def permits_certified(self, *, now_ros_ns, now_steady_ns):
++        """A separate, current RUNNING heartbeat is required for CERTIFIED.
++
++        Do not require an exact last_accepted_sequence match: heartbeat and
++        actuation are asynchronous ROS transports and will interleave.
++        The atomic GuardedActuatorCommand still carries command lineage.
++        """
++        h = self.latest
++        if h is None:
++            return False, 'GUARD_HEARTBEAT_MISSING'
++        try:
++            ros_age=int(now_ros_ns)-h.ros_stamp_ns
++            steady_age=int(now_steady_ns)-h.steady_received_ns
++            if (ros_age<0 or steady_age<0 or ros_age>self.max_age_ns or
++                    steady_age>self.max_age_ns):
++                return False, 'GUARD_HEARTBEAT_STALE'
++            if (h.mode!='RUNNING' or not h.ready or
++                    not h.certificate_verified or h.emergency_unrecoverable or
++                    h.accepted_sequence<=0):
++                return False, 'GUARD_HEARTBEAT_NOT_AUTHORIZED'
++            return True, 'GUARD_HEARTBEAT_LIVE'
++        except (TypeError, ValueError, OverflowError):
++            return False, 'GUARD_HEARTBEAT_CLOCK_INVALID'
+--- V2/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py
++++ V3/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py
+@@ -1,6 +1,7 @@
+ import json
+ import math
+ import time
++import threading
+ from pathlib import Path
+ 
+ import numpy as np
+@@ -9,8 +10,9 @@
+ from ackermann_msgs.msg import AckermannDriveStamped
+ from ament_index_python.packages import get_package_share_directory
+ from builtin_interfaces.msg import Time
+-from control_msgs.msg import CarState, GuardedActuatorCommand
++from control_msgs.msg import CarState, GuardedActuatorCommand, ActuatorGuardStatus
+ from .guarded_actuation_contract import verify_guarded_actuation
++from .guard_status_lease import GuardStatusLease
+ from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped, TransformStamped
+ from nav_msgs.msg import OccupancyGrid, Odometry, Path as PathMsg
+ from rclpy.callback_groups import ReentrantCallbackGroup
+@@ -69,6 +71,8 @@
+         self.opponent_state = None
+         self.previous_opponent_state = None
+         self.command_origin_identity = None
++        # Serializes asynchronous status, command, reset, and physics callbacks.
++        self.actuation_lock = threading.RLock()
+         self.command_stamp_ns = None
+         self.latest_guard_intent_receipts = {}
+         self.dynamics = Dynamics(config["dynamics"])
+@@ -86,6 +90,8 @@
+         self.guard_intent_last_sequence=0
+         if self.guard_required and not self.guard_run_epoch:
+             raise ValueError('SIM_EGO_REQUIRES_EXPLICIT_GUARD_EPOCH')
++        self.guard_status_lease=(GuardStatusLease(run_epoch=self.guard_run_epoch,
++            producer=self.guard_producer) if self.guard_required else None)
+ 
+         sensor_qos = QoSProfile(history=HistoryPolicy.KEEP_LAST, depth=1, reliability=ReliabilityPolicy.RELIABLE)
+         # state0 is a safety-critical exact-tick input for the independent
+@@ -103,6 +109,11 @@
+             self.command_sub=self.create_subscription(
+                 GuardedActuatorCommand,'guarded_actuator_cmd0',
+                 self.command_guarded,command_qos)
++            # Independent simulator-process veto: a stale/crashed Guard can
++            # no longer keep an earlier CERTIFIED actuator lease alive.
++            self.guard_status_sub=self.create_subscription(
++                ActuatorGuardStatus,'actuator_guard_status0',
++                self.receive_guard_status,latched_qos)
+         else:
+             self.command_sub = self.create_subscription(
+                 AckermannDriveStamped, config["actuation"]["command_topic_car" + suffix],
+@@ -153,7 +164,42 @@
+         except (ValueError,TypeError,KeyError):
+             return
+ 
++    def receive_guard_status(self, message):
++        with self.actuation_lock:
++            infos=self.get_publishers_info_by_topic('/actuator_guard_status0')
++            if len(infos)!=1 or infos[0].node_name!='actuator_guard0':
++                self.guard_status_lease.latest=None
++                self._revoke_guarded_lease('GUARD_STATUS_PUBLISHER_MISMATCH')
++                return
++            accepted=self.guard_status_lease.observe(message,
++                now_ros_ns=self.get_clock().now().nanoseconds,
++                now_steady_ns=time.monotonic_ns())
++            live,_=self.guard_status_lease.permits_certified(
++                now_ros_ns=self.get_clock().now().nanoseconds,
++                now_steady_ns=time.monotonic_ns())
++            if not accepted or not live:
++                self._revoke_guarded_lease('GUARD_STATUS_REVOKED')
++
++    def _revoke_guarded_lease(self, reason):
++        # No command is issued by this method. The simulator-local physics
++        # deadman independently applies deceleration at the next physics tick.
++        if self.command_origin_identity is not None and \
++                self.command_origin_identity.get('authority_mode')=='CERTIFIED':
++            self.last_command_steady_ns=None
++            self.last_command_ns=None
++
+     def command_guarded(self, message):
++        with self.actuation_lock:
++            return self._command_guarded_locked(message)
++
++    def _command_guarded_locked(self, message):
++        if message.authority_mode=='CERTIFIED':
++            live,reason=self.guard_status_lease.permits_certified(
++                now_ros_ns=self.get_clock().now().nanoseconds,
++                now_steady_ns=time.monotonic_ns())
++            if not live:
++                self.get_logger().error('ATOMIC_GUARD_STATUS_REJECT:'+reason)
++                return
+         infos=self.get_publishers_info_by_topic('/guarded_actuator_cmd0')
+         if len(infos)!=1 or infos[0].node_name!='actuator_guard0':
+             self.get_logger().error('ATOMIC_GUARD_PUBLISHER_MISMATCH')
+@@ -195,6 +241,10 @@
+         }
+ 
+     def command(self, message):
++        with self.actuation_lock:
++            return self._command_locked(message)
++
++    def _command_locked(self, message):
+         if self.guard_required:
+             self.get_logger().error('EGO_RAW_COMMAND_FORBIDDEN')
+             return
+@@ -226,12 +276,18 @@
+         self.opponent_state = State(x=message.px, y=message.py, yaw=message.yaw)
+ 
+     def reset(self, pose):
++        with self.actuation_lock:
++            return self._reset_locked(pose)
++
++    def _reset_locked(self, pose):
+         self.state = State(x=pose.position.x, y=pose.position.y, yaw=2.0 * math.atan2(pose.orientation.z, pose.orientation.w))
+         self.requested_steering = self.config["actuation"]["initial_steering_angle_rad"]
+         self.requested_acceleration = self.config["actuation"]["initial_acceleration_m_s2"]
+         self.command_stamp_ns=None
+         self.command_origin_identity=None
+         self.guard_intent_last_sequence=0
++        if self.guard_status_lease is not None:
++            self.guard_status_lease.latest=None
+         self.last_command_ns = None  # resetting pose invalidates command lease
+         self.last_command_steady_ns = None
+ 
+@@ -242,10 +298,20 @@
+         self.reset(message.pose)
+ 
+     def physics_step(self):
++        with self.actuation_lock:
++            return self._physics_step_locked()
++
++    def _physics_step_locked(self):
+         dt = self.config["simulation"]["physics_timestep_s"]
+         now_ns = self.get_clock().now().nanoseconds
+         steady_ns=time.monotonic_ns()
+-        stale=(self.last_command_ns is None or self.last_command_steady_ns is None or
++        heartbeat_live=True
++        if (self.guard_required and self.command_origin_identity is not None and
++                self.command_origin_identity.get('authority_mode')=='CERTIFIED'):
++            heartbeat_live,_=self.guard_status_lease.permits_certified(
++                now_ros_ns=now_ns,now_steady_ns=steady_ns)
++        stale=(not heartbeat_live or
++               self.last_command_ns is None or self.last_command_steady_ns is None or
+                now_ns<self.last_command_ns or
+                now_ns-self.last_command_ns>self.command_timeout_ns or
+                steady_ns-self.last_command_steady_ns>self.command_timeout_ns)
+--- V2/src/environment/f1tenth_racing_sim/test/test_guard_status_lease_v3.py
++++ V3/src/environment/f1tenth_racing_sim/test/test_guard_status_lease_v3.py
+@@ -0,0 +1,81 @@
++"""Simulator-side independent heartbeat veto; ROS-free behavior tests."""
++from types import SimpleNamespace as N
++from pathlib import Path
++from f1tenth_racing_sim.guard_status_lease import GuardStatusLease
++
++
++def msg(*, stamp=1_000_000_000, seq=3, mode='RUNNING',
++        ready=True, proof=True, epoch='run-A', producer='R_B', fault=False):
++    return N(stamp=N(sec=stamp//1_000_000_000,nanosec=stamp%1_000_000_000),
++             run_epoch=epoch,source_id=producer,last_accepted_sequence=seq,
++             mode=mode,ready=ready,certificate_verified=proof,
++             emergency_unrecoverable=fault)
++
++
++def lease(): return GuardStatusLease(run_epoch='run-A',producer='R_B')
++
++
++def test_no_heartbeat_is_never_authority():
++    assert not lease().permits_certified(now_ros_ns=1,now_steady_ns=1)[0]
++
++
++def test_running_heartbeat_is_a_veto_not_an_exact_command_seq_join():
++    l=lease()
++    assert l.observe(msg(),now_ros_ns=1_002_000_000,now_steady_ns=1_000_000)
++    assert l.permits_certified(now_ros_ns=1_060_000_000,now_steady_ns=71_000_000)[0]
++
++
++def test_guard_process_death_revokes_existing_lease_on_monotonic_timeout():
++    l=lease(); l.observe(msg(),now_ros_ns=1_000_000_000,now_steady_ns=500)
++    assert not l.permits_certified(now_ros_ns=1_001_000_000,now_steady_ns=100_000_501)[0]
++
++
++def test_ros_clock_regression_or_stall_revokes():
++    l=lease(); l.observe(msg(),now_ros_ns=1_000_000_000,now_steady_ns=5)
++    assert not l.permits_certified(now_ros_ns=999_999_999,now_steady_ns=6)[0]
++    assert not l.permits_certified(now_ros_ns=1_100_000_001,now_steady_ns=6)[0]
++
++
++def test_safe_hold_revokes_authority_even_if_cached_certificate_was_true():
++    l=lease();l.observe(msg(),now_ros_ns=1_000_000_000,now_steady_ns=10)
++    l.observe(msg(stamp=1_025_000_000,mode='SAFE_HOLD'),
++              now_ros_ns=1_025_000_000,now_steady_ns=20)
++    assert not l.permits_certified(now_ros_ns=1_030_000_000,now_steady_ns=30)[0]
++
++
++def test_rejects_stale_or_wrong_run_epoch_and_source():
++    for m in (msg(epoch='wrong'),msg(producer='OTHER'),
++              msg(stamp=1_000_000_000)):
++        l=lease()
++        assert not l.observe(m,now_ros_ns=1_200_000_000,now_steady_ns=1)
++        assert not l.permits_certified(now_ros_ns=1_200_000_000,now_steady_ns=2)[0]
++
++
++def test_invalid_update_revokes_even_previous_valid_heartbeat():
++    l=lease();l.observe(msg(),now_ros_ns=1_000_000_000,now_steady_ns=1)
++    assert not l.observe(msg(stamp=1_001_000_000,epoch='wrong'),
++                         now_ros_ns=1_001_000_000,now_steady_ns=2)
++    assert not l.permits_certified(now_ros_ns=1_001_000_000,now_steady_ns=3)[0]
++
++
++def test_sequence_or_timestamp_regression_revokes():
++    for bad in (msg(stamp=1_001_000_000,seq=2),msg(stamp=999_999_999,seq=4)):
++        l=lease();l.observe(msg(),now_ros_ns=1_000_000_000,now_steady_ns=1)
++        assert not l.observe(bad,now_ros_ns=1_002_000_000,now_steady_ns=2)
++
++
++def test_unarmed_or_unverified_or_hard_fault_status_is_veto():
++    for m in (msg(mode='ARMED'),msg(ready=False),msg(proof=False),
++              msg(fault=True),msg(seq=0)):
++        l=lease();l.observe(m,now_ros_ns=1_000_000_000,now_steady_ns=1)
++        assert not l.permits_certified(now_ros_ns=1_000_000_100,now_steady_ns=2)[0]
++
++
++def test_simulator_commands_and_physics_are_guarded_by_atomic_lock():
++    text=(Path(__file__).parents[1]/'f1tenth_racing_sim/simulator.py').read_text()
++    for marker in ('with self.actuation_lock:',
++                   'def receive_guard_status(self, message):',
++                   'self.guard_status_lease.permits_certified(',
++                   'heartbeat_live=True',
++                   'self._revoke_guarded_lease('):
++        assert marker in text

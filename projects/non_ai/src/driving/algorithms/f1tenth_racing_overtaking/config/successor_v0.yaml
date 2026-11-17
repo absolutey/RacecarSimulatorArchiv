@@ -1,0 +1,109 @@
+schema_version: 0
+status: RUNTIME_ADAPTER_IMPLEMENTED_DEFAULT_DISABLED
+runtime_enabled: false
+
+planner_name: committed_spatiotemporal_frenet
+
+owner_boundary:
+  nominal_reference: R-A2
+  opponent_prediction: R-D
+  overtaking_maneuver: R-E
+  active_reference_arbitration: S0-R
+  trajectory_execution: R-B
+
+candidate_topologies:
+  - LEFT_EARLY
+  - LEFT_LATE
+  - RIGHT_EARLY
+  - RIGHT_LATE
+  - FOLLOW
+
+internal_lifecycle:
+  - TRAIL
+  - PASS_COMMIT
+  - FROZEN_PASS
+  - PASS_CONFIRMED
+  - FROZEN_REJOIN
+  - NOMINAL
+
+wire_mapping:
+  PASS_COMMIT:
+    - COMMITTED_PASS
+  FROZEN_PASS:
+    - COMMITTED_PASS
+    - PASSING
+  PASS_CONFIRMED:
+    - MERGE
+  FROZEN_REJOIN:
+    - MERGE
+  NOMINAL:
+    - COMPLETE
+
+q0_seed_parameters:
+  emergency_rejoin_enabled: true
+  authority: UNQUALIFIED_TEST_SEED_ONLY
+  prediction_max_age_s: 0.50
+  minimum_track_confidence: 0.60
+  minimum_confirmed_hits: 3
+  maximum_source_misses: 4
+  maximum_covariance_eigenvalue_m2: 0.20
+  eligibility_ahead_min_m: 0.8
+  eligibility_ahead_max_m: 6.0
+  candidate_lateral_offset_m: 0.75
+
+  # Seeds derived only from the preserved Legacy transition family:
+  # prepare_length=5.0 and its existing 1.5x fallback. EARLY is a topology
+  # seed, not immutable geometry. If that seed fails temporal clearance,
+  # Successor R-E may search shorter opponent-conditioned geometry while every
+  # existing hard safety and trackability gate remains authoritative.
+  entry_length_early_m: 5.0
+  entry_length_late_m: 7.5
+
+  # Derived only from the preserved Legacy merge family:
+  # merge_length=5.0, 1.5x, 2.0x.
+  rejoin_lengths_m: [5.0, 7.5, 10.0]
+
+  corridor_clearance_m: 0.08
+  blue_tracking_uncertainty_m: 0.10
+  qualification_margin_m: 0.05
+  pass_completion_ahead_m: 0.8
+
+  # pass_timeout is bounded to the current R-D 1.0 s horizon.
+  pass_timeout_s: 1.0
+
+  # Seeded from the preserved 0.25 m/s closing-speed floor, but successor uses
+  # it as an executable candidate-vs-predicted-opponent speed advantage.
+  delta_v_pass_mps: 0.25
+
+  # Receding-horizon FOLLOW approach; NOT a pass, requires R-D occupancy at
+  # every prediction sample and both Foundation longitudinal limits.
+  # No speed cap, horizon, covariance, or PASS safety gate is relaxed.
+  safe_approach_max_closing_speed_mps: 0.75
+
+unresolved_runtime_authority:
+  lateral_acceleration_max_mps2: DERIVE_FROM_FOUNDATION_PACEJKA_PEAK_FORCE_AND_MASS
+  execution_speed_cap_mps: INJECT_FROM_CURRENT_QUALIFIED_R_B_LIMIT
+  longitudinal_acceleration_max_mps2: FOUNDATION_DYNAMICS_LIMITS_ACCELERATION_MAX_M_S2
+  longitudinal_deceleration_max_mps2: FOUNDATION_DYNAMICS_LIMITS_DECELERATION_MAX_M_S2
+  footprint: INJECT_FROM_FOUNDATION
+  wheelbase_and_steering_limits: INJECT_FROM_FOUNDATION
+
+runtime_adapter:
+  planning_rate_hz: 5.0
+  plan_validity_s: 0.50
+  committed_continuation_timeout_s: 15.0
+  standalone_default_speed_cap_mps: AUTO
+  qualification_ceiling_mps: DYNAMIC_GUARD_PENDING
+  default_launch_selected: false
+
+constraints:
+  legacy_r_e_must_remain_untouched: true
+  r_d_remains_sole_prediction_owner: true
+  s0_r_remains_sole_active_reference_owner: true
+  r_b_remains_sole_execution_owner: true
+  no_runtime_entrypoint_at_q0: false
+  no_launch_wiring_at_q0: false
+  no_speed_cap_change_at_q0: true
+  no_opponent_extrapolation_beyond_r_d_horizon: true
+  emergency_abort_changes_identity_bearing_payload: false
+  emergency_abort_runtime_lease: ONE_PLANNING_CYCLE

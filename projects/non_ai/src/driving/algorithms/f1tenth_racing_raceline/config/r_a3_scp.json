@@ -1,0 +1,14 @@
+{
+  "artifact_version": "r_a3_v1",
+  "maximum_scp_iterations": 8,
+  "maximum_admm_iterations": 1200,
+  "admm_penalty": 0.1,
+  "admm_tolerance": 0.005,
+  "finite_difference_step_m": 0.0001,
+  "initial_offset_trust_region_m": 0.08,
+  "minimum_offset_trust_region_m": 0.0025,
+  "offset_proximal_weight": 20.0,
+  "speed_squared_proximal_weight": 0.002,
+  "offset_smoothness_weight": 0.1,
+  "minimum_time_improvement_s": 1e-7
+}

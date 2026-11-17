@@ -1,0 +1,91 @@
+{
+  "acceleration_semantics": "ENVELOPE_DERIVED_REFERENCE_FOR_OUTGOING_SEGMENT",
+  "artifact_type": "RacingTrajectory",
+  "canonical_direction": "counterclockwise",
+  "closed_loop": true,
+  "csv_sha256": "a6a52668e674a45e20146381729eb98fcb9c53b8a82e5cbc8b76ad720660a9ef",
+  "frame_id": "map",
+  "generation_method": "R_A3_SPARSE_SCP_TRUE_JOINT_EXPERIMENTAL",
+  "generator_code_sha256": "a9059de684b0f652e3f2042332761d69f7d6fc2935e81d880ddc73e7dc415889",
+  "geometry_qualification_status": "PREFLIGHT_PENDING",
+  "jerk_tracking_qualification": "NOT_YET_VERIFIED",
+  "offline_envelope_predicted_lap_time_s": 58.04090010760825,
+  "path_length_m": 343.0493620902296,
+  "product_valid": true,
+  "qualification_state": "OFFLINE_EXPERIMENTAL_UNQUALIFIED",
+  "runtime_lap_time_status": "NOT_VERIFIED",
+  "runtime_tracking_qualified": false,
+  "sample_count": 864,
+  "schema_version": 1,
+  "scp": {
+    "accepted_steps": 3,
+    "convex_iterations": [
+      157,
+      161,
+      179
+    ],
+    "dense_speed_validation": {
+      "dense_sample_count": 17280,
+      "maximum_braking_excess_m_s2": 0.0,
+      "maximum_forward_acceleration_excess_m_s2": 0.0,
+      "maximum_global_speed_excess_m_s": 0.0,
+      "maximum_lateral_acceleration_excess_m_s2": 0.0,
+      "seam_speed_error_m_s": 0.0
+    },
+    "final_predicted_time_s": 58.04090010760825,
+    "initial_predicted_time_s": 59.65554843058746,
+    "iterations": 3,
+    "joint_diagnostics": {
+      "candidate_trials": 4,
+      "joint_qp_accepted_steps": 3,
+      "phase_i": {
+        "feasible_seed_predicted_time_s": 59.65554843058746,
+        "phase_i_alpha": 0.07111629742685181,
+        "phase_i_seed_speed_mps": 3.7855111365291734,
+        "raw_envelope_predicted_time_s": 22.450064150597903
+      },
+      "rejection_counts": {
+        "joint_candidate:joint speed exceeds conservative curvature/acceleration envelope": 1
+      }
+    },
+    "physical_station_dense_validation": {
+      "dense_sample_count": 17280,
+      "maximum_braking_excess_m_s2": 0.0,
+      "maximum_forward_acceleration_excess_m_s2": 0.0,
+      "maximum_global_speed_excess_m_s": 0.0,
+      "maximum_lateral_acceleration_excess_m_s2": 0.0,
+      "seam_speed_error_m_s": 0.0
+    },
+    "termination_reason": "MAXIMUM_SCP_ITERATIONS",
+    "validation": {
+      "dense_sample_count": 34305,
+      "maximum_absolute_projected_d_m": 0.16370276364830685,
+      "maximum_projected_progress_step_m": 0.11119814980432352,
+      "minimum_footprint_adjusted_corridor_margin_m": 0.6534545238770743,
+      "minimum_projected_progress_step_m": 0.004984771198536464,
+      "seam_curvature_error_1_m": 0.0,
+      "seam_heading_error_rad": 0.0,
+      "seam_position_error_m": 0.0,
+      "self_intersection_count": 0,
+      "wall_collision_corner_hits": 0
+    }
+  },
+  "source": {
+    "competition_environment_sha256": "58401761f4bf4c2ee73640fd77af3b1282fa0c5900bae6d2ed5c5d2cee717afe",
+    "map_image_sha256": "c712fd1ecce1b548b5579fa01da3ea6bbdcc91de4f28877deb34d11e9e003c2d",
+    "map_yaml_sha256": "f8d6c032123fdd75f9ff9cbd097a294d35cde8a8b06b256784fc945eb6b5410e",
+    "r_a0_csv_sha256": "b340ac912298cac11e3db9057143b28d57b970238d81a69081c8d166ad6bf9b3",
+    "r_a0_metadata_sha256": "dc73894610e0ed0bdd108ecc38393a5da6658b9fc2af75a47d2ed5e846bb663c",
+    "r_a1_csv_sha256": "b041570f743fd7aa1f4e39d4cdcae494bf4933f12ee909816482012234a15734",
+    "r_a1_metadata_sha256": "b374d395fd1c835d113b0d5f1045fa0a608f2a038e49bf58b43442360a09e4f9",
+    "r_a2_baseline_trajectory_id": "sha256:d945d8e791d3f4233c9b0ccaa9f49b23b5bf276895374cb9d88a5fc1632dcd89",
+    "r_a3_config_sha256": "de55ca1012a406c0c67113278054f4e75126be634e47a42e5ef70a99c8578f5b",
+    "source_centerline_sha256": "4bcaf1658902e3e976d82049e6009e352c25124cba9bd0cc1d8b06f3a35a9c97"
+  },
+  "speed_envelope_qualification_status": "PREFLIGHT_PENDING",
+  "station_period_m": 343.0493620902294,
+  "track_id": "spielberg",
+  "trajectory_id": "sha256:8477afe50dc6f885b1e911606df648f4b29ee61b2d88a66feb8eebf8f6f73ff1",
+  "trajectory_tier": "EXPERIMENTAL_UNQUALIFIED",
+  "units": "SI"
+}

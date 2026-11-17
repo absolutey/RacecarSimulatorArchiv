@@ -1,0 +1,14 @@
+string source_id
+string run_epoch
+uint64 sequence
+builtin_interfaces/Time created_ros_stamp
+builtin_interfaces/Time expires_ros_stamp
+builtin_interfaces/Time source_state_stamp
+uint64 source_state_sequence
+string active_reference_id
+uint32 active_revision
+string track_id
+string map_sha256
+string candidate_mode
+float64 steering_rad
+float64 acceleration_mps2

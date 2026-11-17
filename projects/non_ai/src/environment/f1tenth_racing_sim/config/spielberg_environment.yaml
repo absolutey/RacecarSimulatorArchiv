@@ -1,0 +1,165 @@
+schema_version: 1
+environment_identity:
+  authority_sha256: e55f097a9fd222ed00fdd50def8991b4457a3d7082f0acf0c64ee0c97f28a87f
+  ros_distribution: humble
+  active_track: spielberg
+  offline_experimental_only: true
+  source_environment_sha256: 94892e369cd050c0c9060eedd427ed1405c9a7c64ba6a1694aa8269561ee3798
+map:
+  frame_id: map
+  image_file: maps/spielberg/Spielberg_map.pgm
+  image_sha256: c712fd1ecce1b548b5579fa01da3ea6bbdcc91de4f28877deb34d11e9e003c2d
+  metadata_file: maps/spielberg/Spielberg_map.yaml
+  metadata_sha256: f8d6c032123fdd75f9ff9cbd097a294d35cde8a8b06b256784fc945eb6b5410e
+  width_pixels: 2000
+  height_pixels: 2000
+  resolution_m_per_pixel: 0.05796
+  origin:
+    x_m: -84.85359914210505
+    y_m: -36.30299725862132
+    yaw_rad: 0.0
+  negate: false
+  occupied_threshold: 0.45
+  free_threshold: 0.196
+  runtime_pixel_occupied_below: 128
+  runtime_flip_y: true
+  scan_free_probability_threshold: 0.2
+  centerline_file: maps/spielberg/spielberg_centerline.csv
+  centerline_sha256: 4bcaf1658902e3e976d82049e6009e352c25124cba9bd0cc1d8b06f3a35a9c97
+  centerline_points: 864
+  direction: counterclockwise
+  closed_loop: true
+  start_finish_centerline_index: 0
+  boundary_topics:
+    mode: derived_from_centerline_widths
+    left_width_column: w_tr_left_m
+    right_width_column: w_tr_right_m
+  available_tracks:
+  - Austin
+  - berlin
+  - BrandsHatch
+  - Budapest
+  - Catalunya
+  - Hockenheim
+  - iccas2025
+  - icra2025
+  - IMS
+  - Melbourne
+  - MexicoCity
+  - Montreal
+  - Monza
+  - MoscowRaceway
+  - Nuerburgring
+  - Oschersleben
+  - Sakhir
+  - SaoPaulo
+  - Sepang
+  - Shanghai
+  - Silverstone
+  - Sochi
+  - Spa
+  - Spielberg
+  - YasMarina
+  - Zandvoort
+vehicle:
+  physical_parameters_identical_for_car0_and_car1: true
+  description:
+    chassis_length_m: 0.3302
+    chassis_width_m: 0.2032
+    chassis_height_m: 0.1
+    chassis_ground_offset_m: 0.04
+    wheel_radius_m: 0.0508
+    wheel_length_m: 0.0381
+    wheel_center_x_m: 0.1651
+    wheel_center_y_m: 0.12065
+    lidar_x_m: 0.12
+    lidar_y_m: 0.0
+    lidar_z_m: 0.165
+    lidar_visual_radius_m: 0.026
+    lidar_visual_height_m: 0.05
+    car0_color_rgba:
+    - 0.3
+    - 0.57
+    - 1.0
+    - 1.0
+    car1_color_rgba:
+    - 1.0
+    - 0.0
+    - 0.0
+    - 1.0
+dynamics:
+  model: pacejka_single_track
+  integration_method: forward_euler
+  mass_kg: 3.5
+  yaw_inertia_kg_m2: 0.07
+  front_axle_from_cg_m: 0.17
+  rear_axle_from_cg_m: 0.17
+  dynamic_wheelbase_m: 0.34
+  front_tire:
+    pacejka_b: 1.5
+    pacejka_c: 1.5
+    pacejka_d_n: 30.0
+  rear_tire:
+    pacejka_b: 1.5
+    pacejka_c: 1.5
+    pacejka_d_n: 30.0
+  limits:
+    steering_angle_abs_max_rad: 4.0
+    steering_rate_abs_max_rad_s: 4.0
+    speed_abs_max_m_s: 20.0
+    acceleration_max_m_s2: 40.0
+    deceleration_max_m_s2: 40.0
+    jerk_abs_max_m_s3: 100.0
+  state_noise_enabled: false
+actuation:
+  message_type: ackermann_msgs/msg/AckermannDriveStamped
+  command_topic_car0: ackermann_cmd0
+  command_topic_car1: ackermann_cmd1
+  consumed_fields:
+  - drive.steering_angle
+  - drive.acceleration
+  initial_acceleration_m_s2: 0.0
+  initial_steering_angle_rad: 0.0
+lidar:
+  message_type: sensor_msgs/msg/LaserScan
+  topic_car0: scan0
+  topic_car1: scan1
+  frame_car0: laser_model0
+  frame_car1: laser_model1
+  beam_count: 1080
+  field_of_view_rad: 4.71238898
+  angle_min_rad: -2.35619449
+  angle_max_rad: 2.35619449
+  angle_increment_rad: 0.00436736699
+  range_min_m: 0.1
+  range_max_m: 10.0
+  scan_rate_hz: 10.0
+  time_increment_s: 0.0
+  range_noise:
+    enabled: false
+    gaussian_stddev_m: 0.01
+  pose_noise:
+    enabled: false
+    position_stddev_m: 0.001
+    yaw_stddev_rad: 0.01
+  raycast:
+    source: static_occupancy_grid
+simulation:
+  physics_rate_hz: 40.0
+  physics_timestep_s: 0.025
+  map_and_path_publish_rate_hz: 10.0
+  timer_clock: wall
+  stamp_clock: ros_node_clock
+  active_use_sim_time: false
+collision:
+  wall_collision_enabled: true
+  reporting_message_type: std_msgs/msg/Bool
+  topic_car0: collision0
+  topic_car1: collision1
+  footprint_relative_to_base_link:
+    min_x_m: -0.2
+    max_x_m: 0.2
+    min_y_m: -0.2
+    max_y_m: 0.2
+  reset_on_collision: false
+  car_to_car_legacy_support: false

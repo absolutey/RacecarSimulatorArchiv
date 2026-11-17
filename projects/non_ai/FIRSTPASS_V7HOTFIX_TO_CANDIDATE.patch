@@ -1,0 +1,482 @@
+--- V7_HOTFIX/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py
++++ FIRSTPASS/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py
+@@ -905,25 +905,34 @@
+         publication_now_ns = self.get_clock().now().nanoseconds
+         # With an off-executor worker, a newer physics receipt may supersede
+         # this source while the long solve runs. Do not publish an old intent.
++        # The last monotonic source check and the actual ROS publication are
++        # ONE receipt-locked critical section. Otherwise a newer physics state
++        # can arrive between the check and publish(), allowing the worker to
++        # publish a superseded intent despite the existing V6 lease check.
++        # Guard remains the *only* actuation authority. Holding this lock
++        # serializes receipt only across the final bounded publication, never
++        # across MPC, fallback, or GuardAhead computation.
+         with self._state_receipt_lock:
+             source_superseded = (int(message.physics_sequence) <
+-                                 self._received_state_sequence)
+-        if (source_superseded or publication_now_ns < source_stamp_ns or
+-                publication_now_ns - source_stamp_ns > min(self.state_freshness_ns,75_000_000) or
+-                time.perf_counter_ns()-cycle_started_ns > 25_000_000):
+-            self._last_dropped_compute_reason = 'POSTCOMPUTE_EXPIRED_UNPROVEN'
+-            # No intent may be published with a false current-state claim.
+-            # Guard's independent command expiry/deadman remains in force.
+-            return
+-        self.publish(
+-            decision, state.speed_mps, now_ns, compute_us,
+-            primary_status, solver_iterations, primary_solve_us,
+-            solver_objective, max_constraint_residual,
+-            local_speed_limit, local_speed_reason,
+-            envelope_point, bounded_fallback_target,
+-            admission_state, feasible_duration_s,
+-            recoverability,
+-        )
++                                 self._received_state_sequence or
++                                 source_stamp_ns < self._last_received_physics_stamp_ns)
++            publication_now_ns = self.get_clock().now().nanoseconds
++            if (source_superseded or publication_now_ns < source_stamp_ns or
++                    publication_now_ns-source_stamp_ns > min(self.state_freshness_ns,75_000_000) or
++                    time.perf_counter_ns()-cycle_started_ns > 25_000_000):
++                self._last_dropped_compute_reason = 'POSTCOMPUTE_EXPIRED_UNPROVEN'
++                # No intent may be published with a false current-state claim.
++                # Guard's independent command expiry/deadman remains in force.
++                return
++            self.publish(
++                decision, state.speed_mps, now_ns, compute_us,
++                primary_status, solver_iterations, primary_solve_us,
++                solver_objective, max_constraint_residual,
++                local_speed_limit, local_speed_reason,
++                envelope_point, bounded_fallback_target,
++                admission_state, feasible_duration_s,
++                recoverability,
++            )
+         # Diagnostics are explicitly NON-authoritative and bounded; ROS
+         # intent publish has completed before any JSON encoding occurs.
+         timing_data = {
+--- V7_HOTFIX/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/node.py
++++ FIRSTPASS/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/node.py
+@@ -16,6 +16,8 @@
+ 
+ from .core import (OvertakingConfig, OvertakingSupervisor, Prediction, PredictionSample,
+                    TrajectorySample, continuation_deadline_s)
++from .runtime_environment import load_verified_runtime
++from .state_input_contract import admit_ego_state
+ 
+ 
+ def stamp_s(stamp):
+@@ -30,9 +32,18 @@
+         share = Path(get_package_share_directory("f1tenth_racing_overtaking"))
+         sim_share = Path(get_package_share_directory("f1tenth_racing_sim"))
+         settings = yaml.safe_load((share / "config/overtaking.yaml").read_text())
+-        environment = yaml.safe_load((sim_share / "config/competition_environment.yaml").read_text())
+-        with (sim_share / environment["map"]["centerline_file"]).open(newline="") as stream:
+-            rows = list(csv.DictReader(stream))
++        # All H2H planners must bind to the launch-selected environment;
++        # hardcoding ICCAS while launch selects Spielberg is unsafe.
++        self.declare_parameter('environment_file',
++                               str(sim_share/'config/competition_environment.yaml'))
++        self.declare_parameter('centerline_file','')
++        self.declare_parameter('expected_track_id','')
++        self.declare_parameter('expected_map_sha256','')
++        environment,rows=load_verified_runtime(
++            self.get_parameter('environment_file').value,
++            self.get_parameter('centerline_file').value,sim_share,
++            expected_track_id=self.get_parameter('expected_track_id').value,
++            expected_map_sha256=self.get_parameter('expected_map_sha256').value)
+         config_fields = {field.name for field in fields(OvertakingConfig)}
+         dynamics = environment["dynamics"]
+         config_values = {key: value for key, value in settings.items() if key in config_fields}
+@@ -60,6 +71,8 @@
+         )
+         self.settings, self.environment = settings, environment
+         self.nominal = self.prediction = self.state = None
++        self._last_state_sequence = -1
++        self._last_state_stamp_ns = -1
+         self.publisher = self.create_publisher(OvertakingPlan, "overtaking_plan", 1)
+         self.create_subscription(ActiveTargetTrajectory, "active_target_trajectory", self.receive_reference, ACTIVE_REFERENCE_QOS)
+         self.create_subscription(OpponentPrediction, "opponent_prediction", self.receive_prediction, 10)
+@@ -67,7 +80,11 @@
+         self.create_timer(1.0 / settings["planning_rate_hz"], self.plan)
+ 
+     def receive_reference(self, message):
+-        if message.active_reference_valid and message.source_kind == "NOMINAL" and message.sample_count == len(message.samples):
++        if (message.active_reference_valid and message.source_kind == "NOMINAL"
++                and message.sample_count == len(message.samples)
++                and message.track_id == self.environment['environment_identity']['active_track']
++                and message.frame_id == 'map'
++                and message.map_image_sha256 == self.environment['map']['image_sha256']):
+             self.nominal = tuple(TrajectorySample(**{
+                 field.name: getattr(sample, field.name) for field in fields(TrajectorySample)
+             }) for sample in message.samples)
+@@ -88,10 +105,19 @@
+         )
+ 
+     def receive_state(self, message):
+-        self.state = message
++        check=admit_ego_state(message,now_ns=self.get_clock().now().nanoseconds,
++                              last_stamp_ns=self._last_state_stamp_ns,
++                              last_sequence=self._last_state_sequence)
++        if not check.fresh_identity:
++            return
++        self._last_state_sequence=check.source_sequence
++        self._last_state_stamp_ns=check.source_stamp_ns
++        self.state=message if check.admissible else None
+ 
+     def plan(self):
+-        if self.nominal is None or self.state is None:
++        if (self.nominal is None or self.state is None or
++                not 0<=self.get_clock().now().nanoseconds-self._last_state_stamp_ns<=75_000_000):
++            self.state=None
+             return
+         started = time.perf_counter()
+         now_s = self.get_clock().now().nanoseconds * 1e-9
+--- /dev/null
++++ FIRSTPASS/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/runtime_environment.py
+@@ -0,0 +1,40 @@
++"""Verified H2H map/centerline binding shared by both R-E ROS executables.
++
++This checks source identity, not the trajectory's safety. S0-R and Guard
++must still independently validate every proposed trajectory/command.
++"""
++import csv
++from hashlib import sha256
++import math
++from pathlib import Path
++import yaml
++
++
++def load_verified_runtime(environment_file, centerline_file, sim_share,
++                          *, expected_track_id='', expected_map_sha256=''):
++    env_path=Path(environment_file).resolve(strict=True)
++    environment=yaml.safe_load(env_path.read_text())
++    if not isinstance(environment,dict):
++        raise ValueError('H2H_ENVIRONMENT_INVALID')
++    track=environment['environment_identity']['active_track']
++    area=environment['map']
++    if (expected_track_id and track!=expected_track_id):
++        raise ValueError('H2H_TRACK_MISMATCH')
++    if (expected_map_sha256 and area['image_sha256']!=expected_map_sha256):
++        raise ValueError('H2H_MAP_IDENTITY_MISMATCH')
++    map_file=(Path(sim_share)/area['image_file']).resolve(strict=True)
++    if not map_file.is_file() or sha256(map_file.read_bytes()).hexdigest()!=area['image_sha256']:
++        raise ValueError('H2H_MAP_FILE_SHA_MISMATCH')
++    centerline=Path(centerline_file or str(Path(sim_share)/area['centerline_file'])).resolve(strict=True)
++    if not centerline.is_file() or sha256(centerline.read_bytes()).hexdigest()!=area['centerline_sha256']:
++        raise ValueError('H2H_CENTERLINE_SHA_MISMATCH')
++    with centerline.open(newline='') as stream:
++        rows=tuple(csv.DictReader(stream))
++    if len(rows)<3:
++        raise ValueError('H2H_CENTERLINE_TOO_SHORT')
++    for row in rows:
++        vals=(float(row['x_m']),float(row['y_m']),
++              float(row['w_tr_left_m']),float(row['w_tr_right_m']))
++        if not all(math.isfinite(v) for v in vals) or min(vals[2:])<=0:
++            raise ValueError('H2H_CENTERLINE_INVALID_GEOMETRY')
++    return environment,rows
+--- /dev/null
++++ FIRSTPASS/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/state_input_contract.py
+@@ -0,0 +1,36 @@
++"""Explicit, ROS-free R-E CarState admission (never actuation authority)."""
++from dataclasses import dataclass
++import math
++
++
++@dataclass(frozen=True)
++class StateAdmission:
++    fresh_identity: bool
++    admissible: bool
++    reason: str
++    source_stamp_ns: int
++    source_sequence: int
++
++
++def admit_ego_state(message, *, now_ns, last_stamp_ns=-1, last_sequence=-1,
++                    maximum_age_ns=75_000_000):
++    """Monotonic source + bounded ROS age + finite kinematics.
++
++    'fresh_identity' means a newer source must replace cached input even if
++    poisoned: an invalid newest source cannot leave an older safe-looking
++    state available for a new plan. Reordered input cannot overwrite newer.
++    """
++    seq=int(message.physics_sequence)
++    stamp=int(message.physics_stamp.sec)*1_000_000_000+int(message.physics_stamp.nanosec)
++    result=lambda fresh,allowed,why: StateAdmission(fresh,allowed,why,stamp,seq)
++    if seq<=last_sequence or stamp<=last_stamp_ns:
++        return result(False,False,'H2H_EGO_STATE_REPLAY_OR_REORDER')
++    age=int(now_ns)-stamp
++    if stamp<=0 or age<0 or age>maximum_age_ns:
++        return result(True,False,'H2H_EGO_STATE_STALE_OR_FUTURE')
++    values=(message.px,message.py,message.yaw,message.v,message.vx,
++            message.vy,message.omega,message.a,message.accel,
++            message.slip_angle,message.steer)
++    if not all(math.isfinite(float(value)) for value in values):
++        return result(True,False,'H2H_EGO_STATE_NONFINITE')
++    return result(True,True,'H2H_EGO_STATE_ADMITTED')
+--- V7_HOTFIX/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py
++++ FIRSTPASS/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py
+@@ -33,6 +33,8 @@
+ )
+ from f1tenth_racing_reference.node import ACTIVE_REFERENCE_QOS
+ 
++from .runtime_environment import load_verified_runtime
++from .state_input_contract import admit_ego_state
+ from .successor_core import (
+     CommittedSpatiotemporalFrenetPlanner,
+     InternalState,
+@@ -212,15 +214,11 @@
+         self.declare_parameter('centerline_file','')
+         self.declare_parameter('expected_track_id','')
+         self.declare_parameter('expected_map_sha256','')
+-        environment = yaml.safe_load(
+-            Path(self.get_parameter('environment_file').value).read_text()
+-        )
+-        if (self.get_parameter('expected_track_id').value and
+-                environment['environment_identity']['active_track'] != self.get_parameter('expected_track_id').value):
+-            raise ValueError('SUCCESSOR_TRACK_MISMATCH')
+-        if (self.get_parameter('expected_map_sha256').value and
+-                environment['map']['image_sha256'] != self.get_parameter('expected_map_sha256').value):
+-            raise ValueError('SUCCESSOR_MAP_MISMATCH')
++        environment,rows=load_verified_runtime(
++            self.get_parameter('environment_file').value,
++            self.get_parameter('centerline_file').value,sim_share,
++            expected_track_id=self.get_parameter('expected_track_id').value,
++            expected_map_sha256=self.get_parameter('expected_map_sha256').value)
+         runtime = settings["runtime_adapter"]
+ 
+         standalone_cap=runtime["standalone_default_speed_cap_mps"]
+@@ -236,13 +234,7 @@
+             execution_speed_cap,
+         )
+ 
+-        from hashlib import sha256
+-        centerline=Path(self.get_parameter('centerline_file').value or
+-                        str(sim_share / environment['map']['centerline_file'])).resolve(strict=True)
+-        if sha256(centerline.read_bytes()).hexdigest()!=environment['map']['centerline_sha256']:
+-            raise ValueError('SUCCESSOR_CENTERLINE_SHA_MISMATCH')
+-        with centerline.open(newline="") as stream:
+-            rows = list(csv.DictReader(stream))
++
+ 
+         self.environment = environment
+         self.settings = settings
+@@ -266,6 +258,8 @@
+         self.nominal = None
+         self.prediction = None
+         self.state = None
++        self._state_sequence = -1
++        self._state_stamp_ns = -1
+         self.awaiting_nominal_release = False
+         self.awaiting_abort_release = False
+         self.abort_release_started_ns = -1
+@@ -301,6 +295,12 @@
+         )
+ 
+     def receive_reference(self, message):
++        if not message.active_reference_valid:
++            # A withdrawn S0-R reference must not leave a cached nominal
++            # path available for a brand-new H2H commitment. A later fresh
++            # qualified NOMINAL publication re-establishes that input.
++            self.nominal = None
++            return
+         if (
+             message.active_reference_valid
+             and message.source_kind == "NOMINAL"
+@@ -376,7 +376,17 @@
+         )
+ 
+     def receive_state(self, message):
+-        self.state = message
++        # Refuse stale/reordered states before ANY H2H trajectory proposal.
++        # A bad newer source invalidates the planner input instead of allowing
++        # an indefinitely cached state to drive a new overtaking proposal.
++        check=admit_ego_state(message,now_ns=self.get_clock().now().nanoseconds,
++                              last_stamp_ns=self._state_stamp_ns,
++                              last_sequence=self._state_sequence)
++        if not check.fresh_identity:
++            return
++        self._state_sequence=check.source_sequence
++        self._state_stamp_ns=check.source_stamp_ns
++        self.state=message if check.admissible else None
+ 
+     def _inactive_status_message(self, output, now_s, started):
+         """Publish planner presence without claiming overtaking authority.
+@@ -527,8 +537,13 @@
+         ):
+             return
+ 
++        now_ns = self.get_clock().now().nanoseconds
++        if (self._state_stamp_ns<=0 or
++                not 0<=now_ns-self._state_stamp_ns<=75_000_000):
++            self.state=None
++            return  # S0-R and Guard expire unsafe authority independently.
+         started = time.perf_counter()
+-        now_s = self.get_clock().now().nanoseconds * 1e-9
++        now_s = now_ns * 1e-9
+         output = self.planner.update(
+             self.nominal,
+             self.state.px,
+--- /dev/null
++++ FIRSTPASS/src/driving/algorithms/f1tenth_racing_overtaking/test/test_runtime_environment_contract_v8.py
+@@ -0,0 +1,101 @@
++"""Runtime map binding is mandatory for BOTH old and successor R-E nodes."""
++import csv
++from pathlib import Path
++from hashlib import sha256
++import yaml
++import pytest
++
++from f1tenth_racing_overtaking.runtime_environment import load_verified_runtime
++
++
++def mk(tmp_path):
++    root=tmp_path/'sim'
++    (root/'maps').mkdir(parents=True)
++    (root/'maps/track.pgm').write_bytes(b'P5\n1 1\n255\n\x00')
++    with (root/'maps/line.csv').open('w',newline='') as f:
++        w=csv.writer(f);w.writerow(['x_m','y_m','w_tr_left_m','w_tr_right_m'])
++        w.writerows([[0,0,1,1],[1,0,1,1],[1,1,1,1]])
++    img=root/'maps/track.pgm'; line=root/'maps/line.csv'
++    env={'environment_identity':{'active_track':'spielberg'},'map':{
++        'image_file':'maps/track.pgm','image_sha256':sha256(img.read_bytes()).hexdigest(),
++        'centerline_file':'maps/line.csv','centerline_sha256':sha256(line.read_bytes()).hexdigest()}}
++    path=root/'config.yaml';path.write_text(yaml.safe_dump(env))
++    return root,path,line,img,env
++
++
++def verify(root,path,line,img,env,**kwargs):
++    return load_verified_runtime(path,kwargs.pop('centerline_file',''),root,**kwargs)
++
++
++def test_known_good(tmp_path):
++    root,path,line,img,env=mk(tmp_path)
++    actual,rows=verify(root,path,line,img,env,expected_track_id='spielberg',
++                     expected_map_sha256=env['map']['image_sha256'])
++    assert actual==env and len(rows)==3
++
++
++def test_explicit_centerline_override_same_sha(tmp_path):
++    root,path,line,img,env=mk(tmp_path)
++    _,rows=verify(root,path,line,img,env,centerline_file=str(line))
++    assert len(rows)==3
++
++
++def test_track_swap_rejected(tmp_path):
++    root,path,line,img,env=mk(tmp_path)
++    with pytest.raises(ValueError,match='TRACK_MISMATCH'):
++        verify(root,path,line,img,env,expected_track_id='iccas2025')
++
++
++def test_map_identity_swap_rejected(tmp_path):
++    root,path,line,img,env=mk(tmp_path)
++    with pytest.raises(ValueError,match='MAP_IDENTITY_MISMATCH'):
++        verify(root,path,line,img,env,expected_map_sha256='0'*64)
++
++
++def test_map_on_disk_tamper_rejected(tmp_path):
++    root,path,line,img,env=mk(tmp_path);img.write_bytes(b'injected')
++    with pytest.raises(ValueError,match='MAP_FILE_SHA_MISMATCH'):
++        verify(root,path,line,img,env)
++
++
++def test_centerline_on_disk_tamper_rejected(tmp_path):
++    root,path,line,img,env=mk(tmp_path);line.write_bytes(b'injected')
++    with pytest.raises(ValueError,match='CENTERLINE_SHA_MISMATCH'):
++        verify(root,path,line,img,env)
++
++
++def test_centerline_override_wrong_sha_rejected(tmp_path):
++    root,path,line,img,env=mk(tmp_path);other=root/'other.csv';other.write_text('invalid')
++    with pytest.raises(ValueError,match='CENTERLINE_SHA_MISMATCH'):
++        verify(root,path,line,img,env,centerline_file=str(other))
++
++
++@pytest.mark.parametrize('rows',[[],[[0,0,1,1]],[[0,0,1,1],[1,0,1,1]]])
++def test_short_centerline_rejected(tmp_path,rows):
++    root,path,line,img,env=mk(tmp_path)
++    with line.open('w',newline='') as f:
++        w=csv.writer(f);w.writerow(['x_m','y_m','w_tr_left_m','w_tr_right_m']);w.writerows(rows)
++    env['map']['centerline_sha256']=sha256(line.read_bytes()).hexdigest()
++    path.write_text(yaml.safe_dump(env))
++    with pytest.raises(ValueError,match='CENTERLINE_TOO_SHORT'):
++        verify(root,path,line,img,env)
++
++
++@pytest.mark.parametrize('bad_value',['nan','inf','-inf','0','-1'])
++def test_bad_track_width_rejected(tmp_path,bad_value):
++    root,path,line,img,env=mk(tmp_path)
++    text=line.read_text().replace('0,0,1,1','0,0,'+bad_value+',1')
++    line.write_text(text)
++    env['map']['centerline_sha256']=sha256(line.read_bytes()).hexdigest()
++    path.write_text(yaml.safe_dump(env))
++    with pytest.raises(ValueError,match='INVALID_GEOMETRY'):
++        verify(root,path,line,img,env)
++
++
++def test_existing_r_e_bind_both_maps():
++    root=Path(__file__).resolve().parents[4]
++    sim=root/'environment/f1tenth_racing_sim'
++    for name in ('competition','spielberg'):
++        environment,rows=load_verified_runtime(sim/'config'/f'{name}_environment.yaml','',sim)
++        assert environment['environment_identity']['active_track'] in ('iccas2025','spielberg')
++        assert len(rows)>=66
+--- /dev/null
++++ FIRSTPASS/src/driving/algorithms/f1tenth_racing_overtaking/test/test_state_input_contract_v8.py
+@@ -0,0 +1,59 @@
++from types import SimpleNamespace as NS
++import pytest
++from f1tenth_racing_overtaking.state_input_contract import admit_ego_state
++
++
++def state(seq=1,stamp_ns=1_000_000_000,**kwargs):
++    s=NS(physics_sequence=seq,physics_stamp=NS(sec=stamp_ns//1_000_000_000,
++          nanosec=stamp_ns%1_000_000_000),px=0.,py=0.,yaw=0.,v=0.,vx=0.,vy=0.,
++          omega=0.,a=0.,accel=0.,slip_angle=0.,steer=0.)
++    for k,v in kwargs.items():setattr(s,k,v)
++    return s
++
++
++def check(s,now=1_050_000_000,**kw):
++    return admit_ego_state(s,now_ns=now,**kw)
++
++
++def test_fresh_finite_accepted():
++    p=check(state()); assert p.admissible and p.fresh_identity
++
++
++@pytest.mark.parametrize('bad',['px','py','yaw','v','vx','vy','omega','a','accel','slip_angle','steer'])
++def test_each_nonfinite_poison_invalidate_newest_source(bad):
++    p=check(state(seq=9,**{bad:float('nan')}),last_sequence=8)
++    assert p.fresh_identity and not p.admissible
++
++
++def test_reordered_sequence_is_rejected_without_cache_replacement():
++    p=check(state(seq=4),last_sequence=5)
++    assert not p.fresh_identity and not p.admissible
++
++
++def test_duplicate_stamp_is_rejected():
++    p=check(state(seq=4),last_stamp_ns=1_000_000_000)
++    assert not p.fresh_identity
++
++
++def test_future_is_denied():
++    p=check(state(stamp_ns=1_100_000_000))
++    assert p.fresh_identity and not p.admissible
++
++
++def test_over_age_denied():
++    p=check(state(stamp_ns=1_000_000_000),now=1_076_000_000)
++    assert p.fresh_identity and not p.admissible
++
++
++def test_exact_age_limit_allowed():
++    assert check(state(),now=1_075_000_000).admissible
++
++
++def test_zero_stamp_denied():
++    assert not check(state(stamp_ns=0)).admissible
++
++
++def test_poisoned_latest_invalidates_prior_cache():
++    x=check(state(seq=2,px=float('inf')),last_sequence=1)
++    assert x.fresh_identity and not x.admissible and x.source_sequence==2
++    assert not check(state(seq=1),last_sequence=x.source_sequence).fresh_identity

@@ -1,0 +1,13 @@
+{
+  "guard_actuation_authorized_by_artifact": false,
+  "map": "spielberg",
+  "ra0_ra1_ra2_generated": true,
+  "ra2_sample_count": 864,
+  "ra2_trajectory_id": "sha256:d945d8e791d3f4233c9b0ccaa9f49b23b5bf276895374cb9d88a5fc1632dcd89",
+  "ra3_failure": "RuntimeError:sparse ADMM not converged: primal=0.002039859057283877/400.0000003445655, dual=0.0037444169893648613/3.374255411207535, absolute_constraint_violation=0.0003926307210697644, last_rho=9.765625e-05",
+  "ra3_optimizer_latest_status": "FAILED_CLOSED",
+  "ra3_qualified": false,
+  "runtime_tracking_qualified": false,
+  "schema": "RAB_SPIELBERG_IMPLEMENTATION_V1",
+  "source_report": "SEE_GENERATE_SPIELBERG_RA_CANDIDATE_AND_ARTIFACTS"
+}

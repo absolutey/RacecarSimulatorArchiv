@@ -1,0 +1,1136 @@
+--- V3/INTEGRATION_35_ITEM_STATUS.csv
++++ V4/INTEGRATION_35_ITEM_STATUS.csv
+@@ -2,15 +2,15 @@
+ GAP-01,Guard,C++ Guard ROS 완전 실행기,NOT_IMPLEMENTED,기존 Python ROS Guard 계속 사용
+ GAP-02,Guard,native Guard 기본 경로,EXPERIMENT_ONLY,solo parity receipt 기반 실험 플래그 유지
+ GAP-03,Guard,15ms end-to-end,UNPROVEN,내부 15ms 정지증명 예산만 유지
+-GAP-04,Guard,watchdog 실행 독립,SIMULATOR_LOCAL_GUARD_LEASE_VETO_PARTIAL,"V3 simulator process checks fresh RUNNING Guard status at both command acceptance and physics step; local deadman braking on loss, separate standalone watchdog/native realtime not implemented"
++GAP-04,Guard,watchdog 실행 독립,V4_SEPARATE_ROS_WATCHDOG_CODE_WRITTEN_ROS_PENDING,New independent_guard_watchdog process/entrypoint + state/Guard/collision freshness core; simulator hard-requires independent veto for Ego CERTIFIED commands; no realtime/SIL proof yet.
+ GAP-05,Guard,native 운영 빌드 설치/승격,NOT_IMPLEMENTED,정식 배포 경로 미확보
+-GAP-06,Guard,Applied 원본 Intent 신원,PATCHED_ATOMIC_WITH_SIM_WATCHDOG_V3_ROS_PENDING,"V2 atomic Guard→Simulator actuation plus V3 independently checked epoch/source/live status and serialized simulator command/physics; 328 V2 tests PASS, V3 needs Ubuntu ROS"
++GAP-06,Guard,Applied 원본 Intent 신원,V4_ATOMIC_APPLIED_PLUS_DUAL_VETO_ROS_PENDING,"V3 atomic Guard status and lineage preserved; V4 independent watchdog state in physics applied receipts, V3 338/338 Ubuntu baseline PASS."
+ GAP-07,RB_GuardAhead,독립 제어 실행 worker,NOT_IMPLEMENTED,single rclpy spin 실행 유지
+ GAP-08,RB_GuardAhead,7ms GuardAhead 유계,UNPROVEN,7ms 예산 검사 유지; 전체 반복 E2E 증명 없음
+ GAP-09,RB_GuardAhead,native GuardAhead 정규 경로,EXPERIMENT_ONLY,기존 parity opt in
+ GAP-10,RB_GuardAhead,MPC fallback 실행 간섭,NOT_IMPLEMENTED,executor 병렬 분리 없음
+ GAP-11,RB_GuardAhead,MPC primary 기본 운용,PATCHED_NOT_ROS_TESTED,launch SOLO MPC SCP 실험 기본
+-GAP-12,RB_GuardAhead,RB Guard Applied 신원,PATCHED_ATOMIC_WITH_SIM_WATCHDOG_V3_ROS_PENDING,Guarded command source identity + simulator status veto prevents previous Certified lease surviving stale Guard; actual applied ROS E2E not demonstrated
++GAP-12,RB_GuardAhead,RB Guard Applied 신원,V4_END_TO_END_IDENTITY_WATCHDOG_AUDIT_PARTIAL,"V4 Solo/H2H qualifiers require independent_watchdog_live for each CERTIFIED applied tick, actual ROS E2E not demonstrated."
+ GAP-13,RA_S0R,Spielberg 기본 참조 정책,IMPLEMENTED_PRELIMINARY,"정본 manifest 등록, 미자격"
+ GAP-14,RA_S0R,Spielberg 숫자 경로,IMPLEMENTED_PRELIMINARY,"centerline 기반 v(s), SCP 최적화 아님"
+ GAP-15,RA_S0R,실행 제안과 안전권한 구분,PARTIAL,"Guard 최종 인증 유지, 완전 authority 계약 아님"
+@@ -27,7 +27,7 @@
+ GAP-26,H2H_Evaluation,RC RD RE H2H 실행 프로파일,PATCHED_EXPERIMENTAL_ROS_PENDING,H2H qualification now provides explicit profile/Red dynamic Guard and f1h2h wrapper denies unsafe overrides
+ GAP-27,H2H_Evaluation,RE ABORT REJOIN 폐루프,PARTIAL,"기존 reference expiry/transfer 연결, 실제 완결 미검증"
+ GAP-28,H2H_Evaluation,Simulator swept collision,PATCHED_NOT_ROS_TESTED,"보수적 swept disk 추가, async alignment 별도"
+-GAP-29,H2H_Evaluation,물리 lap oracle 미연결,PATCHED_ROS_PENDING,Solo physical oracle retained; V2 adds actual simulator atomic Applied identity requirement
++GAP-29,H2H_Evaluation,물리 lap oracle 미연결,V4_STRICT_APPLIED_WATCHDOG_QUALIFIER_ROS_PENDING,Solo physical lap + atomic applied lineage retained; V4 strict independent watchdog witness required on certified applied ticks; not yet ROS qualified.
+ GAP-30,H2H_Evaluation,B2 nmpc 미지원,NOT_IMPLEMENTED,기술 부재 명시 거부
+ GAP-31,H2H_Evaluation,f1solo 검증기 실행 충돌,PATCHED_NOT_ROS_TESTED,f1solo 인자 수용/정규 실행
+ GAP-32,H2H_Evaluation,인지 관측 H2H launch 차단,PATCHED_EXPERIMENTAL,H2H 실험 프로파일 진입 허용
+--- V3/README_V4_CODE_INTEGRATION_KO.md
++++ V4/README_V4_CODE_INTEGRATION_KO.md
+@@ -0,0 +1,25 @@
++# F1TENTH RAB — V4 독립 watchdog 및 적용증거 통합
++
++## 실제 확인된 검증 기준선
++- V1: Ubuntu colcon 16개 / 327 PASS.
++- V2: Ubuntu colcon 16개 / 328 PASS.
++- **V3: 사용자 Ubuntu 로그, colcon 16개 / 338 PASS / 0 errors / 0 failures / 0 skipped.**
++- 이전 세 기준선은 보존하며 과거 PASS를 V4의 PASS라고 주장하지 않는다.
++
++## V4 실제 코드 범위
++1. 새 별도 ROS 프로세스 `independent_guard_watchdog` (`independent_watchdog_node.py`)와 순수 상태기계 (`independent_watchdog_core.py`) 생성. Guard 상태, 최신 실제 physics state, collision을 독립 관측. Guard가 `RUNNING`, ready, certificate_verified이고 상태가 fresh, epoch/source 일치할 때만 ALLOW 메시지를 발행. 다른 조건은 REVOKE, 프로세스가 정지하면 simulator-side lease time-out.
++2. `external_watchdog_lease.py`: epoch/producer/sequence/ROS+monotonic time, 상태 시퀀스, 기본 JSON schema를 검증. 최신 증거 부재/퇴행/위조 상태/future-state/safe-hold/revoked -> FAIL CLOSED. 이 자체로 정지 증명이나 구동 승인을 발행하지 않음.
++3. `simulator.py`: Car0에서는 새 독립 watchdog 사용이 필수 (`EGO_EXTERNAL_WATCHDOG_MANDATORY`). 기존 V3 Guard status, V2 atomic `GuardedActuatorCommand` 검사 + 새 veto를 모두 통과해야 CERTIFIED 명령이 수락되고 다음 물리 tick에 유지됨. 매 tick watchdog 재검증, 상실시 로컬 deadman, Applied 영수증에 watchdog 상태/사유 기록. Emergency minimum-risk brake는 새 veto가 없어도 적용될 수 있게 유지함.
++4. `race_foundation.launch.py`, `f1tenth_racing_control/setup.py`: 같은 epoch/source로 별도 프로세스 등록 및 실행. RELIABLE/VOLATILE 토픽에 대해 퍼블리셔/서브스크라이버 QoS 호환.
++5. `AppliedLineageAudit(require_external_watchdog=True)`를 실제 Solo/H2H qualifier에 연결. Applied 결과에서 모든 CERTIFIED tick에 독립 watchdog의 fresh witness가 없으면 자격검증 거부. 기존 과거 fixture 검사는 옵션 기본 OFF로 계속 재현됨.
++6. 신규 ROS 패키지 자동수집 테스트 **36개** + qualification integration 시험 7개, 관련 오프라인 테스트 86개 PASS. `INTEGRATION_35_ITEM_STATUS.csv`는 영향 받은 GAP-04/06/12/29만 업데이트.
++
++## 완료하지 못한 코드/계약 (분명한 결측)
++- Guard 단독 C++ ROS 실행기, 15ms 전체 경로 실시간 보증과 WCET, GuardAhead 7ms 보증, MPC/Fallback 별도 실행 프로세스, Spielberg 최적화 racing-line 자격화, H2H ABORT/REJOIN 완전 폐루프, 공식 G0–G9 승격체계 미완료.
++- ROS namespace/node name 검사는 보수적 시뮬레이터 gate이지 암호학적 발신자 인증이 아니다; 실제 공격 모델은 DDS Security와 별도 qualification 필요.
++- 온라인 watch process 재시작 후 safe-state 재진입, PID/CPU 고장 주입, 원격 actuator 적용 증거는 Ubuntu/SIL에서 추가 검사 필요.
++- V4 ZIP에 대한 Ubuntu `colcon build/test`는 **미실행**. 338+36=374개 목표는 ROS 테스트 수집이 증명되기 전에는 추정일 뿐임.
++- 정본 `~/f1tenth_racing`은 수정하지 않으며 압축을 별도의 격리 워크스페이스에 풀어 검증.
++
++## 다음
++`bash RUN_V4_ROS_VERIFY.sh`로 격리 워크스페이스 전체 빌드/회귀. 실패하면 원인 분류 후 해당 부위 수정, 기존 PASS 코드를 무조건 rollback 하지 않음. 실증 시험 없이 4계층 완료라고 주장하지 않음.
+--- V3/RUN_V4_ROS_VERIFY.sh
++++ V4/RUN_V4_ROS_VERIFY.sh
+@@ -0,0 +1,42 @@
++#!/usr/bin/env bash
++set -eo pipefail
++cd "$(dirname "$(readlink -f "$0")")"
++EVIDENCE="${EVIDENCE_ROOT:-$PWD/../RAB_V4_ROS_EVIDENCE}"
++mkdir -p "$EVIDENCE"
++echo '== V4 RELEASE INTEGRITY =='
++python3 -B VERIFY_RELEASE.py 2>&1 | tee "$EVIDENCE/VERIFY_RELEASE.log"
++echo '== ROS HUMBLE =='
++set +u
++source /opt/ros/humble/setup.bash
++set -u
++: "${ROS_DISTRO:?ROS_HUMBLE_NOT_AVAILABLE}"
++echo '== COLCON PACKAGES =='
++colcon list | tee "$EVIDENCE/PACKAGES.txt"
++echo '== FULL ROS BUILD =='
++colcon build --symlink-install --event-handlers console_direct+ 2>&1 | tee "$EVIDENCE/BUILD.log"
++set +u
++source install/setup.bash
++set -u
++echo '== WATCHDOG ROS INSTALL ENTRYPOINT =='
++ros2 pkg executables f1tenth_racing_control | tee "$EVIDENCE/ROS_EXECUTABLES.txt"
++grep -F 'independent_guard_watchdog' "$EVIDENCE/ROS_EXECUTABLES.txt" >/dev/null || {
++ echo 'BLOCKED=WATCHDOG_ENTRYPOINT_NOT_INSTALLED';exit 1; }
++echo '== COMPLETE ROS TEST SUITE =='
++colcon test --event-handlers console_direct+ 2>&1 | tee "$EVIDENCE/TEST.log"
++echo '== COLCON TEST VERDICT =='
++colcon test-result --verbose 2>&1 | tee "$EVIDENCE/TEST_RESULTS.log"
++python3 - "$EVIDENCE/TEST_RESULTS.log" <<'PYTEST'
++from pathlib import Path
++import re,sys
++s=Path(sys.argv[1]).read_text()
++m=re.search(r'Summary:\s*(\d+) tests?,\s*(\d+) errors?,\s*(\d+) failures?,\s*(\d+) skipped',s)
++if not m:raise SystemExit('BLOCKED=NO_COLCON_SUMMARY')
++count,errors,failures,skipped=map(int,m.groups())
++if errors or failures or skipped or count < 374:
++ raise SystemExit(f'BLOCKED=REGRESSION_OR_MISSING_NEW_TESTS count={count} errors={errors} failures={failures} skipped={skipped}')
++print(f'V4_ROS_REGISTERED_TESTS_PASS={count} (338 previous + 36 V4 expected)')
++PYTEST
++echo '== STRICT APPLIED QUALIFICATION UNIT TESTS =='
++python3 -B -m pytest -q tests_integration/test_external_watchdog_applied_v4.py   2>&1 | tee "$EVIDENCE/APPLIED_AUDIT_TEST.log"
++printf '%s
++' 'H2H/Guard 15ms/GuardAhead 7ms REALTIME QUALIFICATION NOT ASSERTED.' "EVIDENCE_ROOT=$EVIDENCE"
+--- V3/SOURCE_MANIFEST.json
++++ V4/SOURCE_MANIFEST.json
+@@ -1,22 +1,28 @@
+ {
+-  "schema": "F1TENTH_RAB_4_LAYER_INTEGRATION_V3",
+-  "count": 269,
++  "schema": "F1TENTH_RAB_4_LAYER_INTEGRATION_V4",
++  "count": 274,
+   "source_parent_zip_sha256": "47c539b2647225d629024f0bf23ae6b2b6671e7a6056349d84e9abada0a72c00",
+   "modified_files": [
+     "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_contract.py",
+     "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+     "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/execution_speed_authority.py",
++    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_core.py",
++    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+     "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+     "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/red_dynamic_guard.py",
+     "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/reference_admission.py",
++    "src/driving/algorithms/f1tenth_racing_control/setup.py",
+     "src/driving/algorithms/f1tenth_racing_control/test/test_guarded_atomic_wire.py",
++    "src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py",
+     "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.csv",
+     "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.json",
++    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+     "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py",
+     "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guarded_actuation_contract.py",
+     "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety/stopping_envelope.py",
+     "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+     "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/world/collision.py",
++    "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+     "src/environment/f1tenth_racing_sim/test/test_guard_status_lease_v3.py",
+     "src/interfaces/control_msgs/CMakeLists.txt",
+     "src/interfaces/control_msgs/msg/GuardedActuatorCommand.msg",
+@@ -148,6 +154,20 @@
+       "package": "f1tenth_racing_control"
+     },
+     {
++      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_core.py",
++      "original_sha256": null,
++      "candidate_sha256": "1f66da15d9f3621a717819aeee527eb2c5649323ac6491c24d5108075e40b988",
++      "authority": "V4",
++      "package": "f1tenth_racing_control"
++    },
++    {
++      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
++      "original_sha256": null,
++      "candidate_sha256": "81c791e6d1e824a7089681856ab56983f0011b2123d429b40df94300337a1fe7",
++      "authority": "V4",
++      "package": "f1tenth_racing_control"
++    },
++    {
+       "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+       "original_sha256": "bb3a4ded28c261521f4611c13dd59a7639e77152469ce7ddfd5e2d1e59ee4d39",
+       "candidate_sha256": "bb3a4ded28c261521f4611c13dd59a7639e77152469ce7ddfd5e2d1e59ee4d39",
+@@ -220,7 +240,7 @@
+     {
+       "path": "src/driving/algorithms/f1tenth_racing_control/setup.py",
+       "original_sha256": "856069af5629392f82b089d7a8ee55e79298bcf882e33b8dd0beffc7e1743256",
+-      "candidate_sha256": "856069af5629392f82b089d7a8ee55e79298bcf882e33b8dd0beffc7e1743256",
++      "candidate_sha256": "782e69c30eb2848efdc39833f579d72723377b00fa33f677dafc6631d5c96e17",
+       "authority": "V53",
+       "package": "f1tenth_racing_control"
+     },
+@@ -267,6 +287,13 @@
+       "package": "f1tenth_racing_control"
+     },
+     {
++      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py",
++      "original_sha256": null,
++      "candidate_sha256": "fafa23547d7c730fb6a11e4abc8851a639231dac272f26ddcc643623eaf37a3a",
++      "authority": "V4",
++      "package": "f1tenth_racing_control"
++    },
++    {
+       "path": "src/driving/algorithms/f1tenth_racing_control/test/test_mpc.py",
+       "original_sha256": "2cb1f5d6f525c3505081222456cb7716a45c4c77a2fd44afaee6462a6f988d06",
+       "candidate_sha256": "2cb1f5d6f525c3505081222456cb7716a45c4c77a2fd44afaee6462a6f988d06",
+@@ -684,14 +711,14 @@
+       "original_sha256": null,
+       "candidate_sha256": "3f369ba3372f799f27126033ba258fa0413c2fcb1f31764afa914ffefc66dd6f",
+       "authority": "INTEGRATION_V1_NEW",
+-      "package": "f1tenth_racing_raceline"
++      "package": "UNKNOWN"
+     },
+     {
+       "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.json",
+       "original_sha256": null,
+       "candidate_sha256": "e7002cd8998bd73c4c3593f7086e0397f5c4079a0dde275d4c0f336d67b994fa",
+       "authority": "INTEGRATION_V1_NEW",
+-      "package": "f1tenth_racing_raceline"
++      "package": "UNKNOWN"
+     },
+     {
+       "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/__init__.py",
+@@ -1009,9 +1036,16 @@
+       "package": "f1tenth_racing_sim"
+     },
+     {
++      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
++      "original_sha256": null,
++      "candidate_sha256": "83ec6b8f1f1bf5465129d17d4126cf02d66f29200e05e8fe28d2f5fd66ca8df3",
++      "authority": "V4",
++      "package": "f1tenth_racing_sim"
++    },
++    {
+       "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py",
+       "original_sha256": null,
+-      "candidate_sha256": "0d9b5f88302095884c1c37f9e98b1e632644023903d4b367b1ee821aa037d352",
++      "candidate_sha256": "15881e4f98f7664d29574de3c1973d5a3de1b8b5231d56789256b2f5c94c8175",
+       "authority": "V3",
+       "package": "f1tenth_racing_sim"
+     },
+@@ -1102,7 +1136,7 @@
+     {
+       "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+       "original_sha256": "92ae55d67741fad4f43cb3bf53deb97de9db585e208423ccbdcfdea9aec8a915",
+-      "candidate_sha256": "c54b94e45f0dbbfd3664b648c244a6498058f420323d76465fecd8677d2d75a5",
++      "candidate_sha256": "7c8d8f50096a60e49342801bc74893b83cf3dd22f6db4f4763e2398cab8f05bb",
+       "authority": "PHASE2",
+       "package": "f1tenth_racing_sim"
+     },
+@@ -1223,6 +1257,13 @@
+       "original_sha256": "bcb537d054433ff04da9413e585e17f43c92ef8d1ec4374ac7c2428145c275d9",
+       "candidate_sha256": "bcb537d054433ff04da9413e585e17f43c92ef8d1ec4374ac7c2428145c275d9",
+       "authority": "PHASE2",
++      "package": "f1tenth_racing_sim"
++    },
++    {
++      "path": "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
++      "original_sha256": null,
++      "candidate_sha256": "48cc6efee3948760f6a179851f1cba28791f8a35ccca0ad7f68598a671e40a04",
++      "authority": "V4",
+       "package": "f1tenth_racing_sim"
+     },
+     {
+@@ -1293,7 +1334,7 @@
+       "original_sha256": null,
+       "candidate_sha256": "7d59e667d8b09ab30a916d4c6f445a9ead08b228136b651c4bcc22ae654ab325",
+       "authority": "V2",
+-      "package": "control_msgs"
++      "package": "UNKNOWN"
+     },
+     {
+       "path": "src/interfaces/control_msgs/msg/OpponentPrediction.msg",
+@@ -1354,7 +1395,7 @@
+     {
+       "path": "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+       "original_sha256": "dc99c88ac094695223f3b84f6b3073db4b596f9b21776876441f40b8e00dc23a",
+-      "candidate_sha256": "d3362c2ad0ec4f4c71fddd73cf0564c35c0f0fee7a426eea4e5dd9e3786356ac",
++      "candidate_sha256": "2b5e23c8a74fd1cf73ce99458259eaae1fc55393fe4d9602c2b14c362f029dbe",
+       "authority": "V53",
+       "package": "f1tenth_racing_bringup"
+     },
+@@ -1510,7 +1551,7 @@
+       "original_sha256": null,
+       "candidate_sha256": "fdd9dc745b7c33a8828b7e7cd0ff023467c97e252968a531e1f9e180863e3a29",
+       "authority": "INTEGRATION_V1_NEW",
+-      "package": "f1tenth_racing_reference"
++      "package": "UNKNOWN"
+     },
+     {
+       "path": "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/__init__.py",
+@@ -1727,7 +1768,7 @@
+       "original_sha256": null,
+       "candidate_sha256": "357b9bfb12f962786e352ca97b3dadb962ccc17569a9727164f65d5deb0e6fea",
+       "authority": "INTEGRATION_V1_NEW",
+-      "package": "f1tenth_racing_tools"
++      "package": "UNKNOWN"
+     },
+     {
+       "path": "src/platform/f1tenth_racing_tools/scripts/f1safe",
+@@ -1774,7 +1815,7 @@
+     {
+       "path": "src/verification/h2h_champion/qualify_h2h.py",
+       "original_sha256": "0a46ac413d38653fe02c060c59d9ec6633e17ad1d6027414dde927d2991cbace",
+-      "candidate_sha256": "2fe70af22840f5b7d2fc075fc95617bc4e2b7c50b97f1e14e0f72c155c476f7a",
++      "candidate_sha256": "8535cb68cbdd0cd90b0db3f30ae083e06ea6824b4995d90e797ea85b6fc8e6b9",
+       "authority": "PHASE2",
+       "package": "NON_ROS_VERIFICATION"
+     },
+@@ -1851,16 +1892,16 @@
+     {
+       "path": "src/verification/qualification_gates/applied_lineage.py",
+       "original_sha256": null,
+-      "candidate_sha256": "f3cd0a67b48dc1d2c1795b9a30020819fb6941bafec38ccbe2773e551f857850",
++      "candidate_sha256": "14e8692a2159bf36970851c34e4c294e41b21d9170fdc4a59256ea2e59dabff5",
+       "authority": "V2",
+-      "package": "verification"
++      "package": "UNKNOWN"
+     },
+     {
+       "path": "src/verification/qualification_gates/gate_model.py",
+       "original_sha256": null,
+       "candidate_sha256": "572068ab5396546f02e8f87a07e35b6670fe7085274982d31cbc2c36dfbf4d18",
+       "authority": "V2",
+-      "package": "verification"
++      "package": "UNKNOWN"
+     },
+     {
+       "path": "src/verification/r_b0/qualify_degradation.py",
+@@ -1907,7 +1948,7 @@
+     {
+       "path": "src/verification/solo_champion/qualify_solo.py",
+       "original_sha256": "0b1804bb4af4e2b4f541cd9f75768d52e50746182ddbbf9f22d475b7e901dee0",
+-      "candidate_sha256": "f1404b3c9b3fca86a1a373af7ba12c72ddfab4ad9eb4d2b1877d80af2e4a2e72",
++      "candidate_sha256": "d33dab3af8c54200e8a7bb26c995778698f3b20f9591967cba4667f879342996",
+       "authority": "PHASE2",
+       "package": "NON_ROS_VERIFICATION"
+     },
+@@ -1921,5 +1962,6 @@
+   ],
+   "qualification_notice": "CODE_INTEGRATION_ONLY_NOT_ROS_OR_H2H_QUALIFIED",
+   "parent_v1_zip_sha256": "bf7a2312cd4f7d5cedaba6cd126ff240c27556a5002531913c05acbc8071eafe",
+-  "parent_v2_zip_sha256": "c1c106b9fd81df55851a8d632e97f9aaf1aa05132f210d9099f8348ed2a8f93a"
++  "parent_v2_zip_sha256": "c1c106b9fd81df55851a8d632e97f9aaf1aa05132f210d9099f8348ed2a8f93a",
++  "parent_v3_zip_sha256": "1c8128056598cf06171a44b05f918fa5fa7c81b76ccd9e0bcbc32b0d72d8d1fc"
+ }
+--- V3/V3_UBUNTU_ROS_EVIDENCE_EXCERPT.txt
++++ V4/V3_UBUNTU_ROS_EVIDENCE_EXCERPT.txt
+@@ -0,0 +1,6 @@
++User provided Ubuntu V3 test run on 2026-10-18:
++Summary: 16 packages finished [22.7s] (build)
++Summary: 16 packages finished [21.5s] (test)
++Summary: 338 tests, 0 errors, 0 failures, 0 skipped
++V3_ROS_REGISTERED_TESTS_PASS=338
++H2H/Guard REALTIME QUALIFICATION NOT ASSERTED.
+--- V3/V4_TEST_STATUS.json
++++ V4/V4_TEST_STATUS.json
+@@ -0,0 +1,21 @@
++{
++  "v3_ubuntu": {
++    "packages": 16,
++    "tests": 338,
++    "errors": 0,
++    "failures": 0,
++    "skips": 0,
++    "origin": "user provided ROS log"
++  },
++  "v4_offline": {
++    "new_package_test_cases_pass": 36,
++    "new_qualification_test_cases_pass": 7,
++    "related_offline_regression_tests_pass": 86,
++    "ros": "NOT_AVAILABLE",
++    "python_ast": "PASS"
++  },
++  "v4_ros": "NOT_EXECUTED",
++  "h2h_e2e": "NOT_QUALIFIED",
++  "guard_15ms_e2e": "NOT_QUALIFIED",
++  "guard_ahead_7ms_e2e": "NOT_QUALIFIED"
++}
+--- V3/VERIFY_RELEASE.py
++++ V4/VERIFY_RELEASE.py
+@@ -29,6 +29,9 @@
+  ('src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py','if elapsed_ns>15000000:'),
+  ('src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/guard_ahead.py','MAX_EXTRA_NS = 7_000_000'),
+  ('src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py','H2H_GUARD_RED_PROOF_REQUIRED'),
++ ('src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py','independent_guard_watchdog'),
++ ('src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py','EGO_EXTERNAL_WATCHDOG_MANDATORY'),
++ ('src/verification/qualification_gates/applied_lineage.py','INDEPENDENT_WATCHDOG_CERTIFIED_APPLIED_UNPROVEN'),
+ ):
+     if pattern not in src[name].read_text():raise SystemExit('STATIC_INTEGRATION_MARKER_MISSING:'+name)
+ for name,p in actual.items():
+@@ -37,4 +40,4 @@
+ print('INTEGRATION_SOURCE_HASH_PASS',len(src),'source files')
+ print('INTEGRATION_RELEASE_HASH_PASS',len(raw),'files')
+ print('STATIC_GUARD_RED_AND_BUDGET_MARKERS_PRESENT_NO_RUNTIME_TIMING_CLAIM')
+-print('V3_H2H_NOT_QUALIFIED;V3_ROS_COLCON_TESTS_NOT_RUN;V2_UBUNTU_BASELINE_328_PASS')
++print('V4_H2H_NOT_QUALIFIED;V4_ROS_COLCON_TESTS_NOT_RUN;V3_UBUNTU_BASELINE_338_PASS')
+--- V3/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_core.py
++++ V4/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_core.py
+@@ -0,0 +1,65 @@
++"""Independent Guard observer. No authority to issue actuator commands.
++
++A separate ROS process checks latest Guard status AND physics state age,
++collision latch, epoch/provenance and local monotonic time. Any missing input
++is a REVOKE witness; ALLOW only removes this *additional veto*.
++"""
++from dataclasses import dataclass
++import math
++
++
++@dataclass(frozen=True)
++class StateWitness:
++    sequence: int
++    ros_stamp_ns: int
++    received_steady_ns: int
++
++
++class IndependentWatchdogCore:
++    def __init__(self, *, guard_lease, max_state_age_ns=100_000_000):
++        if not 0<int(max_state_age_ns)<=100_000_000:
++            raise ValueError('INVALID_WATCHDOG_STATE_MAX_AGE')
++        self.guard_lease=guard_lease
++        self.max_state_age_ns=int(max_state_age_ns)
++        self.state=None
++        self.collision_latched=False
++        self.last_ros_tick_ns=0
++
++    def receive_state(self, *, sequence, stamp_ns, now_ros_ns, now_steady_ns):
++        try:
++            seq=int(sequence); stamp=int(stamp_ns)
++            if (seq<=0 or stamp<=0 or stamp>int(now_ros_ns) or
++                    int(now_ros_ns)-stamp>self.max_state_age_ns or
++                    int(now_steady_ns)<0 or
++                    (self.state is not None and
++                     (seq<=self.state.sequence or stamp<=self.state.ros_stamp_ns))):
++                self.state=None
++                return False
++            self.state=StateWitness(seq,stamp,int(now_steady_ns))
++            return True
++        except (TypeError,ValueError,OverflowError):
++            self.state=None
++            return False
++
++    def on_collision(self, collision):
++        if bool(collision):
++            self.collision_latched=True
++            self.guard_lease.latest=None
++
++    def decide(self, *, now_ros_ns, now_steady_ns):
++        now_ros_ns=int(now_ros_ns); now_steady_ns=int(now_steady_ns)
++        if self.collision_latched:
++            return False,'COLLISION_LATCHED'
++        if now_ros_ns<=self.last_ros_tick_ns:
++            return False,'ROS_CLOCK_STALLED_OR_REGRESSED'
++        self.last_ros_tick_ns=now_ros_ns
++        state=self.state
++        if state is None:
++            return False,'STATE_MISSING'
++        ros_age=now_ros_ns-state.ros_stamp_ns
++        steady_age=now_steady_ns-state.received_steady_ns
++        if (ros_age<0 or steady_age<0 or ros_age>self.max_state_age_ns or
++                steady_age>self.max_state_age_ns):
++            return False,'STATE_STALE'
++        return self.guard_lease.permits_certified(
++            now_ros_ns=now_ros_ns,now_steady_ns=now_steady_ns)
+--- V3/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py
++++ V4/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py
+@@ -0,0 +1,102 @@
++"""Separately scheduled ROS process: independent fail-closed actuator VETO.
++
++Never publishes a command or certifies any stopping trajectory. The simulator
++requires both existing GuardStatus and this process's fresh witness. In a
++fault, missing watchdog messages themselves expire the authorization.
++"""
++import json
++import time
++
++import rclpy
++from control_msgs.msg import ActuatorGuardStatus, CarState
++from rclpy.node import Node
++from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
++from std_msgs.msg import Bool, String
++from f1tenth_racing_sim.guard_status_lease import GuardStatusLease
++from .independent_watchdog_core import IndependentWatchdogCore
++
++
++def _stamp_ns(stamp):
++    return int(stamp.sec)*1_000_000_000+int(stamp.nanosec)
++
++
++class IndependentGuardWatchdog(Node):
++    def __init__(self):
++        super().__init__('independent_guard_watchdog0')
++        self.declare_parameter('run_epoch','')
++        self.declare_parameter('producer','R_B')
++        epoch=str(self.get_parameter('run_epoch').value)
++        producer=str(self.get_parameter('producer').value)
++        if not epoch or producer not in ('R_B','FOUNDATION_BASELINE'):
++            raise ValueError('WATCHDOG_RUN_IDENTITY_MISSING')
++        self.epoch=epoch
++        self.producer=producer
++        self.core=IndependentWatchdogCore(guard_lease=GuardStatusLease(
++            run_epoch=epoch,producer=producer,max_age_ns=100_000_000))
++        self.verdict_sequence=0
++        status_qos=QoSProfile(depth=1,reliability=ReliabilityPolicy.RELIABLE,
++            durability=DurabilityPolicy.TRANSIENT_LOCAL)
++        state_qos=QoSProfile(depth=16,reliability=ReliabilityPolicy.RELIABLE)
++        self.create_subscription(ActuatorGuardStatus,'actuator_guard_status0',
++                                 self.on_guard_status,status_qos)
++        self.create_subscription(CarState,'state0',self.on_state,state_qos)
++        self.create_subscription(Bool,'collision0',self.on_collision,state_qos)
++        self.create_subscription(Bool,'vehicle_collision',self.on_collision,state_qos)
++        self.verdict_pub=self.create_publisher(String,'independent_guard_watchdog_lease0',
++                                              state_qos)
++        self.create_timer(0.025,self.publish_verdict)
++
++    def on_guard_status(self,msg):
++        publishers=self.get_publishers_info_by_topic('/actuator_guard_status0')
++        if len(publishers)!=1 or publishers[0].node_name!='actuator_guard0':
++            self.core.guard_lease.revoke()
++            return
++        self.core.guard_lease.observe(msg,
++            now_ros_ns=self.get_clock().now().nanoseconds,
++            now_steady_ns=time.monotonic_ns())
++
++    def on_state(self,msg):
++        publishers=self.get_publishers_info_by_topic('/state0')
++        if len(publishers)!=1 or publishers[0].node_name!='competition_simulator0':
++            self.core.state=None
++            return
++        self.core.receive_state(sequence=msg.physics_sequence,
++            stamp_ns=_stamp_ns(msg.physics_stamp),
++            now_ros_ns=self.get_clock().now().nanoseconds,
++            now_steady_ns=time.monotonic_ns())
++
++    def on_collision(self,msg):
++        # Positive collision latches; missing collision monitor messages do
++        # not override Guard's own collision gate or physics staleness gate.
++        self.core.on_collision(msg.data)
++
++    def publish_verdict(self):
++        ros_now=self.get_clock().now().nanoseconds
++        steady_now=time.monotonic_ns()
++        allowed,reason=self.core.decide(now_ros_ns=ros_now,
++                                        now_steady_ns=steady_now)
++        self.verdict_sequence+=1
++        state=self.core.state
++        guard=self.core.guard_lease.latest
++        m={'schema':1,'run_epoch':self.epoch,'producer':self.producer,
++           'sequence':self.verdict_sequence,'emitted_ros_ns':int(ros_now),
++           'physics_sequence':int(state.sequence) if state else 0,
++           'guard_accepted_sequence':int(guard.accepted_sequence) if guard else 0,
++           'verdict':'ALLOW' if allowed else 'REVOKE','reason':reason}
++        self.verdict_pub.publish(String(data=json.dumps(m,sort_keys=True)))
++
++
++def main():
++    rclpy.init()
++    node=IndependentGuardWatchdog()
++    try:
++        rclpy.spin(node)
++    except KeyboardInterrupt:
++        pass
++    finally:
++        node.destroy_node()
++        if rclpy.ok():
++            rclpy.shutdown()
++
++if __name__=='__main__':
++    main()
+--- V3/src/driving/algorithms/f1tenth_racing_control/setup.py
++++ V4/src/driving/algorithms/f1tenth_racing_control/setup.py
+@@ -24,6 +24,7 @@
+         "console_scripts": [
+             "r_b0_controller = f1tenth_racing_control.node:main",
+             "actuator_guard = f1tenth_racing_control.actuator_guard_node:main",
++            "independent_guard_watchdog = f1tenth_racing_control.independent_watchdog_node:main",
+         ]
+     },
+ )
+--- V3/src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py
++++ V4/src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py
+@@ -0,0 +1,83 @@
++"""Separately scheduled watchdog's deterministic, authority-free core."""
++from types import SimpleNamespace as N
++import pytest
++from f1tenth_racing_sim.guard_status_lease import GuardStatusLease
++from f1tenth_racing_control.independent_watchdog_core import IndependentWatchdogCore
++
++
++def make_core():
++    return IndependentWatchdogCore(guard_lease=GuardStatusLease(run_epoch='e1',producer='R_B'))
++
++
++def good_guard(core, stamp=1_000_000_000, seq=4, steady=1):
++    msg=N(stamp=N(sec=stamp//1_000_000_000,nanosec=stamp%1_000_000_000),
++          run_epoch='e1',source_id='R_B',last_accepted_sequence=seq,
++          mode='RUNNING',ready=True,certificate_verified=True,
++          emergency_unrecoverable=False)
++    return core.guard_lease.observe(msg,now_ros_ns=stamp,now_steady_ns=steady)
++
++
++def good_state(core):
++    return core.receive_state(sequence=5,stamp_ns=1_000_000_000,
++                              now_ros_ns=1_000_000_000,now_steady_ns=1)
++
++
++def test_no_guard_no_state_denied():
++    assert make_core().decide(now_ros_ns=1_000_000_000,now_steady_ns=2)[0] is False
++
++
++def test_missing_guard_denied_even_with_state():
++    c=make_core();good_state(c)
++    assert not c.decide(now_ros_ns=1_000_000_000,now_steady_ns=2)[0]
++
++
++def test_missing_state_denied_even_with_guard():
++    c=make_core();good_guard(c)
++    assert not c.decide(now_ros_ns=1_000_000_000,now_steady_ns=2)[0]
++
++
++def test_healthy_fresh_guard_and_state_remove_watchdog_veto():
++    c=make_core();good_guard(c);good_state(c)
++    assert c.decide(now_ros_ns=1_025_000_000,now_steady_ns=25_000_000)[0]
++
++
++def test_guard_staleness_rejected_after_valid():
++    c=make_core();good_guard(c);good_state(c)
++    assert not c.decide(now_ros_ns=1_101_000_000,now_steady_ns=101_000_000)[0]
++
++
++def test_collision_latches_even_if_bool_subsequently_false():
++    c=make_core();good_guard(c);good_state(c)
++    c.on_collision(True);c.on_collision(False)
++    assert not c.decide(now_ros_ns=1_025_000_000,now_steady_ns=25_000_000)[0]
++    assert c.collision_latched
++
++
++def test_state_regression_clears_state():
++    c=make_core();good_guard(c);good_state(c)
++    assert not c.receive_state(sequence=4,stamp_ns=1_000_000_000,
++                              now_ros_ns=1_025_000_000,now_steady_ns=100)
++    assert not c.decide(now_ros_ns=1_025_000_000,now_steady_ns=200)[0]
++
++
++def test_future_state_cannot_authorize():
++    c=make_core();good_guard(c)
++    assert not c.receive_state(sequence=1,stamp_ns=2_000_000_000,
++                              now_ros_ns=1_000_000_000,now_steady_ns=1)
++
++
++def test_clock_stall_revokes():
++    c=make_core();good_guard(c);good_state(c)
++    assert c.decide(now_ros_ns=1_010_000_000,now_steady_ns=2)[0]
++    assert not c.decide(now_ros_ns=1_010_000_000,now_steady_ns=3)[0]
++
++
++def test_invalid_state_timeout_does_not_turn_into_allow():
++    c=make_core();good_guard(c);good_state(c)
++    allowed,reason=c.decide(now_ros_ns=1_101_000_000,now_steady_ns=2)
++    assert not allowed and reason=='STATE_STALE'
++
++
++def test_bad_lease_configuration_rejected():
++    with pytest.raises(ValueError):
++        IndependentWatchdogCore(guard_lease=None,max_state_age_ns=500_000_000)
+--- V3/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py
++++ V4/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py
+@@ -0,0 +1,94 @@
++"""Cross-process independent-watchdog VETO lease (never actuation authority).
++
++ROS-free, run-epoch scoped, monotonic local freshness. Both this witness and
++GuardStatusLease must permit a CERTIFIED command; neither issues a certificate.
++"""
++from dataclasses import dataclass
++import json
++
++
++@dataclass(frozen=True)
++class ExternalWatchdogVerdict:
++    epoch: str
++    producer: str
++    sequence: int
++    emitted_ros_ns: int
++    received_steady_ns: int
++    physics_sequence: int
++    guard_accepted_sequence: int
++    verdict: str
++    reason: str
++
++
++class ExternalWatchdogLease:
++    SCHEMA = 1
++
++    def __init__(self, *, run_epoch, producer, max_age_ns=100_000_000):
++        if not run_epoch or not producer or not 0 < int(max_age_ns) <= 100_000_000:
++            raise ValueError('INVALID_EXTERNAL_WATCHDOG_LEASE')
++        self.run_epoch = str(run_epoch)
++        self.producer = str(producer)
++        self.max_age_ns = int(max_age_ns)
++        self.latest = None
++        self.last_sequence = 0
++        self.last_emitted_ros_ns = 0
++        self.invalid_updates = 0
++
++    def revoke(self):
++        self.latest = None
++
++    def observe(self, payload, *, now_ros_ns, now_steady_ns):
++        """Fail closed on malformed or non-monotonic witnesses, even if older was ALLOW."""
++        try:
++            m = json.loads(payload) if isinstance(payload, str) else payload
++            if not isinstance(m, dict) or type(m.get('schema')) is not int or m['schema'] != self.SCHEMA:
++                raise ValueError('schema')
++            # Reject bool masquerading as an integer, or floating-point casts.
++            for key in ('sequence','emitted_ros_ns','physics_sequence','guard_accepted_sequence'):
++                if type(m.get(key)) is not int:
++                    raise ValueError(key)
++            seq=m['sequence']; stamp=m['emitted_ros_ns']
++            now_ros_ns=int(now_ros_ns); now_steady_ns=int(now_steady_ns)
++            if (m.get('run_epoch') != self.run_epoch or m.get('producer') != self.producer or
++                    seq<=self.last_sequence or stamp<=self.last_emitted_ros_ns or
++                    stamp<=0 or stamp>now_ros_ns or now_ros_ns-stamp>self.max_age_ns or
++                    now_steady_ns<0 or m['physics_sequence']<0 or
++                    m['guard_accepted_sequence']<0 or
++                    m.get('verdict') not in ('ALLOW','REVOKE') or
++                    not isinstance(m.get('reason'), str) or len(m['reason'])>128):
++                raise ValueError('invalid-witness')
++            self.last_sequence=seq
++            self.last_emitted_ros_ns=stamp
++            self.latest=ExternalWatchdogVerdict(
++                epoch=self.run_epoch,producer=self.producer,sequence=seq,
++                emitted_ros_ns=stamp,received_steady_ns=now_steady_ns,
++                physics_sequence=m['physics_sequence'],
++                guard_accepted_sequence=m['guard_accepted_sequence'],
++                verdict=m['verdict'],reason=m['reason'])
++            return True
++        except (ValueError,TypeError,KeyError,OverflowError,AttributeError):
++            self.invalid_updates+=1
++            self.revoke()
++            return False
++
++    def permits_certified(self, *, now_ros_ns, now_steady_ns, physics_sequence):
++        h=self.latest
++        if h is None:
++            return False,'INDEPENDENT_WATCHDOG_MISSING'
++        try:
++            ros_age=int(now_ros_ns)-h.emitted_ros_ns
++            steady_age=int(now_steady_ns)-h.received_steady_ns
++            if (ros_age<0 or steady_age<0 or ros_age>self.max_age_ns or
++                    steady_age>self.max_age_ns):
++                return False,'INDEPENDENT_WATCHDOG_STALE'
++            if h.verdict != 'ALLOW':
++                return False,'INDEPENDENT_WATCHDOG_REVOKED:' + h.reason
++            # The external observer cannot claim to have seen state ahead of
++            # simulator's own physics clock; permit next-tick concurrent publish.
++            if h.physics_sequence > int(physics_sequence)+1:
++                return False,'INDEPENDENT_WATCHDOG_FUTURE_STATE'
++            if h.physics_sequence<=0 or h.guard_accepted_sequence<=0:
++                return False,'INDEPENDENT_WATCHDOG_NO_PROVENANCE'
++            return True,'INDEPENDENT_WATCHDOG_LIVE'
++        except (TypeError,ValueError,OverflowError):
++            return False,'INDEPENDENT_WATCHDOG_CLOCK_INVALID'
+--- V3/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py
++++ V4/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py
+@@ -68,6 +68,9 @@
+             self.invalid_updates += 1
+             return False
+ 
++    def revoke(self):
++        self.latest = None
++
+     def permits_certified(self, *, now_ros_ns, now_steady_ns):
+         """A separate, current RUNNING heartbeat is required for CERTIFIED.
+ 
+--- V3/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py
++++ V4/src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py
+@@ -13,6 +13,7 @@
+ from control_msgs.msg import CarState, GuardedActuatorCommand, ActuatorGuardStatus
+ from .guarded_actuation_contract import verify_guarded_actuation
+ from .guard_status_lease import GuardStatusLease
++from .external_watchdog_lease import ExternalWatchdogLease
+ from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped, TransformStamped
+ from nav_msgs.msg import OccupancyGrid, Odometry, Path as PathMsg
+ from rclpy.callback_groups import ReentrantCallbackGroup
+@@ -49,6 +50,7 @@
+         self.declare_parameter("car_id", 0)
+         self.declare_parameter("guard_run_epoch", "")
+         self.declare_parameter("guard_producer", "R_B")
++        self.declare_parameter("independent_watchdog_required", True)
+         self.declare_parameter("initial_track_s_m", 0.0)
+         self.declare_parameter("dynamic_opponent_id", -1)
+         self.declare_parameter("publish_vehicle_collision", False)
+@@ -92,6 +94,15 @@
+             raise ValueError('SIM_EGO_REQUIRES_EXPLICIT_GUARD_EPOCH')
+         self.guard_status_lease=(GuardStatusLease(run_epoch=self.guard_run_epoch,
+             producer=self.guard_producer) if self.guard_required else None)
++        # Separate ROS PROCESS veto (not a stop certificate or a second
++        # command authority). Never enable an Ego bypass via launch.
++        self.watchdog_required=(self.guard_required and
++            bool(self.get_parameter('independent_watchdog_required').value))
++        if self.guard_required and not self.watchdog_required:
++            raise ValueError('EGO_EXTERNAL_WATCHDOG_MANDATORY')
++        self.external_watchdog_lease=(ExternalWatchdogLease(
++            run_epoch=self.guard_run_epoch,producer=self.guard_producer)
++            if self.watchdog_required else None)
+ 
+         sensor_qos = QoSProfile(history=HistoryPolicy.KEEP_LAST, depth=1, reliability=ReliabilityPolicy.RELIABLE)
+         # state0 is a safety-critical exact-tick input for the independent
+@@ -114,6 +125,11 @@
+             self.guard_status_sub=self.create_subscription(
+                 ActuatorGuardStatus,'actuator_guard_status0',
+                 self.receive_guard_status,latched_qos)
++            # Watchdog publishes RELIABLE/VOLATILE. Subscriber MUST NOT
++            # request TRANSIENT_LOCAL (DDS durability mismatch => no data).
++            self.external_watchdog_sub=self.create_subscription(
++                String,'independent_guard_watchdog_lease0',
++                self.receive_external_watchdog,state_qos)
+         else:
+             self.command_sub = self.create_subscription(
+                 AckermannDriveStamped, config["actuation"]["command_topic_car" + suffix],
+@@ -188,6 +204,25 @@
+             self.last_command_steady_ns=None
+             self.last_command_ns=None
+ 
++    def receive_external_watchdog(self, message):
++        with self.actuation_lock:
++            publishers=self.get_publishers_info_by_topic(
++                '/independent_guard_watchdog_lease0')
++            if (len(publishers)!=1 or
++                    publishers[0].node_name!='independent_guard_watchdog0'):
++                self.external_watchdog_lease.revoke()
++                self._revoke_guarded_lease('EXTERNAL_WATCHDOG_PUBLISHER_MISMATCH')
++                return
++            accepted=self.external_watchdog_lease.observe(message.data,
++                now_ros_ns=self.get_clock().now().nanoseconds,
++                now_steady_ns=time.monotonic_ns())
++            allowed,_=self.external_watchdog_lease.permits_certified(
++                now_ros_ns=self.get_clock().now().nanoseconds,
++                now_steady_ns=time.monotonic_ns(),
++                physics_sequence=self.physics_sequence)
++            if not accepted or not allowed:
++                self._revoke_guarded_lease('EXTERNAL_WATCHDOG_REVOKED')
++
+     def command_guarded(self, message):
+         with self.actuation_lock:
+             return self._command_guarded_locked(message)
+@@ -199,6 +234,13 @@
+                 now_steady_ns=time.monotonic_ns())
+             if not live:
+                 self.get_logger().error('ATOMIC_GUARD_STATUS_REJECT:'+reason)
++                return
++            external_live,external_reason=self.external_watchdog_lease.permits_certified(
++                now_ros_ns=self.get_clock().now().nanoseconds,
++                now_steady_ns=time.monotonic_ns(),
++                physics_sequence=self.physics_sequence)
++            if not external_live:
++                self.get_logger().error('ATOMIC_EXTERNAL_WATCHDOG_REJECT:'+external_reason)
+                 return
+         infos=self.get_publishers_info_by_topic('/guarded_actuator_cmd0')
+         if len(infos)!=1 or infos[0].node_name!='actuator_guard0':
+@@ -288,6 +330,8 @@
+         self.guard_intent_last_sequence=0
+         if self.guard_status_lease is not None:
+             self.guard_status_lease.latest=None
++        if self.external_watchdog_lease is not None:
++            self.external_watchdog_lease.revoke()
+         self.last_command_ns = None  # resetting pose invalidates command lease
+         self.last_command_steady_ns = None
+ 
+@@ -310,7 +354,14 @@
+                 self.command_origin_identity.get('authority_mode')=='CERTIFIED'):
+             heartbeat_live,_=self.guard_status_lease.permits_certified(
+                 now_ros_ns=now_ns,now_steady_ns=steady_ns)
+-        stale=(not heartbeat_live or
++        watchdog_live=True
++        watchdog_reason='NOT_REQUIRED'
++        if (self.watchdog_required and self.command_origin_identity is not None and
++                self.command_origin_identity.get('authority_mode')=='CERTIFIED'):
++            watchdog_live,watchdog_reason=self.external_watchdog_lease.permits_certified(
++                now_ros_ns=now_ns,now_steady_ns=steady_ns,
++                physics_sequence=self.physics_sequence)
++        stale=(not watchdog_live or not heartbeat_live or
+                self.last_command_ns is None or self.last_command_steady_ns is None or
+                now_ns<self.last_command_ns or
+                now_ns-self.last_command_ns>self.command_timeout_ns or
+@@ -341,6 +392,8 @@
+             "command_stamp_ns":self.command_stamp_ns if not stale else None,
+             "physics_stamp_ns": stamp.sec * 1000000000 + stamp.nanosec,
+             "deadman": stale,
++            "independent_watchdog_live": watchdog_live,
++            "independent_watchdog_reason": watchdog_reason,
+             "applied_steer_rad": steering,
+             "applied_accel_mps2": acceleration,
+         }, sort_keys=True)))
+--- V3/src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py
++++ V4/src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py
+@@ -0,0 +1,121 @@
++"""ROS-free external process authorization veto; exercised in colcon tests."""
++import json
++from pathlib import Path
++from types import SimpleNamespace as N
++import pytest
++from f1tenth_racing_sim.external_watchdog_lease import ExternalWatchdogLease
++from f1tenth_racing_sim.guard_status_lease import GuardStatusLease
++
++
++def verdict(*, epoch='epoch1', producer='R_B', seq=1, emitted=1_000_000_000,
++            physics=5, guard=4, mode='ALLOW', reason='GUARD_HEARTBEAT_LIVE'):
++    return dict(schema=1,run_epoch=epoch,producer=producer,sequence=seq,
++                emitted_ros_ns=emitted,physics_sequence=physics,
++                guard_accepted_sequence=guard,verdict=mode,reason=reason)
++
++
++def lease():return ExternalWatchdogLease(run_epoch='epoch1',producer='R_B')
++
++
++def observe(l,m, now=1_000_000_000, steady=500):
++    return l.observe(json.dumps(m),now_ros_ns=now,now_steady_ns=steady)
++
++
++def permit(l,now=1_000_000_000,steady=500,physics=5):
++    return l.permits_certified(now_ros_ns=now,now_steady_ns=steady,
++                               physics_sequence=physics)
++
++
++def test_no_watchdog_means_no_certified():
++    assert not permit(lease())[0]
++
++
++def test_fresh_matching_watchdog_removes_only_its_own_veto():
++    l=lease();assert observe(l,verdict());assert permit(l)[0]
++
++
++def test_revoke_immediately_overrides_prior_allow():
++    l=lease();assert observe(l,verdict())
++    assert observe(l,verdict(seq=2,emitted=1_025_000_000,mode='REVOKE',
++                             reason='STATE_STALE'),now=1_025_000_000,steady=25_000_500)
++    assert not permit(l,now=1_025_000_001,steady=25_000_501)[0]
++
++
++def test_revoked_verdict_never_grants_command():
++    l=lease();assert observe(l,verdict(mode='REVOKE'))
++    assert not permit(l)[0]
++
++
++def test_watchdog_process_death_revokes_via_steady_clock():
++    l=lease();assert observe(l,verdict())
++    assert not permit(l,steady=100_000_501)[0]
++
++
++def test_watchdog_ros_clock_age_revokes():
++    l=lease();assert observe(l,verdict())
++    assert not permit(l,now=1_100_000_001)[0]
++
++
++def test_clock_regression_revokes():
++    l=lease();assert observe(l,verdict())
++    assert not permit(l,now=999_999_999)[0]
++
++
++@pytest.mark.parametrize('item',[
++    {'epoch':'wrong'}, {'producer':'other'}, {'seq':0}, {'emitted':0},
++    {'physics':-1}, {'guard':-1}, {'mode':'ESCALATE'}])
++def test_bad_provenance_fails_closed(item):
++    l=lease();assert not observe(l,verdict(**item));assert not permit(l)[0]
++
++
++def test_timestamp_or_sequence_rollback_revokes_cached_allow():
++    l=lease();assert observe(l,verdict())
++    assert not observe(l,verdict(seq=1,emitted=1_025_000_000),
++                       now=1_025_000_000,steady=25_000_500)
++    assert not permit(l,now=1_025_000_000,steady=25_000_500)[0]
++
++
++def test_future_external_state_provenance_rejected():
++    l=lease();assert observe(l,verdict(physics=30))
++    assert not permit(l,physics=5)[0]
++
++
++@pytest.mark.parametrize('key', ['sequence','emitted_ros_ns','physics_sequence','guard_accepted_sequence'])
++def test_json_boolean_does_not_masquerade_as_int(key):
++    l=lease();v=verdict();v[key]=True
++    assert not observe(l,v)
++
++
++def test_missing_guard_or_physics_provenance_rejected():
++    for k in ('physics','guard'):
++        l=lease();assert observe(l,verdict(**{k:0}))
++        assert not permit(l)[0]
++
++
++def test_revoke_cannot_unilaterally_authorize():
++    l=lease();assert observe(l,verdict());l.revoke()
++    assert not permit(l)[0]
++
++
++def test_no_egovehicle_watchdog_disable_escape_hatch():
++    text=(Path(__file__).parents[1]/'f1tenth_racing_sim/simulator.py').read_text()
++    assert "raise ValueError('EGO_EXTERNAL_WATCHDOG_MANDATORY')" in text
++    assert "'independent_guard_watchdog_lease0'" in text
++    assert 'def receive_external_watchdog' in text
++    assert 'not watchdog_live or not heartbeat_live' in text
++    assert 'self.external_watchdog_lease.permits_certified' in text
++
++
++def test_guard_and_external_veto_are_distinct():
++    l=GuardStatusLease(run_epoch='epoch1',producer='R_B')
++    e=lease();assert observe(e,verdict())
++    assert not l.permits_certified(now_ros_ns=1_000_000_000,now_steady_ns=500)[0]
++
++
++def test_separate_process_is_registered_and_launched():
++    root=Path(__file__).resolve().parents[3]
++    setup=(root/'driving/algorithms/f1tenth_racing_control/setup.py').read_text()
++    launch=(root/'platform/f1tenth_racing_bringup/launch/race_foundation.launch.py').read_text()
++    assert 'independent_guard_watchdog = ' in setup
++    assert 'executable="independent_guard_watchdog"' in launch
++    assert '"independent_watchdog_required": True' in launch
+--- V3/src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py
++++ V4/src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py
+@@ -149,7 +149,7 @@
+         if not Path(fname).is_file() or hashlib.sha256(Path(fname).read_bytes()).hexdigest() != declared:
+             raise RuntimeError("selected track asset missing or SHA mismatch: " + str(fname))
+     return [
+-        Node(package="f1tenth_racing_sim", executable="simulator", name="competition_simulator0", output="screen", parameters=[{"car_id": 0, "guard_run_epoch": guard_epoch, "guard_producer": guard_producer, "initial_track_s_m": profile["blue_spawn_s_m"], "dynamic_opponent_id": 1, "publish_vehicle_collision": True, "publish_environment": True, "command_timeout_s": foundation["runtime_safety"]["command_timeout_s"],
++        Node(package="f1tenth_racing_sim", executable="simulator", name="competition_simulator0", output="screen", parameters=[{"car_id": 0, "guard_run_epoch": guard_epoch, "guard_producer": guard_producer, "independent_watchdog_required": True, "initial_track_s_m": profile["blue_spawn_s_m"], "dynamic_opponent_id": 1, "publish_vehicle_collision": True, "publish_environment": True, "command_timeout_s": foundation["runtime_safety"]["command_timeout_s"],
+             "config_file": environment_file,
+             "map_file": map_file,
+             "centerline_file": centerline_file}]),
+@@ -174,6 +174,13 @@
+                  "experimental_native_guard": LaunchConfiguration("experimental_native_guard"),
+                  "native_guard_library": LaunchConfiguration("native_guard_library"),
+                  "native_guard_receipt": LaunchConfiguration("native_guard_receipt"),
++             }]),
++        # Separate process, separate executor: absence/stall of this veto
++        # forces simulator-local deadman even if an old Guard command survives.
++        Node(package="f1tenth_racing_control", executable="independent_guard_watchdog",
++             name="independent_guard_watchdog0", output="screen", parameters=[{
++                 "run_epoch": guard_epoch,
++                 "producer": guard_producer,
+              }]),
+         Node(package="f1tenth_racing_evaluator", executable="evaluator", output="screen", parameters=[{"centerline_file": centerline_file}]),
+         Node(package="f1tenth_racing_bringup", executable="race_coordinator", output="screen", parameters=[{"require_h2h_ready": LaunchConfiguration("use_overtaking"),"require_actuator_guard": True,"expected_guard_source":guard_producer,"expected_guard_epoch":guard_epoch}]),
+--- V3/src/verification/h2h_champion/qualify_h2h.py
++++ V4/src/verification/h2h_champion/qualify_h2h.py
+@@ -414,7 +414,7 @@
+         lifecycle, source_transitions, completion_events, collision_time = [], [], [], [None]
+         lap_times, blue_speeds, start_stamp = [], [], [None]
+         late_process, late_output = [None], [""]
+-        atomic_lineage=AppliedLineageAudit()
++        atomic_lineage=AppliedLineageAudit(require_external_watchdog=True)
+         node.create_subscription(String,'actuator_applied_receipt0',
+                                  lambda m:atomic_lineage.observe(m.data),10)
+         node.create_subscription(Int32, "lap_count0", lambda m: laps.__setitem__(0, m.data), 1)
+--- V3/src/verification/qualification_gates/applied_lineage.py
++++ V4/src/verification/qualification_gates/applied_lineage.py
+@@ -2,7 +2,11 @@
+ import json
+ 
+ class AppliedLineageAudit:
+-    def __init__(self):
++    def __init__(self, *, require_external_watchdog=False):
++        # Historical offline fixture tests need not contain a V4 field, but
++        # every LIVE qualification must opt into strict independent-veto proof.
++        self.require_external_watchdog=bool(require_external_watchdog)
++        self.watchdog_checked_certified_ticks=0
+         self.applied=0
+         self.certified=0
+         self.minimum_risk_brake=0
+@@ -28,6 +32,11 @@
+             if not identity['source_id'] or identity['source_state_sequence']<0:
+                 raise ValueError('SOURCE_MISSING')
+             if mode=='CERTIFIED':
++                if self.require_external_watchdog:
++                    if value.get('independent_watchdog_live') is not True or \
++                            value.get('independent_watchdog_reason')!='INDEPENDENT_WATCHDOG_LIVE':
++                        raise ValueError('INDEPENDENT_WATCHDOG_CERTIFIED_APPLIED_UNPROVEN')
++                    self.watchdog_checked_certified_ticks+=1
+                 if identity['proof_verified_by_guard'] is not True or int(identity['intent_sequence'])<=0:
+                     raise ValueError('CERTIFICATE_MISSING')
+                 # One Intent may be held across multiple physics ticks. Reject
+@@ -52,5 +61,7 @@
+                 'unmatched_applied':self.unmatched,
+                 'last_accepted_intent_sequence':self.highest_intent_sequence,
+                 'run_epoch_observed':self.epoch,
++                'external_watchdog_required':self.require_external_watchdog,
++                'external_watchdog_checked_ticks':self.watchdog_checked_certified_ticks,
+                 'reasons':self.reasons,
+                 'passed':self.certified>0 and self.unmatched==0}
+--- V3/src/verification/solo_champion/qualify_solo.py
++++ V4/src/verification/solo_champion/qualify_solo.py
+@@ -139,7 +139,7 @@
+             state_times.append(time.perf_counter())
+ 
+         node.create_subscription(CarState, "state0", receive_state, 10)
+-        atomic_lineage=AppliedLineageAudit()
++        atomic_lineage=AppliedLineageAudit(require_external_watchdog=True)
+         node.create_subscription(String,'actuator_applied_receipt0',
+                                  lambda m:atomic_lineage.observe(m.data),10)
+         invalid_pub = None
+--- V3/tests_integration/test_external_watchdog_applied_v4.py
++++ V4/tests_integration/test_external_watchdog_applied_v4.py
+@@ -0,0 +1,58 @@
++"""V4 strict Applied lineage: independent veto must be live for every certified tick."""
++import sys
++from pathlib import Path
++root=Path(__file__).resolve().parents[1]
++sys.path.insert(0,str(root/'src/verification/qualification_gates'))
++from applied_lineage import AppliedLineageAudit
++
++
++def good(*,live=True,reason='INDEPENDENT_WATCHDOG_LIVE',mode='CERTIFIED',deadman=False):
++    return {'deadman':deadman,'command_stamp_ns':1000,
++        'independent_watchdog_live':live,'independent_watchdog_reason':reason,
++        'guard_intent_identity':{'run_epoch':'epoch','intent_sequence':4 if mode=='CERTIFIED' else None,
++        'command_stamp_ns':1000,'source_state_sequence':10,'source_id':'R_B',
++        'authority_mode':mode,'proof_verified_by_guard':mode=='CERTIFIED'}}
++
++
++def test_qualified_guard_and_external_watchdog_receipt():
++    a=AppliedLineageAudit(require_external_watchdog=True)
++    a.observe(good());assert a.verdict()['passed']
++    assert a.verdict()['external_watchdog_checked_ticks']==1
++
++
++def test_external_watchdog_missing_rejects_live_qualification():
++    a=AppliedLineageAudit(require_external_watchdog=True)
++    m=good();m.pop('independent_watchdog_live');a.observe(m)
++    assert not a.verdict()['passed'] and a.verdict()['unmatched_applied']==1
++
++
++def test_external_watchdog_false_rejects_live_qualification():
++    a=AppliedLineageAudit(require_external_watchdog=True)
++    a.observe(good(live=False))
++    assert not a.verdict()['passed']
++
++
++def test_external_watchdog_wrong_reason_rejects_live_qualification():
++    a=AppliedLineageAudit(require_external_watchdog=True)
++    a.observe(good(reason='STALE'))
++    assert not a.verdict()['passed']
++
++
++def test_minimum_risk_brake_still_permitted_without_heartbeat():
++    a=AppliedLineageAudit(require_external_watchdog=True)
++    a.observe(good(live=False,mode='MINIMUM_RISK_BRAKE'))
++    assert a.verdict()['minimum_risk_brake_ticks']==1
++    assert not a.verdict()['passed']  # no certified motion
++
++
++def test_deadman_does_not_count_as_certified():
++    a=AppliedLineageAudit(require_external_watchdog=True)
++    a.observe({'deadman':True})
++    assert not a.verdict()['passed'] and a.verdict()['certified_ticks']==0
++
++
++def test_real_qualifiers_require_external_watchdog():
++    for rel in ('src/verification/solo_champion/qualify_solo.py',
++                'src/verification/h2h_champion/qualify_h2h.py'):
++        text=(root/rel).read_text()
++        assert 'AppliedLineageAudit(require_external_watchdog=True)' in text

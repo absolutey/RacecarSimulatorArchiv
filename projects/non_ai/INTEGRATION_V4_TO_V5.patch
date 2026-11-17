@@ -1,0 +1,785 @@
+--- V4/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py
++++ V5/src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py
+@@ -138,6 +138,7 @@
+         # The startup-only recoverable latch cannot clear a collision,
+         # moving-vehicle incident, or an independently rejected certificate.
+         self.startup_waiting_for_fresh_state=False
++        self.h2h_abort_park_recovery=False
+         self.startup_recovery_fresh_samples=0
+         self.last_recovery_physics_sequence=-1
+         self.last_recovery_ros_stamp_ns=-1
+@@ -347,7 +348,13 @@
+             self.reference_revision=0
+             self.last_certificate=False
+             if self.start_ns is not None:
+-                self._brake('REFERENCE_IDENTITY_REJECTED')
++                if (not self.solo and
++                        str(msg.status_reason).startswith(
++                            'H2H_ABORT_CONTINUATION_EXPIRED:')):
++                    self.h2h_abort_park_recovery=True
++                    self._brake('H2H_ABORT_REFERENCE_WITHDRAWN')
++                else:
++                    self._brake('REFERENCE_IDENTITY_REJECTED')
+             else:
+                 self.contract.state='SAFE_HOLD'
+                 if not self.emergency_unrecoverable:
+@@ -642,7 +649,14 @@
+         # collision, dangerous/rejected intent, moving vehicle, ROS clock
+         # faults and any positive actuator command. ONLY a fresh-state-loss
+         # while demonstrably parked is eligible for an independent re-arm.
+-        recoverable_gap=(reason in ('STATE_WATCHDOG_TIMEOUT','INITIAL_INTENT_TIMEOUT') and
++        # This exception does not restore actuation. It permits re-arming
++        # only AFTER the simulator has physically parked, multiple new CarState
++        # receipts and S0-R's separately gated nominal re-entry.
++        planned_h2h_abort=(
++            reason == 'H2H_ABORT_REFERENCE_WITHDRAWN'
++            and self.h2h_abort_park_recovery and not self.solo
++            and not self.collision and not self.emergency_unrecoverable)
++        recoverable_gap=planned_h2h_abort or (reason in ('STATE_WATCHDOG_TIMEOUT','INITIAL_INTENT_TIMEOUT') and
+                      not self.emergency_unrecoverable and not self.collision and
+                      self.last_state is not None and abs(self.last_state.v)<=0.025 and
+                      math.hypot(self.last_state.vx,self.last_state.vy)<=0.025 and
+@@ -922,6 +936,13 @@
+                 if watchdog_report is not None:
+                     self.get_logger().error('F1TENTH_GUARD_FIRST_STATE_WATCHDOG='+json.dumps(
+                         watchdog_report,sort_keys=True))
++        elif (self.h2h_abort_park_recovery and not self.reference_id and
++              self.contract.state == 'SAFE_HOLD' and
++              not self.emergency_unrecoverable):
++            # No reference = no actuation. Leave the intentional ABORT parked
++            # recovery opportunity open; the S0-R + Red witness gate decides
++            # when a new nominal reference may be published.
++            self.last_reason='H2H_ABORT_WAITING_FOR_PARKED_NOMINAL_REENTRY'
+         elif (self.start_ns is not None and now>=self.start_ns and
+               (self.last_intent_steady_ns is None or steady-self.last_intent_steady_ns>100000000)):
+             # The controller computes its first MPC only after scheduled start.
+--- V4/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py
++++ V5/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py
+@@ -389,6 +389,18 @@
+             raise ValueError("no COMPLETE plan is awaiting release")
+         self.plan = None
+         self.internal_state = InternalState.NOMINAL
++
++    def acknowledge_abort_recovery(self):
++        """Require an S0-R-confirmed parked nominal handoff after ABORT.
++
++        This does NOT revalidate or reuse the old plan. A new opportunity
++        must use a new fresh R-D prediction and a new plan identity/revision.
++        """
++        if self.plan is None or self.plan.state != WireState.ABORT.value:
++            raise ValueError('ABORT_NOT_LATCHED_FOR_RECOVERY')
++        self.plan = None
++        self.internal_state = InternalState.TRAIL
++        self.last_qualified_prediction_at_s = None
+ 
+     def _prediction_status(self, prediction, now_s):
+         c = self.config
+--- V4/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py
++++ V5/src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py
+@@ -267,6 +267,8 @@
+         self.prediction = None
+         self.state = None
+         self.awaiting_nominal_release = False
++        self.awaiting_abort_release = False
++        self.abort_release_started_ns = -1
+ 
+         self.publisher = self.create_publisher(
+             OvertakingPlan,
+@@ -321,6 +323,20 @@
+                 ):
+                     self.planner.acknowledge_complete()
+                 self.awaiting_nominal_release = False
++            if (self.awaiting_abort_release and
++                    self.planner.plan is not None and
++                    message.status_reason == (
++                        'H2H_ABORT_RECOVERY_STATIONARY_REJOIN:' +
++                        self.planner.plan.identity_digest + ':' +
++                        str(self.planner.plan.revision)) and
++                    self.planner.plan.state == WireState.ABORT.value):
++                # The nominal reference is a fresh, explicit S0-R recovery
++                # publication, never the original TRANSIENT_LOCAL replay.
++                self.planner.acknowledge_abort_recovery()
++                # Never reuse a prediction that existed before ABORT.
++                self.prediction = None
++                self.awaiting_abort_release = False
++                self.abort_release_started_ns = -1
+ 
+     def receive_prediction(self, message):
+         identity = prediction_identity(message)
+@@ -507,6 +523,7 @@
+             self.nominal is None
+             or self.state is None
+             or self.awaiting_nominal_release
++            or self.awaiting_abort_release
+         ):
+             return
+ 
+@@ -566,6 +583,9 @@
+ 
+         self.publisher.publish(message)
+ 
++        if output.action == "PUBLISH_ABORT_DEGRADE":
++            self.awaiting_abort_release = True
++            self.abort_release_started_ns = self.get_clock().now().nanoseconds
+         if output.action == "RELEASE_TO_NOMINAL":
+             self.awaiting_nominal_release = True
+ 
+--- V4/src/driving/algorithms/f1tenth_racing_overtaking/test/test_abort_handoff_v5.py
++++ V5/src/driving/algorithms/f1tenth_racing_overtaking/test/test_abort_handoff_v5.py
+@@ -0,0 +1,132 @@
++"""ROS adapter contract: no automatic ABORT un-latch without parked evidence."""
++from dataclasses import dataclass
++import time
++from types import SimpleNamespace as O
++from f1tenth_racing_reference.node import NominalActiveReferenceNode
++from f1tenth_racing_overtaking.successor_node import SuccessorOvertakingPlannerNode
++
++
++@dataclass(frozen=True)
++class Nominal:
++    trajectory: object
++    track_id: str = 'iccas2025'
++    frame_id: str = 'map'
++    status_reason: str = ''
++
++
++class FakeReference:
++    def __init__(self):
++        self.messages=[]
++        self._nominal=Nominal(O(samples=[O(x_m=float(i),y_m=0.,heading_rad=0.)
++                                           for i in range(6)]))
++        self._active=O(active_reference_valid=False,source_kind='NOMINAL')
++        self._expired_plan=O(maneuver_state='ABORT',plan_id='sha256:abort42',plan_revision=3)
++        self._plan=None
++        self._recovery_radius=.35
++        self._recovery_collision_ego=False
++        self._recovery_collision_red=False
++        self._recovery_collision_ego_steady_ns=time.monotonic_ns()
++        self._recovery_collision_red_steady_ns=time.monotonic_ns()
++        self._recovery_good_ticks=0
++        self._recovery_last_sequence=-1
++        self._recovery_evidence=''
++        self._recovery_state=self.state(100)
++        self._recovery_prediction=self.red()
++
++    def get_clock(self):
++        return O(now=lambda: O(nanoseconds=10_000_000_000))
++
++    def get_logger(self):
++        return O(warning=lambda _: None)
++
++    def publish(self, item):
++        self.messages.append(item)
++        self._active=item
++
++    @staticmethod
++    def state(seq):
++        return O(physics_sequence=seq,px=1.5,py=0.,yaw=0.,v=0.,vx=0.,vy=0.,omega=0.,
++                 a=0.,accel=0.,physics_stamp=O(sec=9,nanosec=975_000_000))
++
++    @staticmethod
++    def red():
++        red=O(schema_version=1,valid=True,source_lifecycle='TRACKED',
++              source_opponent_id='red',source_confidence=.99,source_hit_count=9,
++              track_id='iccas2025',frame_id='map',
++              source_observation_time=O(sec=9,nanosec=950_000_000),samples=[])
++        for j in range(1,31):
++            t=j*.1
++            red.samples.append(O(dt_s=t,x_m=10+t,y_m=0.,vx_mps=1.,vy_mps=0.,
++                                 occupancy_half_length_m=.2,occupancy_half_width_m=.1))
++        return red
++
++
++def test_s0r_requires_three_distinct_parked_states():
++    fake=FakeReference()
++    for seq in (100,100,101):
++        fake._recovery_state=fake.state(seq)
++        NominalActiveReferenceNode._attempt_abort_recovery(fake)
++    assert fake.messages==[]
++    fake._recovery_state=fake.state(102)
++    NominalActiveReferenceNode._attempt_abort_recovery(fake)
++    assert len(fake.messages)==1
++    assert fake.messages[0].status_reason == (
++        'H2H_ABORT_RECOVERY_STATIONARY_REJOIN:sha256:abort42:3')
++    assert fake._expired_plan is None
++
++
++def test_s0r_denies_unknown_collision_and_near_red():
++    fake=FakeReference()
++    fake._recovery_collision_red=None
++    NominalActiveReferenceNode._attempt_abort_recovery(fake)
++    assert not fake.messages
++    fake._recovery_collision_red=False
++    for sm in fake._recovery_prediction.samples:sm.x_m=1.6
++    NominalActiveReferenceNode._attempt_abort_recovery(fake)
++    assert not fake.messages
++
++
++def test_s0r_collision_latches_across_future_false_samples():
++    fake=FakeReference()
++    NominalActiveReferenceNode.receive_ego_collision(fake,O(data=True))
++    NominalActiveReferenceNode.receive_ego_collision(fake,O(data=False))
++    assert fake._recovery_collision_ego is True
++    for i in range(5):
++        fake._recovery_state=fake.state(100+i)
++        NominalActiveReferenceNode._attempt_abort_recovery(fake)
++    assert not fake.messages
++
++
++def test_reject_replayed_or_unmatched_recovery_at_re_planner():
++    seen=[]
++    plan=O(identity_digest='sha256:expected',revision=5,state='ABORT')
++    planner=O(track_id='iccas2025',frame_id='map',map_image_sha256='sha256:map',
++              plan=plan,acknowledge_abort_recovery=lambda:seen.append(True))
++    fake=O(planner=planner,nominal=None,awaiting_nominal_release=False,
++           awaiting_abort_release=True,abort_release_started_ns=500,
++           prediction=O(identity='old_pre_abort_red'))
++    names=('sample_index','s_m','x_m','y_m','heading_rad','curvature_per_m',
++           'lateral_offset_m','target_speed_mps','target_accel_mps2','ds_to_next_m')
++    samples=[]
++    for i in range(3):
++        sample=O()
++        for name in names:setattr(sample,name, 1 if name=='ds_to_next_m' else float(i))
++        samples.append(sample)
++    msg=O(active_reference_valid=True,source_kind='NOMINAL',sample_count=3,
++          track_id='iccas2025',frame_id='map',map_image_sha256='sha256:map',
++          status_reason='H2H_ABORT_RECOVERY_STATIONARY_REJOIN:sha256:old:5',
++          samples=samples)
++    SuccessorOvertakingPlannerNode.receive_reference(fake,msg)
++    assert not seen and fake.awaiting_abort_release
++    msg.status_reason='H2H_ABORT_RECOVERY_STATIONARY_REJOIN:sha256:expected:5'
++    SuccessorOvertakingPlannerNode.receive_reference(fake,msg)
++    assert seen==[True] and not fake.awaiting_abort_release
++    assert fake.prediction is None
++
++
++def test_s0r_rejects_stale_collision_heartbeat():
++    fake=FakeReference()
++    fake._recovery_collision_ego_steady_ns=time.monotonic_ns()-500_000_000
++    NominalActiveReferenceNode._attempt_abort_recovery(fake)
++    assert fake._recovery_evidence=='RECOVERY_COLLISION_NOT_CLEARED'
++    assert not fake.messages
+--- V4/src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_q0.py
++++ V5/src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_q0.py
+@@ -846,3 +846,35 @@
+         "BLOCKING_HOLD_CLEAR:PREDICTION_INVALID"
+     )
+ 
++
++
++def test_v5_abort_requires_explicit_nominal_recovery_handshake(monkeypatch):
++    planner, nominal = fixture()
++    pred = prediction(planner)
++    candidate = manual_candidate(planner, nominal)
++    committed = planner.commit_candidate(candidate, pred, 0., 10.)
++    old_digest = committed.plan.identity_digest
++    abort = planner._abort_degrade("PREDICTION_LOST")
++    assert abort.plan.state == WireState.ABORT.value
++    latched = planner.update(nominal, 10., 0., 0., None, 10.2)
++    assert latched.action == "ABORT_LATCHED_NO_REPUBLISH"
++    assert latched.plan.identity_digest == old_digest
++    # Only S0-R's independently verified stationary nominal handoff may
++    # invoke this method. It never upgrades an old plan into a fresh pass.
++    planner.acknowledge_abort_recovery()
++    assert planner.plan is None
++    assert planner.internal_state == InternalState.TRAIL
++    assert planner.last_qualified_prediction_at_s is None
++    new_result = planner.update(nominal, 10., 0., 0., None, 11.)
++    assert new_result.action == "KEEP_NOMINAL"
++    assert planner.plan is None
++
++
++def test_v5_abort_recovery_cannot_clear_active_committed_plan():
++    planner, nominal = fixture()
++    pred = prediction(planner)
++    candidate = manual_candidate(planner, nominal)
++    committed = planner.commit_candidate(candidate, pred, 0., 10.)
++    with pytest.raises(ValueError, match="ABORT_NOT_LATCHED_FOR_RECOVERY"):
++        planner.acknowledge_abort_recovery()
++    assert planner.plan is committed.plan
+--- V4/src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py
++++ V5/src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py
+@@ -187,6 +187,7 @@
+         Node(package="foundation_baseline", executable="blue_foundation_controller", output="screen", parameters=[{"target_speed_m_s": foundation["blue_foundation"]["target_speed_m_s"],"environment_file":environment_file,"centerline_file":centerline_file,"guard_run_epoch":guard_epoch}], condition=UnlessCondition(LaunchConfiguration("use_r_b0"))),
+         Node(package="f1tenth_racing_reference", executable="nominal_active_reference", output="screen", parameters=[{"trajectory_candidate": LaunchConfiguration("trajectory_candidate"),
+             "nominal_policy_file": nominal_policy,
++            "environment_file": environment_file,
+             "allow_preliminary_spielberg": active_profile in (
+                 'SOLO_SPIELBERG_MPC_PRELIMINARY', 'H2H_MPC_BASELINE_PRELIMINARY'),
+             "raceline_data_dir": LaunchConfiguration("raceline_data_dir"),
+--- V4/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/abort_recovery_gate.py
++++ V5/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/abort_recovery_gate.py
+@@ -0,0 +1,135 @@
++"""Deterministic stationary H2H ABORT-to-nominal recovery precondition.
++
++Only returns an eligibility bit; never authorizes control, a stop certificate,
++or a Red pass. S0-R publishes nominal only after conservative measured checks,
++then R-B and independent Guard MUST separately qualify every actuator command.
++"""
++from dataclasses import dataclass
++import math
++
++
++@dataclass(frozen=True)
++class RecoveryDecision:
++    allowed: bool
++    reason: str
++
++
++def _stamp_ns(stamp):
++    return int(stamp.sec) * 1_000_000_000 + int(stamp.nanosec)
++
++
++def _distance_point_segment(px, py, x0, y0, x1, y1):
++    dx, dy = x1 - x0, y1 - y0
++    d2 = dx * dx + dy * dy
++    if d2 < 1e-12:
++        return math.hypot(px-x0, py-y0), 0.0
++    t = max(0.0, min(1.0, ((px-x0)*dx+(py-y0)*dy)/d2))
++    return math.hypot(px-x0-t*dx, py-y0-t*dy), t
++
++
++def _segment_minimum(a, b, x, y):
++    return _distance_point_segment(x, y, a[0], a[1], b[0], b[1])[0]
++
++
++def evaluate_abort_recovery(nominal_samples, ego, red_prediction, *,
++                            now_ns, ego_radius_m, collision_known,
++                            collision_active, source_age_limit_ns=75_000_000,
++                            prediction_age_limit_ns=350_000_000,
++                            separation_margin_m=0.20,
++                            nominal_distance_max_m=0.15,
++                            heading_error_max_rad=0.20,
++                            minimum_future_s=2.0,
++                            red_accel_uncertainty_mps2=1.0):
++    """Conservative *parked* return to nominal; no on-track moving bypass.
++
++    A dropped prediction, stale ego sample, unknown collision signal, moving ego,
++    large deviation from nominal, or uncertain Red occupancy denies recovery.
++    """
++    no=lambda reason: RecoveryDecision(False, reason)
++    if not collision_known or collision_active:
++        return no('RECOVERY_COLLISION_NOT_CLEARED')
++    if ego is None or red_prediction is None:
++        return no('RECOVERY_EGO_OR_RED_MISSING')
++    try:
++        now_ns=int(now_ns)
++        observed_ns=_stamp_ns(ego.physics_stamp)
++        source_ns=_stamp_ns(red_prediction.source_observation_time)
++        scalars=(ego.px,ego.py,ego.yaw,ego.v,ego.vx,ego.vy,ego.omega,
++                 ego.a,ego.accel,ego_radius_m,separation_margin_m,
++                 nominal_distance_max_m,heading_error_max_rad,minimum_future_s,
++                 red_accel_uncertainty_mps2)
++        if not all(math.isfinite(float(v)) for v in scalars):
++            return no('RECOVERY_NONFINITE')
++        if not (0 <= now_ns-observed_ns <= source_age_limit_ns):
++            return no('RECOVERY_EGO_STALE_OR_FUTURE')
++        if not (0 <= now_ns-source_ns <= prediction_age_limit_ns):
++            return no('RECOVERY_RED_STALE_OR_FUTURE')
++        if not (red_accel_uncertainty_mps2>=0 and ego_radius_m>0
++                and separation_margin_m>=0 and
++                nominal_distance_max_m>0 and heading_error_max_rad>0 and minimum_future_s>0):
++            return no('RECOVERY_INVALID_BOUND')
++        if (abs(float(ego.v))>0.025 or math.hypot(ego.vx,ego.vy)>0.025 or
++                abs(ego.omega)>0.05 or abs(ego.a)>0.25 or
++                float(ego.accel)>0.05):
++            return no('RECOVERY_EGO_NOT_PARKED')
++        samples=tuple(nominal_samples)
++        if len(samples)<3:
++            return no('RECOVERY_NOMINAL_UNAVAILABLE')
++        nearest=(float('inf'),None)
++        for a,b in zip(samples,samples[1:]+samples[:1]):
++            values=(a.x_m,a.y_m,b.x_m,b.y_m,a.heading_rad,b.heading_rad)
++            if not all(math.isfinite(float(v)) for v in values):
++                return no('RECOVERY_NOMINAL_NONFINITE')
++            distance,t=_distance_point_segment(ego.px,ego.py,a.x_m,a.y_m,b.x_m,b.y_m)
++            if distance<nearest[0]:
++                heading=math.atan2(math.sin(a.heading_rad)*(1-t)+math.sin(b.heading_rad)*t,
++                                    math.cos(a.heading_rad)*(1-t)+math.cos(b.heading_rad)*t)
++                nearest=(distance,heading)
++        if (nearest[0]>nominal_distance_max_m or
++                abs(math.atan2(math.sin(ego.yaw-nearest[1]),
++                               math.cos(ego.yaw-nearest[1])))>heading_error_max_rad):
++            return no('RECOVERY_NOMINAL_ALIGNMENT_UNPROVEN')
++        red=red_prediction
++        if (not red.valid or red.schema_version != 1 or
++                red.source_lifecycle!='TRACKED' or
++                not red.source_opponent_id or not red.track_id or
++                not red.frame_id or
++                not math.isfinite(float(red.source_confidence)) or
++                red.source_confidence <= 0 or
++                red.source_hit_count<2):
++            return no('RECOVERY_RED_IDENTITY_UNPROVEN')
++        predicted=tuple(red.samples)
++        if len(predicted)<2:
++            return no('RECOVERY_RED_HORIZON_MISSING')
++        last_t=0.0
++        prev=None
++        age_s=(now_ns-source_ns)*1e-9
++        required_horizon_s=age_s+minimum_future_s+0.025
++        for sm in predicted:
++            t=float(sm.dt_s)
++            values=(t,sm.x_m,sm.y_m,sm.vx_mps,sm.vy_mps,
++                    sm.occupancy_half_length_m,sm.occupancy_half_width_m)
++            if (not all(math.isfinite(float(v)) for v in values) or
++                    t<=last_t or t-last_t>0.21 or
++                    min(sm.occupancy_half_length_m,sm.occupancy_half_width_m)<=0):
++                return no('RECOVERY_RED_SAMPLING_INVALID')
++            r=math.hypot(sm.occupancy_half_length_m,sm.occupancy_half_width_m)
++            r+=0.5*red_accel_uncertainty_mps2*t*t+ego_radius_m+separation_margin_m
++            if prev is None:
++                # The first segment is unknown; bound backward by current
++                # velocity, with uncertainty inflation at both endpoints.
++                start=(float(sm.x_m)-float(sm.vx_mps)*t,
++                       float(sm.y_m)-float(sm.vy_mps)*t)
++                prev=start
++            end=(float(sm.x_m),float(sm.y_m))
++            if _segment_minimum(prev,end,float(ego.px),float(ego.py))<=r:
++                return no('RECOVERY_RED_SWEPT_OCCUPANCY_UNPROVEN')
++            prev=end
++            last_t=t
++            if last_t >= required_horizon_s:
++                break
++        if last_t < required_horizon_s:
++            return no('RECOVERY_RED_HORIZON_UNCOVERED')
++        return RecoveryDecision(True,'PARKED_NOMINAL_RED_CLEAR_PRECONDITION_ONLY')
++    except (ValueError,TypeError,AttributeError,OverflowError):
++        return no('RECOVERY_INPUT_INVALID')
+--- V4/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py
++++ V5/src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py
+@@ -1,12 +1,17 @@
+ import json
++import math
++import time
++from dataclasses import replace
+ from pathlib import Path
++import yaml
+ 
+ import rclpy
+ from rclpy.node import Node
+ from rclpy.qos import DurabilityPolicy, HistoryPolicy, QoSProfile, ReliabilityPolicy
+ from ament_index_python.packages import get_package_share_directory
+ 
+-from control_msgs.msg import ActiveTargetTrajectory, OpponentPrediction, OvertakingPlan
++from control_msgs.msg import ActiveTargetTrajectory, OpponentPrediction, OvertakingPlan, CarState
++from std_msgs.msg import Bool
+ from f1tenth_racing_raceline import load_racing_trajectory
+ 
+ from .core import (invalid_active_reference, matching_complete,
+@@ -14,6 +19,7 @@
+                    select_nominal, select_override)
+ from .transport import to_message
+ from .contract_guard import load_nominal_policy
++from .abort_recovery_gate import evaluate_abort_recovery
+ 
+ 
+ ACTIVE_REFERENCE_QOS = QoSProfile(
+@@ -28,6 +34,7 @@
+     def __init__(self):
+         super().__init__("s0_active_reference")
+         self.declare_parameter("trajectory_candidate", "baseline")
++        self.declare_parameter("environment_file", "")
+         self.declare_parameter("allow_preliminary_spielberg", False)
+         self.declare_parameter("nominal_policy_file", "")
+         self.declare_parameter("raceline_data_dir", "")
+@@ -79,6 +86,35 @@
+         self._plan = None
+         self._expired_plan = None
+         self._predictions = {}
++        # Only the accepted ABORT path may use this recovery gate. Never apply
++        # nominal while moving/outside its corridor or without fresh Red proof.
++        self._recovery_state = None
++        self._recovery_collision_ego = None
++        self._recovery_collision_red = None
++        self._recovery_collision_ego_steady_ns = None
++        self._recovery_collision_red_steady_ns = None
++        self._recovery_prediction = None
++        self._recovery_last_sequence = -1
++        self._recovery_good_ticks = 0
++        self._recovery_evidence = "NOT_ATTEMPTED"
++        try:
++            sim_share = Path(get_package_share_directory('f1tenth_racing_sim'))
++            env_path = self.get_parameter('environment_file').value or str(
++                sim_share / 'config/competition_environment.yaml')
++            env = yaml.safe_load(Path(env_path).read_text())
++            if (env['environment_identity']['active_track'] != expected_track or
++                    env['map']['image_sha256'] != expected_map):
++                raise ValueError('ABORT_RECOVERY_ENVIRONMENT_MISMATCH')
++            fp = env['collision']['footprint_relative_to_base_link']
++            self._recovery_radius = max(
++                math.hypot(x,y) for x in (float(fp['min_x_m']),float(fp['max_x_m']))
++                for y in (float(fp['min_y_m']),float(fp['max_y_m']))) + 0.03
++        except Exception as error:
++            self._recovery_radius = None
++            self.get_logger().warning('ABORT_RECOVERY_UNAVAILABLE: '+str(error))
++        self.create_subscription(CarState, 'state0', self.receive_recovery_state, 1)
++        self.create_subscription(Bool, 'collision0', self.receive_ego_collision, 10)
++        self.create_subscription(Bool, 'vehicle_collision', self.receive_red_collision, 10)
+         self.create_subscription(OpponentPrediction, "opponent_prediction", self.receive_prediction, 10)
+         self.create_subscription(OvertakingPlan, "overtaking_plan", self.receive_plan, 10)
+         self.create_timer(0.1, self.expire_override)
+@@ -129,6 +165,7 @@
+     def receive_prediction(self, prediction):
+         now_ns = self.get_clock().now().nanoseconds
+         maximum_age_ns = round(self.get_parameter("prediction_max_age_s").value * 1_000_000_000)
++        self._recovery_prediction = prediction
+         self._predictions[prediction_identity(prediction)] = prediction
+         self._predictions = {
+             identity: message for identity, message in self._predictions.items()
+@@ -136,14 +173,94 @@
+                          message.source_observation_time.nanosec) <= maximum_age_ns
+         }
+ 
++    def receive_recovery_state(self, message):
++        # The last two samples must have monotonically increasing identity.
++        if (self._recovery_state is None or
++                (int(message.physics_sequence) > int(self._recovery_state.physics_sequence) and
++                 (message.physics_stamp.sec, message.physics_stamp.nanosec) >
++                 (self._recovery_state.physics_stamp.sec,
++                  self._recovery_state.physics_stamp.nanosec))):
++            self._recovery_state = message
++
++    def receive_ego_collision(self, message):
++        self._recovery_collision_ego_steady_ns = time.monotonic_ns()
++        self._recovery_collision_ego = (
++            bool(message.data) or bool(self._recovery_collision_ego))
++
++    def receive_red_collision(self, message):
++        self._recovery_collision_red_steady_ns = time.monotonic_ns()
++        self._recovery_collision_red = (
++            bool(message.data) or bool(self._recovery_collision_red))
++
++    def _attempt_abort_recovery(self):
++        # S0-R cannot issue braking or an actuation certificate. It may
++        # re-publish nominal ONLY after the independent parked-state/Red gate.
++        if (self._expired_plan is None or
++                self._expired_plan.maneuver_state != 'ABORT' or
++                self._active.active_reference_valid or
++                self._recovery_radius is None or
++                self._nominal.trajectory is None):
++            return
++        state = self._recovery_state
++        red = self._recovery_prediction
++        if (red is not None and
++                (red.track_id != self._nominal.track_id or
++                 red.frame_id != self._nominal.frame_id)):
++            red = None
++        steady_now = time.monotonic_ns()
++        collision_fresh = (
++            self._recovery_collision_ego_steady_ns is not None and
++            self._recovery_collision_red_steady_ns is not None and
++            0 <= steady_now - self._recovery_collision_ego_steady_ns <= 250_000_000 and
++            0 <= steady_now - self._recovery_collision_red_steady_ns <= 250_000_000)
++        result = evaluate_abort_recovery(
++            self._nominal.trajectory.samples, state, red,
++            now_ns=self.get_clock().now().nanoseconds,
++            ego_radius_m=self._recovery_radius,
++            collision_known=(collision_fresh and
++                             self._recovery_collision_ego is not None and
++                             self._recovery_collision_red is not None),
++            collision_active=bool(self._recovery_collision_ego or
++                                  self._recovery_collision_red),
++        )
++        self._recovery_evidence = result.reason
++        if not result.allowed:
++            self._recovery_good_ticks = 0
++            return
++        sequence = int(state.physics_sequence)
++        if sequence <= self._recovery_last_sequence:
++            return
++        self._recovery_last_sequence = sequence
++        self._recovery_good_ticks += 1
++        # Three distinct, increasing state ticks after ABORT expiration.
++        if self._recovery_good_ticks < 3:
++            return
++        abort_plan = self._expired_plan
++        self._expired_plan = None
++        self._recovery_good_ticks = 0
++        self.publish(replace(
++            self._nominal,
++            status_reason=('H2H_ABORT_RECOVERY_STATIONARY_REJOIN:' +
++                           abort_plan.plan_id + ':' + str(abort_plan.plan_revision)),
++        ))
++        self.get_logger().warning(
++            'H2H_ABORT_RECOVERY_NOMINAL_PROPOSAL_ONLY: '
++            'independent Guard must certify all subsequent commands')
++
+     def expire_override(self):
+-        if self._active.source_kind == "NOMINAL" or self._plan is None:
+-            return
+-        action = override_expiry_action(self._plan, self.get_clock().now().nanoseconds)
+-        if action == "DEGRADE":
+-            self._expired_plan = self._plan
+-            self._plan = None
+-            self.publish(invalid_active_reference("COMMITTED_CONTINUATION_EXPIRED"))
++        if self._plan is not None and self._active.source_kind != "NOMINAL":
++            action = override_expiry_action(
++                self._plan, self.get_clock().now().nanoseconds)
++            if action == "DEGRADE":
++                self._expired_plan = self._plan
++                self._plan = None
++                self._recovery_last_sequence = -1
++                self._recovery_good_ticks = 0
++                self.publish(invalid_active_reference(
++                    ('H2H_ABORT_CONTINUATION_EXPIRED:' + self._expired_plan.plan_id)
++                    if self._expired_plan.maneuver_state == 'ABORT'
++                    else 'COMMITTED_CONTINUATION_EXPIRED'))
++        self._attempt_abort_recovery()
+ 
+ 
+ def main():
+--- V4/src/platform/f1tenth_racing_reference/package.xml
++++ V5/src/platform/f1tenth_racing_reference/package.xml
+@@ -8,6 +8,9 @@
+   <buildtool_depend>ament_python</buildtool_depend>
+   <depend>ament_index_python</depend>
+   <depend>control_msgs</depend>
++  <depend>std_msgs</depend>
++  <depend>f1tenth_racing_sim</depend>
++  <exec_depend>python3-yaml</exec_depend>
+   <depend>f1tenth_racing_raceline</depend>
+   <depend>rclpy</depend>
+   <exec_depend>python3-setuptools</exec_depend>
+--- V4/src/platform/f1tenth_racing_reference/test/test_abort_recovery_gate_v5.py
++++ V5/src/platform/f1tenth_racing_reference/test/test_abort_recovery_gate_v5.py
+@@ -0,0 +1,140 @@
++"""Recoverable ABORT only after independent parked, nominal and Red evidence."""
++from types import SimpleNamespace as O
++import math
++import pytest
++# Load the pure contract directly for offline validation without ROS 2 imports.
++import importlib.util
++import sys
++from pathlib import Path
++module_path=Path(__file__).resolve().parents[1]/'f1tenth_racing_reference'/'abort_recovery_gate.py'
++spec=importlib.util.spec_from_file_location('abort_recovery_gate_v5_pure',module_path)
++module=importlib.util.module_from_spec(spec)
++sys.modules[spec.name]=module
++spec.loader.exec_module(module)
++evaluate_abort_recovery=module.evaluate_abort_recovery
++
++
++def stamp(value):
++    return O(sec=int(value),nanosec=int(round((value-int(value))*1e9)))
++
++
++def good(now=10.0):
++    nominal = [O(x_m=float(i),y_m=0.,heading_rad=0.) for i in range(6)]
++    ego = O(px=1.5,py=0.,yaw=0.,v=0.,vx=0.,vy=0.,omega=0.,a=0.,accel=0.,
++            physics_stamp=stamp(now-0.025),physics_sequence=10)
++    red = O(valid=True,schema_version=1,source_lifecycle='TRACKED',
++            source_opponent_id='red',source_track_revision=1,source_confidence=0.95,
++            source_hit_count=4,track_id='iccas2025',frame_id='map',
++            source_observation_time=stamp(now-0.05),samples=[])
++    for j in range(1,41):
++        t=.1*j
++        red.samples.append(O(dt_s=t,x_m=10+t,y_m=0.,vx_mps=1.,vy_mps=0.,
++                             occupancy_half_length_m=.20, occupancy_half_width_m=.10))
++    return nominal,ego,red
++
++
++def gate(nominal,ego,red,**kw):
++    args=dict(now_ns=int(10*1e9),ego_radius_m=.35,
++              collision_known=True,collision_active=False)
++    args.update(kw)
++    return evaluate_abort_recovery(nominal,ego,red,**args)
++
++
++def test_parked_fresh_red_far():
++    assert gate(*good()).allowed
++
++
++def test_no_collision_witness():
++    assert gate(*good(),collision_known=False).reason=='RECOVERY_COLLISION_NOT_CLEARED'
++
++
++def test_collision_latch():
++    assert gate(*good(),collision_active=True).reason=='RECOVERY_COLLISION_NOT_CLEARED'
++
++
++def test_no_prediction():
++    n,e,r=good();assert not gate(n,e,None).allowed
++
++
++def test_ego_stale():
++    n,e,r=good();e.physics_stamp=stamp(9.8)
++    assert gate(n,e,r).reason=='RECOVERY_EGO_STALE_OR_FUTURE'
++
++
++def test_red_stale():
++    n,e,r=good();r.source_observation_time=stamp(9)
++    assert gate(n,e,r).reason=='RECOVERY_RED_STALE_OR_FUTURE'
++
++
++def test_red_future():
++    n,e,r=good();r.source_observation_time=stamp(11)
++    assert gate(n,e,r).reason=='RECOVERY_RED_STALE_OR_FUTURE'
++
++
++@pytest.mark.parametrize('key,value',[
++ ('v',.1),('vx',.1),('omega',.1),('a',.5),('accel',.2)])
++def test_moving_denied(key,value):
++    n,e,r=good();setattr(e,key,value)
++    assert gate(n,e,r).reason=='RECOVERY_EGO_NOT_PARKED'
++
++
++def test_off_nominal_denied():
++    n,e,r=good();e.py=.25
++    assert gate(n,e,r).reason=='RECOVERY_NOMINAL_ALIGNMENT_UNPROVEN'
++
++
++def test_heading_error_denied():
++    n,e,r=good();e.yaw=.5
++    assert gate(n,e,r).reason=='RECOVERY_NOMINAL_ALIGNMENT_UNPROVEN'
++
++
++def test_near_red_denied():
++    n,e,r=good()
++    for sm in r.samples:sm.x_m=1.6
++    assert gate(n,e,r).reason=='RECOVERY_RED_SWEPT_OCCUPANCY_UNPROVEN'
++
++
++def test_short_red_horizon_denied():
++    n,e,r=good();r.samples=r.samples[:8]
++    assert gate(n,e,r).reason=='RECOVERY_RED_HORIZON_UNCOVERED'
++
++
++def test_sample_gap_denied():
++    n,e,r=good();r.samples[1].dt_s=.5
++    assert gate(n,e,r).reason=='RECOVERY_RED_SAMPLING_INVALID'
++
++
++def test_low_confidence_denied():
++    n,e,r=good();r.source_hit_count=0
++    assert gate(n,e,r).reason=='RECOVERY_RED_IDENTITY_UNPROVEN'
++
++
++def test_non_finite_denied():
++    n,e,r=good();e.px=math.nan
++    assert gate(n,e,r).reason=='RECOVERY_NONFINITE'
++
++
++def test_worse_uncertainty_denied():
++    n,e,r=good()
++    for sm in r.samples:sm.x_m=4.0;sm.vx_mps=0.
++    assert not gate(n,e,r).allowed
++
++
++def test_nominal_missing_denied():
++    n,e,r=good()
++    assert gate(n[:2],e,r).reason=='RECOVERY_NOMINAL_UNAVAILABLE'
++
++
++def test_horizon_not_accidentally_require_nine_seconds():
++    n,e,r=good();r.samples=r.samples[:23]
++    assert gate(n,e,r).allowed
++
++
++def test_nan_red_confidence_denied():
++    n,e,r=good();r.source_confidence=math.nan
++    assert gate(n,e,r).reason=='RECOVERY_RED_IDENTITY_UNPROVEN'
++
++
++def test_nan_red_acceleration_bound_denied():
++    n,e,r=good()
++    assert gate(n,e,r,red_accel_uncertainty_mps2=math.nan).reason=='RECOVERY_NONFINITE'

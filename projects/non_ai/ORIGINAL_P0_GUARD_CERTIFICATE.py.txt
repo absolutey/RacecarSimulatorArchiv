@@ -1,0 +1,79 @@
+# Unmodified 2026-10-18 P0 guard certificate, source sha256 2d0ef6f9be82d3fc0b739c1f513cd9e5dca26de78f2156e4bf7b2790d694709f
+def _certificate(self,msg):
+        # The certificate is computed locally from the latest physics tick.
+        # A sender-supplied string or reference identifier never grants it.
+        if self.last_state is None:return False
+        if abs(self.last_state.v)>self.get_parameter('max_speed_cap_mps').value+0.05:
+            return False
+        if (not math.isfinite(msg.steering_rad) or
+                not math.isfinite(msg.acceleration_mps2)):
+            return False
+        lim=self.environment['dynamics']['limits']
+        if (abs(msg.steering_rad)>lim['steering_angle_abs_max_rad'] or
+                msg.acceleration_mps2>lim['acceleration_max_m_s2'] or
+                msg.acceleration_mps2< -lim['deceleration_max_m_s2']):
+            return False
+        if self.identity[1]=='R_B' and msg.active_revision!=self.reference_revision:return False
+        # Source-state binding: exact match, or ONE preceding 25ms tick.
+        # For the lagging tick case the proposal is NEVER certified against
+        # the stale state: evaluate the command from latest Guard physics.
+        if self.last_state_sequence==msg.source_state_sequence:
+            if ns(self.last_state.physics_stamp)!=ns(msg.source_state_stamp):return False
+        else:
+            prev=self.previous_state
+            if (prev is None or self.last_state_sequence!=msg.source_state_sequence+1 or
+                    prev.physics_sequence!=msg.source_state_sequence or
+                    ns(prev.physics_stamp)!=ns(msg.source_state_stamp)):
+                return False
+            delta_ns=ns(self.last_state.physics_stamp)-ns(prev.physics_stamp)
+            now_ns=self.get_clock().now().nanoseconds
+            if not (0<delta_ns<=self.contract.state_age_limit_ns and
+                    0<=now_ns-ns(prev.physics_stamp)<=self.contract.state_age_limit_ns):
+                return False
+            # Fail closed if successive physical states are discontinuous.
+            dt=delta_ns*1e-9
+            displacement=math.hypot(self.last_state.px-prev.px,
+                                    self.last_state.py-prev.py)
+            if displacement>max(abs(prev.v),abs(self.last_state.v))*dt+0.02:
+                return False
+            if (abs(self.last_state.v-prev.v)>0.15 or
+                    abs(math.remainder(self.last_state.yaw-prev.yaw,2*math.pi))>0.15):
+                return False
+        if self.collision:return False
+        try:
+            started=time.perf_counter_ns()
+            cpu_started=time.thread_time_ns()
+            z=self._state()
+            z1=__import__('dataclasses').replace(z)
+            self.envelope.dynamics.step(z1,msg.steering_rad,msg.acceleration_mps2,0.025)
+            # Check immediately commanded motion followed by reaction/stop.
+            result=self.envelope.evaluate(z1,msg.steering_rad,msg.acceleration_mps2)
+            if not result.qualified:
+                self._stop_probe_last_detail={
+                    'branch':'STOPPING_ENVELOPE_REJECT',
+                    'envelope_reason':str(result.reason),
+                    'stop_time_s':float(result.stopping_time_s),
+                    'stop_distance_m':float(result.stopping_distance_m),
+                    'max_abs_slip_rad':float(result.max_abs_slip_rad),
+                    'max_lateral_accel_mps2':float(result.max_lateral_accel_mps2),
+                    'steps':int(result.steps),
+                }
+            elapsed_ns=time.perf_counter_ns()-started
+            cpu_elapsed_ns=time.thread_time_ns()-cpu_started
+            elapsed_us=elapsed_ns/1000.0
+            self.stop_proof_max_duration_us=max(self.stop_proof_max_duration_us,elapsed_us)
+            if elapsed_ns>15000000:
+                self.stop_proof_slow_count+=1
+                self.last_reason='STOP_CERTIFICATE_DEADLINE_EXCEEDED'
+                self._stop_probe_last_detail={
+                    'branch':'GUARD_15MS_DEADLINE',
+                    'elapsed_us':elapsed_us,
+                    'cpu_elapsed_us':cpu_elapsed_ns/1000.0,
+                    'scheduler_gap_us':max(0.0,(elapsed_ns-cpu_elapsed_ns)/1000.0),
+                    'slow_count':self.stop_proof_slow_count,
+                }
+                return False
+            return bool(result.qualified)
+        except (ArithmeticError,ValueError,OverflowError,TypeError,KeyError) as exc:
+            self._stop_probe_last_detail={'branch':'GUARD_CERT_EXCEPTION', 'type':type(exc).__name__}
+            return False

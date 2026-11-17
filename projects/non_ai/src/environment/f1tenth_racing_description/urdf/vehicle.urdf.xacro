@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="f1tenth_vehicle">
+  <xacro:arg name="suffix" default="0"/>
+  <xacro:arg name="chassis_length" default="required"/>
+  <xacro:arg name="chassis_width" default="required"/>
+  <xacro:arg name="chassis_height" default="required"/>
+  <xacro:arg name="chassis_z" default="required"/>
+  <xacro:arg name="wheel_radius" default="required"/>
+  <xacro:arg name="wheel_length" default="required"/>
+  <xacro:arg name="wheel_x" default="required"/>
+  <xacro:arg name="wheel_y" default="required"/>
+  <xacro:arg name="lidar_x" default="required"/>
+  <xacro:arg name="lidar_y" default="required"/>
+  <xacro:arg name="lidar_z" default="required"/>
+  <xacro:arg name="lidar_radius" default="required"/>
+  <xacro:arg name="lidar_height" default="required"/>
+  <xacro:arg name="color" default="required"/>
+  <xacro:property name="chassis_height_value" value="$(arg chassis_height)"/>
+  <xacro:property name="chassis_z_value" value="$(arg chassis_z)"/>
+  <link name="base_link$(arg suffix)">
+    <visual>
+      <origin xyz="0 0 ${float(chassis_z_value) + float(chassis_height_value) / 2.0}"/>
+      <geometry><box size="$(arg chassis_length) $(arg chassis_width) $(arg chassis_height)"/></geometry>
+      <material name="car_color"><color rgba="$(arg color)"/></material>
+    </visual>
+  </link>
+  <xacro:macro name="wheel" params="name x y">
+    <link name="${name}$(arg suffix)">
+      <visual><origin rpy="1.57079632679 0 0"/><geometry><cylinder radius="$(arg wheel_radius)" length="$(arg wheel_length)"/></geometry><material name="black"><color rgba="0.05 0.05 0.05 1"/></material></visual>
+    </link>
+    <joint name="${name}_joint$(arg suffix)" type="fixed"><parent link="base_link$(arg suffix)"/><child link="${name}$(arg suffix)"/><origin xyz="${x} ${y} $(arg wheel_radius)"/></joint>
+  </xacro:macro>
+  <xacro:wheel name="front_left_wheel" x="$(arg wheel_x)" y="$(arg wheel_y)"/>
+  <xacro:wheel name="front_right_wheel" x="$(arg wheel_x)" y="-$(arg wheel_y)"/>
+  <xacro:wheel name="rear_left_wheel" x="-$(arg wheel_x)" y="$(arg wheel_y)"/>
+  <xacro:wheel name="rear_right_wheel" x="-$(arg wheel_x)" y="-$(arg wheel_y)"/>
+  <link name="laser_model$(arg suffix)">
+    <visual><geometry><cylinder radius="$(arg lidar_radius)" length="$(arg lidar_height)"/></geometry><material name="black"/></visual>
+  </link>
+  <joint name="laser_joint$(arg suffix)" type="fixed"><parent link="base_link$(arg suffix)"/><child link="laser_model$(arg suffix)"/><origin xyz="$(arg lidar_x) $(arg lidar_y) $(arg lidar_z)"/></joint>
+</robot>

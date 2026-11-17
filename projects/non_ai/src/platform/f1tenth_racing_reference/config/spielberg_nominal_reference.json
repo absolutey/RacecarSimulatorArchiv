@@ -1,0 +1,28 @@
+{
+  "candidates": {
+    "baseline": {
+      "csv": "spielberg_r_a2_racing_trajectory.csv",
+      "metadata": "spielberg_r_a2_racing_trajectory.json",
+      "source_trajectory_id": "sha256:d945d8e791d3f4233c9b0ccaa9f49b23b5bf276895374cb9d88a5fc1632dcd89"
+    },
+    "centerline_preliminary": {
+      "csv": "spielberg_centerline_preliminary_racing_trajectory.csv",
+      "metadata": "spielberg_centerline_preliminary_racing_trajectory.json",
+      "source_trajectory_id": "sha256:0619224bab83cbf71d7c2a03190f4a4b6cee619ab035ed68ee4982543c1ca8ad"
+    },
+    "scp": {
+      "csv": "spielberg_r_a3_scp_racing_trajectory.csv",
+      "metadata": "spielberg_r_a3_scp_racing_trajectory.json",
+      "source_trajectory_id": "sha256:dfd0d431364ec653c3481c474a46713e4384fb70e31b812807f93004eca45d7f"
+    },
+    "scp_true_joint_experimental": {
+      "csv": "spielberg_r_a3_true_joint_experimental_racing_trajectory.csv",
+      "metadata": "spielberg_r_a3_true_joint_experimental_racing_trajectory.json",
+      "source_trajectory_id": "sha256:8477afe50dc6f885b1e911606df648f4b29ee61b2d88a66feb8eebf8f6f73ff1"
+    }
+  },
+  "default_candidate": "baseline",
+  "frame_id": "map",
+  "map_image_sha256": "c712fd1ecce1b548b5579fa01da3ea6bbdcc91de4f28877deb34d11e9e003c2d",
+  "track_id": "spielberg"
+}

@@ -1,0 +1,7 @@
+{
+  "artifact_version": "r_a1_v1",
+  "convergence_tolerance_m_s": 1e-12,
+  "curvature_epsilon_1_m": 1e-12,
+  "dense_samples_per_segment": 20,
+  "maximum_iterations": 1000
+}

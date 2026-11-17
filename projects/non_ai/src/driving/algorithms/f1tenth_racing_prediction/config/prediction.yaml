@@ -1,0 +1,9 @@
+selected_predictor: track_cv
+horizon_s: 1.0
+timestep_s: 0.1
+process_acceleration_variance_m2_s4: 2.0
+maximum_source_measurement_age_s: 0.5
+occupancy_sigma: 2.0
+imm_transition:
+  - [0.95, 0.05]
+  - [0.10, 0.90]

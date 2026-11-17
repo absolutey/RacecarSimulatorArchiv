@@ -1,0 +1,6 @@
+User provided Ubuntu V3 test run on 2026-10-18:
+Summary: 16 packages finished [22.7s] (build)
+Summary: 16 packages finished [21.5s] (test)
+Summary: 338 tests, 0 errors, 0 failures, 0 skipped
+V3_ROS_REGISTERED_TESTS_PASS=338
+H2H/Guard REALTIME QUALIFICATION NOT ASSERTED.

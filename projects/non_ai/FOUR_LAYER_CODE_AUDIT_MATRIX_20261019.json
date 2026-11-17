@@ -1,0 +1,257 @@
+{
+  "schema": "RAB_FOUR_LAYER_CODE_CLOSURE_AUDIT_V1",
+  "basis": "isolation 698 PASS frozen source + verified new code diff",
+  "only_source_and_offline": true,
+  "physical_tests_executed": false,
+  "ros_package_count": 17,
+  "static_checks": [
+    {
+      "layer": "inventory",
+      "contract": "17 unique ROS package manifests",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src"
+      ]
+    },
+    {
+      "layer": "safety",
+      "contract": "Python/C++ Guards mutually exclusive in launch",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py"
+      ]
+    },
+    {
+      "layer": "safety",
+      "contract": "C++ Guard shares exact single publisher identity",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_native_proof/src/native_guard_ros.cpp",
+        "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py"
+      ]
+    },
+    {
+      "layer": "safety",
+      "contract": "Native ROS Guard SOLO only and H2H denied",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+        "src/platform/f1tenth_racing_native_proof/src/native_guard_ros.cpp"
+      ]
+    },
+    {
+      "layer": "safety",
+      "contract": "C++ proof has bounded monotonic 15ms deadline",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_native_proof/src/native_guard_ros.cpp"
+      ]
+    },
+    {
+      "layer": "safety",
+      "contract": "C++ Guard enforces physical actuator and intent lease limits before proof",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_native_proof/src/native_guard_ros.cpp",
+        "src/platform/f1tenth_racing_native_proof/src/native_guard_intent_bounds.hpp"
+      ]
+    },
+    {
+      "layer": "safety",
+      "contract": "C++ wall watchdog ignores one repeated ROS tick but latches regression/stall",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_native_proof/src/native_guard_ros.cpp"
+      ]
+    },
+    {
+      "layer": "safety",
+      "contract": "C++ fault brake cannot assert certified stop",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_native_proof/src/native_guard_ros.cpp"
+      ]
+    },
+    {
+      "layer": "safety",
+      "contract": "Simulator has separate local Guard and watchdog command veto",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py"
+      ]
+    },
+    {
+      "layer": "rb",
+      "contract": "R-B state QoS is latest-only after QoS recovery",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py"
+      ]
+    },
+    {
+      "layer": "rb",
+      "contract": "Native and Python GuardAhead preserve 7ms fail-closed admission",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/guard_ahead.py"
+      ]
+    },
+    {
+      "layer": "rb",
+      "contract": "MPC subprocess uses spawn and can never publish actuator commands",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/process_primary_worker.py"
+      ]
+    },
+    {
+      "layer": "rb",
+      "contract": "IPC write or read failures request a new process generation",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/process_primary_worker.py"
+      ]
+    },
+    {
+      "layer": "rb",
+      "contract": "Primary request is optional and cannot bypass fallback Gate",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+        "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/final_preflight.py"
+      ]
+    },
+    {
+      "layer": "rb",
+      "contract": "No arbitrary inherited fixed 5m/s execution cap in launch AUTO mode",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py"
+      ]
+    },
+    {
+      "layer": "ra",
+      "contract": "ICCAS and Spielberg have distinct verified environment identities",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/environment/f1tenth_racing_sim/config"
+      ]
+    },
+    {
+      "layer": "ra",
+      "contract": "Nominal reference has active override arbitration",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py"
+      ]
+    },
+    {
+      "layer": "ra",
+      "contract": "Spielberg policy registers both R-A3 candidates without promoting experimental",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_reference/config/spielberg_nominal_reference.json"
+      ]
+    },
+    {
+      "layer": "ra",
+      "contract": "Four map×mode launch cases available, default dry run only",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "FIRSTPASS_MULTIMAP_RUNNER.py"
+      ]
+    },
+    {
+      "layer": "h2h",
+      "contract": "R-C and R-D ROS nodes participate in H2H launch",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py"
+      ]
+    },
+    {
+      "layer": "h2h",
+      "contract": "R-E requires post-ABORT fresh Red epoch",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py"
+      ]
+    },
+    {
+      "layer": "h2h",
+      "contract": "H2H enforces Red guard in launch",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py"
+      ]
+    },
+    {
+      "layer": "h2h",
+      "contract": "Recovery is fresh nominal and Red not legacy committed pass reuse",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py",
+        "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py"
+      ]
+    },
+    {
+      "layer": "h2h",
+      "contract": "G8 cannot pass on a single overtake without ABORT fresh Red and retry",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/verification/qualification_gates/gate_model.py"
+      ]
+    },
+    {
+      "layer": "gates",
+      "contract": "G0-G9 distinguish per-map G6-G8 scope",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/verification/qualification_gates/gate_model.py"
+      ]
+    },
+    {
+      "layer": "gates",
+      "contract": "Gates require source and evidence-bound metrics, not just test count",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "src/verification/qualification_gates/gate_model.py"
+      ]
+    },
+    {
+      "layer": "inventory",
+      "contract": "source .py parses",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "221 files"
+      ]
+    },
+    {
+      "layer": "inventory",
+      "contract": "source .json parses",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "19 files"
+      ]
+    },
+    {
+      "layer": "inventory",
+      "contract": "source .yaml parses",
+      "status": "PASS_STATIC",
+      "source_paths": [
+        "11 files"
+      ]
+    }
+  ],
+  "static_pass": 29,
+  "static_fail": 0,
+  "unresolved_qualification": [
+    "C++ Guard H2H blocked intentionally; Python H2H Guard is selected",
+    "7ms GuardAhead and 15ms Guard OS/ROS worst-case timing not proven",
+    "R-A3 true-joint remains experimental and not formally optimal/physically qualified",
+    "high-speed MPC v(s) applied to Ego not proven end-to-end",
+    "H2H full Red deviation/ABORT/MERGE/FOLLOW/REJOIN/retry not proven",
+    "G0-G9 official promotion lacks live evidence and is not granted",
+    "new 17-package Ubuntu regression must run again after this patch"
+  ]
+}

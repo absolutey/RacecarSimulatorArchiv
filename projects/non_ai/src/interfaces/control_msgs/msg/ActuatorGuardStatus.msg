@@ -1,0 +1,10 @@
+builtin_interfaces/Time stamp
+string run_epoch
+string mode
+string reason
+string source_id
+string active_reference_id
+uint64 last_accepted_sequence
+bool ready
+bool certificate_verified
+bool emergency_unrecoverable

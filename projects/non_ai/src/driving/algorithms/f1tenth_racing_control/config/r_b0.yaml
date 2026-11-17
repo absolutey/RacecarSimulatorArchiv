@@ -1,0 +1,8 @@
+lookahead_base_m: 0.70
+lookahead_speed_gain_s: 0.10
+lookahead_min_m: 0.60
+lookahead_max_m: 1.00
+speed_feedback_gain_per_s: 2.0
+qualified_speed_cap_mps: 20.0
+state_freshness_s: 0.10
+degraded_deceleration_mps2: 2.0

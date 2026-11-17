@@ -1,0 +1,18 @@
+{
+  "frame_id": "map",
+  "map_image_sha256": "471a7c09112458358a4e1b8b540622ea4341abf931c5cfc009ed4d9a9af2350d",
+  "default_candidate": "baseline",
+  "candidates": {
+    "baseline": {
+      "csv": "iccas2025_r_a2_racing_trajectory.csv",
+      "metadata": "iccas2025_r_a2_racing_trajectory.json",
+      "source_trajectory_id": "sha256:ca02f0466cd52a190b85b9416fd14a93465440c8403bd8fecf3c5316c18ff197"
+    },
+    "scp": {
+      "csv": "iccas2025_r_a3_scp_racing_trajectory.csv",
+      "metadata": "iccas2025_r_a3_scp_racing_trajectory.json",
+      "source_trajectory_id": "sha256:52d9e4c72eeab189737e594f5eaeef7ef8437fbdc38794307b51debaf4f79a23"
+    }
+  },
+  "track_id": "iccas2025"
+}

@@ -1,0 +1,8 @@
+{
+  "artifact_version": "r_a0_v1",
+  "dense_validation_spacing_m": 0.01,
+  "maximum_sweeps_per_step": 12,
+  "minimum_improvement_epsilon": 1e-14,
+  "smoothness_weight": 0.05,
+  "step_schedule_m": [0.2, 0.1, 0.05, 0.025, 0.0125, 0.00625, 0.003125]
+}

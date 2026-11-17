@@ -1,0 +1,72 @@
+{
+  "artifact_version": "r_a1_v1",
+  "centerline_comparator": {
+    "centerline_sha256": "4bcaf1658902e3e976d82049e6009e352c25124cba9bd0cc1d8b06f3a35a9c97",
+    "comparator": {
+      "lap_s": 22.467253885451676
+    }
+  },
+  "dense_validation": {
+    "dense_sample_count": 17280,
+    "maximum_braking_excess_m_s2": 1.0658141036401503e-13,
+    "maximum_forward_acceleration_excess_m_s2": 1.0658141036401503e-13,
+    "maximum_global_speed_excess_m_s": 0.0,
+    "maximum_lateral_acceleration_excess_m_s2": 3.552713678800501e-15,
+    "seam_speed_error_m_s": 0.0
+  },
+  "foundation_authority": {
+    "classification": {
+      "acceleration": "DIRECT_CONFIG_AND_CODE",
+      "braking": "DIRECT_CONFIG_AND_CODE",
+      "jerk": "DIRECT_CONFIG_AND_CODE_DEFERRED_TO_R_B",
+      "lateral_acceleration": "DERIVED_FROM_FROZEN_MODEL",
+      "mass": "DIRECT_CONFIG",
+      "maximum_speed": "DIRECT_CONFIG_AND_CODE"
+    },
+    "hashes": {
+      "competition_environment": "58401761f4bf4c2ee73640fd77af3b1282fa0c5900bae6d2ed5c5d2cee717afe",
+      "pacejka_source": "f1fe3b4019c653c4e1d8c6984af39ee6f8c74ff1027b589c5a3d7c8bbc2a0a36",
+      "vehicle_dynamics_source": "68abf966e1ca8b97209640770bf52daa50c18a23990200b667370655378222f1"
+    },
+    "limits": {
+      "acceleration_m_s2": 40.0,
+      "braking_m_s2": 40.0,
+      "front_lateral_force_n": 30.0,
+      "front_peak_slip_rad": 1.1547005383792512,
+      "global_speed_m_s": 20.0,
+      "jerk_m_s3": 100.0,
+      "lateral_acceleration_m_s2": 17.142857142857142,
+      "mass_kg": 3.5,
+      "rear_lateral_force_n": 30.0,
+      "rear_peak_slip_rad": 1.1547005383792512
+    }
+  },
+  "generator_config_sha256": "b6d98a6b400135759df941e7f440c2c9cfe13ea907860a0be043e7c5c1c7eb95",
+  "jerk_feasibility": "DEFERRED_TO_R-B",
+  "output_csv_sha256": "b041570f743fd7aa1f4e39d4cdcae494bf4933f12ee909816482012234a15734",
+  "profile": {
+    "convergence_delta_m_s": 0.0,
+    "iterations": 2,
+    "limiting_constraint_counts": {
+      "BACKWARD_BRAKING": 98,
+      "FORWARD_ACCELERATION": 96,
+      "GLOBAL_SPEED": 466,
+      "LATERAL_CURVATURE": 204
+    },
+    "maximum_speed_m_s": 20.0,
+    "mean_sample_speed_m_s": 17.020366798163217,
+    "mean_traversal_speed_m_s": 15.282954338082536,
+    "minimum_speed_m_s": 4.206123485032415,
+    "offline_envelope_predicted_lap_time_s": 22.450064150597903,
+    "path_length_m": 343.10330530061145,
+    "sample_count": 864
+  },
+  "source_r_a0": {
+    "centerline_sha256": "4bcaf1658902e3e976d82049e6009e352c25124cba9bd0cc1d8b06f3a35a9c97",
+    "csv_sha256": "b340ac912298cac11e3db9057143b28d57b970238d81a69081c8d166ad6bf9b3",
+    "map_metadata_sha256": "f8d6c032123fdd75f9ff9cbd097a294d35cde8a8b06b256784fc945eb6b5410e",
+    "map_sha256": "c712fd1ecce1b548b5579fa01da3ea6bbdcc91de4f28877deb34d11e9e003c2d",
+    "metadata_sha256": "dc73894610e0ed0bdd108ecc38393a5da6658b9fc2af75a47d2ed5e846bb663c"
+  },
+  "valid": true
+}

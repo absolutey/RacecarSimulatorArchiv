@@ -1,0 +1,16 @@
+static_residual_tolerance_m: 0.12
+breakpoint_noise_m: 0.03
+breakpoint_scale: 2.0
+minimum_cluster_points: 2
+minimum_extent_m: 0.03
+maximum_extent_m: 0.70
+maximum_measurement_range_m: 9.5
+association_mahalanobis_squared: 16.0
+measurement_variance_m2: 0.01
+process_acceleration_variance_m2_s4: 2.0
+maximum_missed_scans: 4
+minimum_confirmed_hits: 3
+minimum_confirmation_along_speed_mps: 0.25
+maximum_pose_alignment_s: 0.06
+visible_surface_offset_m: 0.20
+selected_tracker: cv

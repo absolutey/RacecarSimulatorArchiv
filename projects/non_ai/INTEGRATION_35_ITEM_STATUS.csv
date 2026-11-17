@@ -1,0 +1,36 @@
+id,layer,original_issue,current_status,evidence_or_limit
+GAP-01,Guard,C++ Guard ROS 완전 실행기,NOT_IMPLEMENTED,기존 Python ROS Guard 계속 사용
+GAP-02,Guard,native Guard 기본 경로,NATIVE_DUAL_VETO_OPT_IN_CODE_NOT_ROS_QUALIFIED,Installed native C++ independent stop rollout cross-checks Python Guard per candidate when explicitly opted in; unchanged Python authority; no default promotion.
+GAP-03,Guard,15ms end-to-end,UNPROVEN,내부 15ms 정지증명 예산만 유지
+GAP-04,Guard,watchdog 실행 독립,V4_UBUNTU_374_PASS_NO_RT_WCET,Separate watchdog ROS executable installed; full ROS suite V4 374 PASS; no realtime/kill-injection proof.
+GAP-05,Guard,native 운영 빌드 설치/승격,V7_NATIVE_CPP_AMENT_INSTALL_CANDIDATE_CODE_WRITTEN_UBUNTU_PENDING,"CMake ROS package builds/installs identical-source C++ shared library, ABI 23 PASS. No native Guard node or default approval; parity and Ubuntu colcon pending."
+GAP-06,Guard,Applied 원본 Intent 신원,V4_GUARD_APPLIED_ATOMIC_AND_DUAL_VETO_TESTED,V4 Ubuntu 374/374 PASS; real vehicle actuator linkage still unqualified.
+GAP-07,RB_GuardAhead,독립 제어 실행 worker,V6_UBUNTU_433_PASS_WORKER_NONRT,V6 Ubuntu logged 433/433 overall PASS; current worker still Python thread; Primary and Fallback still sequential.
+GAP-08,RB_GuardAhead,7ms GuardAhead 유계,V6_NONFINITE_GATE_CODE_TESTED_7MS_E2E_UNPROVEN,GuardAhead rejects any nonfinite measured/predicted State incl one-tick rollout; 7ms deadline still only fail-closed budget and not WCET. Independent Guard finite physics-state lease gate added; offline tests only; no WCET claim.
+GAP-09,RB_GuardAhead,native GuardAhead 정규 경로,EXPERIMENT_ONLY,기존 parity opt in
+GAP-10,RB_GuardAhead,MPC fallback 실행 간섭,SECOND_PASS_SEPARATE_MPC_SOLVER_THREAD_OFFLINE_TESTED_ROS_PENDING,"MPC has separate one-flight thread+isolated mutable QP solver; fallback in existing control worker can proceed; stale/late results rejected. Threads share GIL, not process/RT isolation; 7 new offline scheduler tests PASS."
+GAP-11,RB_GuardAhead,MPC primary 기본 운용,PATCHED_NOT_ROS_TESTED,launch SOLO MPC SCP 실험 기본
+GAP-12,RB_GuardAhead,RB Guard Applied 신원,FIRSTPASS_RB_ATOMIC_SOURCE_PUBLICATION_CODE_TESTS_PENDING_ROS,R-B physics sequence/timestamp and ROS publish serialized in same receipt lock. Guard still owns actuator approval; no physical Applied qualification.
+GAP-13,RA_S0R,Spielberg 기본 참조 정책,SPIELBERG_VERIFIED_RA2_OFFLINE_DEFAULT_REGISTERED,"864-sample Spielberg R-A0/A1/A2 produced from official map; source hashes validated; offline baseline primary candidate, runtime/lap qualification FALSE."
+GAP-14,RA_S0R,Spielberg 숫자 경로,SPIELBERG_RA0_RA1_RA2_GENERATED_RA3_NOT_CONVERGED,A0/A1/A2 generated and installed; SCP sparse ADMM failed strict absolute constraint tolerance and R-A3 remains unqualified. No raw centerline substitution.
+GAP-15,RA_S0R,실행 제안과 안전권한 구분,PARTIAL,"Guard 최종 인증 유지, 완전 authority 계약 아님"
+GAP-16,RA_S0R,20m/s 및 8초 정지계약,UNPROVEN,"물리 한계에서 필요한 감속/정지 판정, 고속 승인 없음"
+GAP-17,RA_S0R,jerk 조향율 속도 프로파일,PATCHED_DISCRETE_PARTIAL,R-A online speed proposal uses periodic steering-rate and discrete jerk scaling; no continuous-time certification
+GAP-18,RA_S0R,실행속도계약 모드 의존,PARTIAL,"sim_online_adaptive 전제 명시, 타 모드 미지원"
+GAP-19,RA_S0R,추월 Override 5.8 거부,PATCHED_NOT_ROS_TESTED,"무조건 거부 제거, Guard 종단 증명 요구"
+GAP-20,RA_S0R,실행 스크립트 5.0 고정,PATCHED_NOT_ROS_TESTED,"f1sim/f1solo AUTO, f1safe 3.0 의도적 안전"
+GAP-21,H2H_Evaluation,launch H2H 거부,PATCHED_EXPERIMENTAL,모든 H2H pipeline+Red Guard 플래그 필수
+GAP-22,H2H_Evaluation,Guard H2H 거부,PATCHED_EXPERIMENTAL,Red 추적/시간/horizon/동적 braking rollout fail-closed
+GAP-23,H2H_Evaluation,Red 동적 점유 미연결,RED_WITNESS_FUTURE_NONFINITE_DENIAL_CODE_TESTED,"Future/NaN source times, confidence, bad hit/miss and rev ID rejected before Red occupancy; 16 tests offline PASS, Ubuntu unverified."
+GAP-24,H2H_Evaluation,Ego stop+Red 불확실성,PARTIAL,"swept bound/physical braking, real-world uncertainty calibration 미완료"
+GAP-25,H2H_Evaluation,1초 예측 vs 정지시간,PATCHED_NOT_ROS_TESTED,"실험 launch 9.0초, 짧은 경로 fail-closed"
+GAP-26,H2H_Evaluation,RC RD RE H2H 실행 프로파일,SECOND_PASS_S0R_RED_PREDICTION_CACHE_FUTURE_EXCLUDED,"S0-R override/recovery predictor cache discards negative or over-age source stamps and wrong track/frame on reception, in addition to at-use checks."
+GAP-27,H2H_Evaluation,RE ABORT REJOIN 폐루프,MOVING_PRE_ABORT_SAFE_REJOIN_CANDIDATE_CODE_TESTED,Before ABORT is latched R-E can propose fresh prediction-bound moving safe merge if physical trackability+Red swept timing succeed; Guard final veto; after ABORT parked recovery still mandatory; Ubuntu/E2E unverified.
+GAP-28,H2H_Evaluation,Simulator swept collision,PATCHED_NOT_ROS_TESTED,"보수적 swept disk 추가, async alignment 별도"
+GAP-29,H2H_Evaluation,물리 lap oracle 미연결,V4_PHYSICAL_ORACLE_PLUS_WATCHDOG_TESTED_NO_RUN,"V4 374 registered ROS test PASS + 7 qualification unit PASS, no lap run."
+GAP-30,H2H_Evaluation,B2 nmpc 미지원,B2_NONLINEAR_NMPC_IMPLEMENTED_OPTIN_UNQUALIFIED,Nonlinear dynamic-bicycle constrained SLSQP NMPC in opt-in primary worker; 6 numerical tests offline PASS; hard nonlinear state/controls/rates/corridor constraints; default LTV/fallback/Guard unchanged; ROS and 7ms proof pending.
+GAP-31,H2H_Evaluation,f1solo 검증기 실행 충돌,PATCHED_NOT_ROS_TESTED,f1solo 인자 수용/정규 실행
+GAP-32,H2H_Evaluation,인지 관측 H2H launch 차단,PATCHED_EXPERIMENTAL,H2H 실험 프로파일 진입 허용
+GAP-33,H2H_Evaluation,G0-G9 통합 승격,V7_PROVISIONAL_V2_CROSS_BOUND_EVIDENCE_NOT_OFFICIAL_PROMOTION,"Gates require per-scope JSON evidence bound to run/source/metrics, no shared paths, typed nonnegative finite metrics; 18 tests PASS. Formal qualification policy and external evidence absent."
+GAP-34,H2H_Evaluation,f1sim f1safe SOLO 충돌,PATCHED_NOT_ROS_TESTED,solo flags 정합화
+GAP-35,H2H_Evaluation,MPC SCP qualify_solo 프로파일,PATCHED_NOT_ROS_TESTED,명시적 실행 프로파일 전달

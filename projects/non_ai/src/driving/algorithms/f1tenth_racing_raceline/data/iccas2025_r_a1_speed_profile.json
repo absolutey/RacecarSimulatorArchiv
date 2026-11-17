@@ -1,0 +1,74 @@
+{
+  "artifact_version": "r_a1_v1",
+  "centerline_comparator": {
+    "centerline_sha256": "a4d07292b7a265fe68e27f5691fabd4ff8b4e9548a8d349bde03895e12b3f623",
+    "maximum_speed_m_s": 20.0,
+    "mean_sample_speed_m_s": 8.269404895845964,
+    "mean_traversal_speed_m_s": 8.003684213608715,
+    "minimum_speed_m_s": 5.0938560514261955,
+    "offline_envelope_predicted_lap_time_s": 5.378404842013397,
+    "path_length_m": 43.0470539284193
+  },
+  "dense_validation": {
+    "dense_sample_count": 1320,
+    "maximum_braking_excess_m_s2": 7.105427357601002e-15,
+    "maximum_forward_acceleration_excess_m_s2": 0.0,
+    "maximum_global_speed_excess_m_s": 0.0,
+    "maximum_lateral_acceleration_excess_m_s2": 0.0,
+    "seam_speed_error_m_s": 0.0
+  },
+  "foundation_authority": {
+    "classification": {
+      "acceleration": "DIRECT_CONFIG_AND_CODE",
+      "braking": "DIRECT_CONFIG_AND_CODE",
+      "jerk": "DIRECT_CONFIG_AND_CODE_DEFERRED_TO_R_B",
+      "lateral_acceleration": "DERIVED_FROM_FROZEN_MODEL",
+      "mass": "DIRECT_CONFIG",
+      "maximum_speed": "DIRECT_CONFIG_AND_CODE"
+    },
+    "hashes": {
+      "competition_environment": "94892e369cd050c0c9060eedd427ed1405c9a7c64ba6a1694aa8269561ee3798",
+      "pacejka_source": "f1fe3b4019c653c4e1d8c6984af39ee6f8c74ff1027b589c5a3d7c8bbc2a0a36",
+      "vehicle_dynamics_source": "859faccf816824553fb9ee3fb795cf1360e31c51b91cd2a0fd73633681abfa6a"
+    },
+    "limits": {
+      "acceleration_m_s2": 40.0,
+      "braking_m_s2": 40.0,
+      "front_lateral_force_n": 30.0,
+      "front_peak_slip_rad": 1.1547005383792512,
+      "global_speed_m_s": 20.0,
+      "jerk_m_s3": 100.0,
+      "lateral_acceleration_m_s2": 17.142857142857142,
+      "mass_kg": 3.5,
+      "rear_lateral_force_n": 30.0,
+      "rear_peak_slip_rad": 1.1547005383792512
+    }
+  },
+  "generator_config_sha256": "b6d98a6b400135759df941e7f440c2c9cfe13ea907860a0be043e7c5c1c7eb95",
+  "jerk_feasibility": "DEFERRED_TO_R-B",
+  "output_csv_sha256": "4737fcb60b31b965197b442576726f7d800e2247466f539c7619d31ef218ffc8",
+  "profile": {
+    "convergence_delta_m_s": 0.0,
+    "iterations": 2,
+    "limiting_constraint_counts": {
+      "BACKWARD_BRAKING": 3,
+      "FORWARD_ACCELERATION": 4,
+      "LATERAL_CURVATURE": 59
+    },
+    "maximum_speed_m_s": 19.65160255225362,
+    "mean_sample_speed_m_s": 8.549789264336379,
+    "mean_traversal_speed_m_s": 8.424338295204532,
+    "minimum_speed_m_s": 6.1292754324282415,
+    "offline_envelope_predicted_lap_time_s": 5.120592632562538,
+    "path_length_m": 43.137604608638775,
+    "sample_count": 66
+  },
+  "source_r_a0": {
+    "centerline_sha256": "a4d07292b7a265fe68e27f5691fabd4ff8b4e9548a8d349bde03895e12b3f623",
+    "csv_sha256": "38e5a070066d5a7f37832029ae256ba12ec044979ac3d4cd24fc49eb1f34aa9c",
+    "map_metadata_sha256": "e19770f26d669d25c19d1fd706301efc4baa827a0891d0856e5ace67d93dcce4",
+    "map_sha256": "471a7c09112458358a4e1b8b540622ea4341abf931c5cfc009ed4d9a9af2350d",
+    "metadata_sha256": "e8b65f8aeff538509e665d25f3f3ce07d869febf71b61731a681d40ad9d136b8"
+  },
+  "valid": true
+}

@@ -1,0 +1,1821 @@
+{
+  "count": 336,
+  "files": [
+    {
+      "candidate_sha256": "e53b6e9b0af7bf999d11ebb7ccba01fd0721ebe48741d37c701cd8d1867fbab1",
+      "original_sha256": "e53b6e9b0af7bf999d11ebb7ccba01fd0721ebe48741d37c701cd8d1867fbab1",
+      "path": "src/driving/algorithms/f1tenth_racing_control/config/r_b0.yaml"
+    },
+    {
+      "candidate_sha256": "0886c3d89ccf49ceaeb35692df97cf8ecc99364ab10a8e60f3389c17bf370077",
+      "original_sha256": "0886c3d89ccf49ceaeb35692df97cf8ecc99364ab10a8e60f3389c17bf370077",
+      "path": "src/driving/algorithms/f1tenth_racing_control/config/r_b3_mpc.yaml"
+    },
+    {
+      "candidate_sha256": "244e04bdd3e4edbd61482dace918028b75f4311956b5ac54222a30e2011439f0",
+      "original_sha256": "244e04bdd3e4edbd61482dace918028b75f4311956b5ac54222a30e2011439f0",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/__init__.py"
+    },
+    {
+      "candidate_sha256": "9d457d7555311fd5226a97f74e95ef3044c02d706aab8631125fcd9851e213d0",
+      "original_sha256": "2b6a84d53ce6363e6f3755739e6db8f7ee0a108e919335e8139add20051a8010",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_contract.py"
+    },
+    {
+      "candidate_sha256": "a02bab35a1e6f7573b5be323c2a9824443654a7e5a97e260eda3b3bee68fd531",
+      "original_sha256": "136a4f52cf4bdca819fb0ca71bbc935e42b716540a75f3018d6ce8bdc2ce61f7",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py"
+    },
+    {
+      "candidate_sha256": "41551e1bc1b5edc4062ba456f83521a1a269a29ea1344e2ee35328752a3d7fc9",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/control_worker.py"
+    },
+    {
+      "candidate_sha256": "7cae5cc40d319d04e4a27962ba480c2e46ccbcaf80ee46b6c6e922abd1fb9dd3",
+      "original_sha256": "7cae5cc40d319d04e4a27962ba480c2e46ccbcaf80ee46b6c6e922abd1fb9dd3",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/core.py"
+    },
+    {
+      "candidate_sha256": "a025dbb2e8e676c4c6bc3a6c150cc7f611a50d956cee379b50634f95a375ef93",
+      "original_sha256": "a025dbb2e8e676c4c6bc3a6c150cc7f611a50d956cee379b50634f95a375ef93",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/cycle_trace.py"
+    },
+    {
+      "candidate_sha256": "d8571ecabd9d24f37e268ba4454821d0da0c51b9d8720db36e1ad4406e7255f4",
+      "original_sha256": "d8571ecabd9d24f37e268ba4454821d0da0c51b9d8720db36e1ad4406e7255f4",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/dynamic_admission.py"
+    },
+    {
+      "candidate_sha256": "dbb1df9b0348a5e180c5c34e73e77cc64405d281a00a3930d8bf4b86d88158fc",
+      "original_sha256": "dbb1df9b0348a5e180c5c34e73e77cc64405d281a00a3930d8bf4b86d88158fc",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/environment_identity.py"
+    },
+    {
+      "candidate_sha256": "607ccda52089ff85a15a4981f1f356477e8a7cc9f20a7755e350e0835d389d25",
+      "original_sha256": "607ccda52089ff85a15a4981f1f356477e8a7cc9f20a7755e350e0835d389d25",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/execution_contract.py"
+    },
+    {
+      "candidate_sha256": "5d43b5801c5fd1c1bd9205058cff7e5eef55d192737b390cd4301aae6f08fb5b",
+      "original_sha256": "3e1215d537522e07d1468038e87d88b3c39eb6d954da3a330d2222e819a40a03",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/execution_speed_authority.py"
+    },
+    {
+      "candidate_sha256": "3770d8985d40475f483e486da128c50e9c060fb4ac6f1ea1b6c3b7e30b64ac11",
+      "original_sha256": "3770d8985d40475f483e486da128c50e9c060fb4ac6f1ea1b6c3b7e30b64ac11",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/fallback_safety.py"
+    },
+    {
+      "candidate_sha256": "438d80edc82c188dc15d96b8205888d5b357aa1f0df76549d5446e93207f771a",
+      "original_sha256": "f14aca33174bd756fc8b07953de8e73fd88ae36a835d3c47603df9fd547ca911",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/fast_stop_proof.py"
+    },
+    {
+      "candidate_sha256": "442b57cd216c1aea61413a63fef67af70b3ee3e4a7110465fa31b43ae7ab5bfd",
+      "original_sha256": "e6e018581be722b91ae3fe4ca66aa1227731ca123af9c90ad22b68a440aff3b2",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/final_preflight.py"
+    },
+    {
+      "candidate_sha256": "dc929ccbb4918535e617bed37afa961da01f50f496a837b476b95a7354c7765a",
+      "original_sha256": "7a317aca76b81b17e472341b5e474f54b40acd870f23109d21afc41ef47cdbdd",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/forensic_trace.py"
+    },
+    {
+      "candidate_sha256": "20b1920b764636b0151a1b5220a9191b94ce05263ed714c52941fd005d4a7613",
+      "original_sha256": "7579ac6f26ed60144ef0462bfbd82da01b851493852f98e46431a02a5829795b",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/guard_ahead.py"
+    },
+    {
+      "candidate_sha256": "adb1b6109d88d549ff40730c529864f96ab6370fddc76f7cc8d1f6698ee89201",
+      "original_sha256": "",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/guard_state_integrity.py"
+    },
+    {
+      "candidate_sha256": "1f66da15d9f3621a717819aeee527eb2c5649323ac6491c24d5108075e40b988",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_core.py"
+    },
+    {
+      "candidate_sha256": "81c791e6d1e824a7089681856ab56983f0011b2123d429b40df94300337a1fe7",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py"
+    },
+    {
+      "candidate_sha256": "2628ce80a5f5cda7de2f0773698794c4a95e84cd3814b166f0491bd77ca45f0d",
+      "original_sha256": "bb3a4ded28c261521f4611c13dd59a7639e77152469ce7ddfd5e2d1e59ee4d39",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py"
+    },
+    {
+      "candidate_sha256": "fca6ee593c42fe9ccf31d2adf0bd15cfb82f4b2ba8eeac2a13d9a515765a5048",
+      "original_sha256": "c3b9432903d6a134d5cc8810b14e75db50ee58a49861bef570490b264d7e6cd5",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py"
+    },
+    {
+      "candidate_sha256": "de83bde70c651d46d09f7de7a3c7cf5b40b81ce66df5209a257f8c735d84ff42",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/primary_worker.py"
+    },
+    {
+      "candidate_sha256": "2b5a0c94cb83932b49e6bb3554d2a4e6a5ddceab4021b6d40e1451237e1dc752",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/process_primary_worker.py"
+    },
+    {
+      "candidate_sha256": "86cb392569fced6ac599597189cbb6258548a171dba10f74b7128c4af9fa4043",
+      "original_sha256": "NOT_IN_PARENT",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/rb_state_qos_contract.py"
+    },
+    {
+      "candidate_sha256": "e84bb86f01fff6c8a1ab027800c3093e17bf21a5e62d87555b0d340953bc65cb",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/red_dynamic_guard.py"
+    },
+    {
+      "candidate_sha256": "d080e6bfef32bfa9288283bd5c031af9dd7832dd7ce68ff9bfec5279df5b8e73",
+      "original_sha256": "217ce3c6bfb57ffd6ffd8f6deed1eb2f8b8409afc587e3a8b98061f625ae91a8",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/reference_admission.py"
+    },
+    {
+      "candidate_sha256": "fd6388ddeb44e4d624d1665cc005e7f7abb7605d37f704feb98d0dee23dd5c5e",
+      "original_sha256": "fd6388ddeb44e4d624d1665cc005e7f7abb7605d37f704feb98d0dee23dd5c5e",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/speed_contract_audit.py"
+    },
+    {
+      "candidate_sha256": "51d78968953b9434d161290d8087016c88c7004033d0e5c2a57ad64152c20359",
+      "original_sha256": "51d78968953b9434d161290d8087016c88c7004033d0e5c2a57ad64152c20359",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/stability.py"
+    },
+    {
+      "candidate_sha256": "38ad174f5487c59b94976b1ce67a44e9d7bc9fad0d174dcf377eee021101ebaf",
+      "original_sha256": "38ad174f5487c59b94976b1ce67a44e9d7bc9fad0d174dcf377eee021101ebaf",
+      "path": "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/state_timeline.py"
+    },
+    {
+      "candidate_sha256": "3f6021a9970abc3fa8fdf77b4f7f0ee6c299eb1bc52ebe581516ac8e40eaa771",
+      "original_sha256": "4ffd336ee6afb00cf7b3a228b53717dc6c1871c5ee36c7db57b2f4ebbdc59626",
+      "path": "src/driving/algorithms/f1tenth_racing_control/package.xml"
+    },
+    {
+      "candidate_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "src/driving/algorithms/f1tenth_racing_control/resource/f1tenth_racing_control"
+    },
+    {
+      "candidate_sha256": "afd490f12398381f8677dc15943c9c1d8b04fa78d069488cfa7bf4c50fe2523e",
+      "original_sha256": "afd490f12398381f8677dc15943c9c1d8b04fa78d069488cfa7bf4c50fe2523e",
+      "path": "src/driving/algorithms/f1tenth_racing_control/setup.cfg"
+    },
+    {
+      "candidate_sha256": "782e69c30eb2848efdc39833f579d72723377b00fa33f677dafc6631d5c96e17",
+      "original_sha256": "856069af5629392f82b089d7a8ee55e79298bcf882e33b8dd0beffc7e1743256",
+      "path": "src/driving/algorithms/f1tenth_racing_control/setup.py"
+    },
+    {
+      "candidate_sha256": "3a36ed3ab5a2367788ba3a74fb07e6aab6b727abfd09a0a50d0732f9e266e027",
+      "original_sha256": "3a36ed3ab5a2367788ba3a74fb07e6aab6b727abfd09a0a50d0732f9e266e027",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_control.py"
+    },
+    {
+      "candidate_sha256": "9a7baa476d4e03c5cb4e5eab85b635834a508ca5f44602510df1fcf80580a249",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_control_worker_v6.py"
+    },
+    {
+      "candidate_sha256": "1b1684537d4de020f77ba438f53a26fbca005295d97e2bdeb0ea50f3652918ff",
+      "original_sha256": "1b1684537d4de020f77ba438f53a26fbca005295d97e2bdeb0ea50f3652918ff",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_dynamic_admission.py"
+    },
+    {
+      "candidate_sha256": "973ce1e1eb71adc79f510158691204a25074beffcc69922563068cc3b38b1075",
+      "original_sha256": "973ce1e1eb71adc79f510158691204a25074beffcc69922563068cc3b38b1075",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_final_preflight_unified.py"
+    },
+    {
+      "candidate_sha256": "26eab4c1712277f6fad7c3be2c2574707577bf2ec67375317dd81f5d0e7e011c",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_forensic_trace_async_20261019.py"
+    },
+    {
+      "candidate_sha256": "8c75aa318c7bc7a24f08f60b9c5493043161e77c1978d609fc322e0ee44cf9be",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_ga_scheduler_metrics_20261019.py"
+    },
+    {
+      "candidate_sha256": "a40eff8e00fb244d5c901c9d80509abe76377af0b41b30942e83b52991ec1f6b",
+      "original_sha256": "a40eff8e00fb244d5c901c9d80509abe76377af0b41b30942e83b52991ec1f6b",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_guard_ahead_contract.py"
+    },
+    {
+      "candidate_sha256": "b5008f4f7af9150b20f71099733ff4c64de1ea8175eb38c2c708c839004b9efd",
+      "original_sha256": "b5008f4f7af9150b20f71099733ff4c64de1ea8175eb38c2c708c839004b9efd",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_guard_ahead_reconciled.py"
+    },
+    {
+      "candidate_sha256": "200c957f8bfe01f785f430a83ee8ae321919fc8d3a0de3c8098154847b7b5747",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_guard_ahead_v6_nonfinite.py"
+    },
+    {
+      "candidate_sha256": "3476c529d97754d173ec41d6f6f40c65bbbde48f751b9b46b0c38af6f66e59be",
+      "original_sha256": "",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_guard_finite_state_final.py"
+    },
+    {
+      "candidate_sha256": "348ed0385d6f55d6c6bafddc10f0fcb83e43648317560f5d51a4103326faa2d0",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_guarded_atomic_wire.py"
+    },
+    {
+      "candidate_sha256": "fafa23547d7c730fb6a11e4abc8851a639231dac272f26ddcc643623eaf37a3a",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py"
+    },
+    {
+      "candidate_sha256": "2cb1f5d6f525c3505081222456cb7716a45c4c77a2fd44afaee6462a6f988d06",
+      "original_sha256": "2cb1f5d6f525c3505081222456cb7716a45c4c77a2fd44afaee6462a6f988d06",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_mpc.py"
+    },
+    {
+      "candidate_sha256": "61539e38af05f155fb81132b7eb3a731c05344b37d787e91c94a74fd0542a6f2",
+      "original_sha256": "61539e38af05f155fb81132b7eb3a731c05344b37d787e91c94a74fd0542a6f2",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_mpc_budget_contract.py"
+    },
+    {
+      "candidate_sha256": "9b21ec5fa3efb43664ef1ce05068bb679214a221e2f5fdb3623fcaf110b8789c",
+      "original_sha256": "",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_mpc_timing_input_hardening_final.py"
+    },
+    {
+      "candidate_sha256": "106a3906d2e418e944e1b9b465604fcb54a64baa692738cfa82eabb34bb14d60",
+      "original_sha256": "",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_nmpc_nonlinear_candidate_final.py"
+    },
+    {
+      "candidate_sha256": "e181b776f8f0cfbdf131a3a525764d29c0b3c28e8ca21ba172bcd8596d579f27",
+      "original_sha256": "e181b776f8f0cfbdf131a3a525764d29c0b3c28e8ca21ba172bcd8596d579f27",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_postop_integrated_safety.py"
+    },
+    {
+      "candidate_sha256": "0ecdc7a3fed351cc8b71984f61ce76d11ab23d604508998e4dc860358dfedd0b",
+      "original_sha256": "0ecdc7a3fed351cc8b71984f61ce76d11ab23d604508998e4dc860358dfedd0b",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_prestart_readiness.py"
+    },
+    {
+      "candidate_sha256": "9707e60cc0316a0c9432b1c5032defaf33058382f944f4c6fe481310c11b183f",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_primary_worker_secondpass.py"
+    },
+    {
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_process_primary_channel_fourlayer.py",
+      "original_sha256": null,
+      "candidate_sha256": "f6a9a22cc4c18e43f8c20aac82a02d75d9623780734092b1428cdcedb0f89255"
+    },
+    {
+      "candidate_sha256": "928fa9e9beda19efa0267f3d81467691b4a7a3d67f32246972302258c6c7482a",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_process_primary_recovery_thirdpass.py"
+    },
+    {
+      "candidate_sha256": "5eb03ed3a79492f963c7462e78f812e7dbac200c59f531d14862d36d447b6776",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_process_primary_worker_firstpass.py"
+    },
+    {
+      "candidate_sha256": "f7976140a77b45efac400ac25b7c6848fb3f4710b4cbd028cd7ea780c5151708",
+      "original_sha256": "NOT_IN_PARENT",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_rb_state_qos_regression_20261019.py"
+    },
+    {
+      "candidate_sha256": "31681a543a28b2ef8c4891dbeb1d5e65aa0ccdb3c5ab28e66cbc066353eea1b2",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_red_confidence_secondpass.py"
+    },
+    {
+      "candidate_sha256": "578b2ddbdc7de1ad98d26064068e0d4285ae9a594fcb8cea569f45fb8cad04ac",
+      "original_sha256": "578b2ddbdc7de1ad98d26064068e0d4285ae9a594fcb8cea569f45fb8cad04ac",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_stability_recovery.py"
+    },
+    {
+      "candidate_sha256": "0cd11aeb0eba8e1db3af9a8185d3d73b1707e9281960c1274637086be68c1fcc",
+      "original_sha256": "0cd11aeb0eba8e1db3af9a8185d3d73b1707e9281960c1274637086be68c1fcc",
+      "path": "src/driving/algorithms/f1tenth_racing_control/test/test_state_timeline_upgrade.py"
+    },
+    {
+      "candidate_sha256": "9d27740a97fffb3a4aab278c0a0b525499313725fd6f2df77849a0ef85ecf3d3",
+      "original_sha256": "9d27740a97fffb3a4aab278c0a0b525499313725fd6f2df77849a0ef85ecf3d3",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/config/overtaking.yaml"
+    },
+    {
+      "candidate_sha256": "138aa8796a4640715175544fb50b1ff496b65602542f50511a1dfb2d89091f78",
+      "original_sha256": "9b5753ae3ece19ce9fe092823190b110cd58a08678210a6e319b84d776b060b5",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/config/successor_v0.yaml"
+    },
+    {
+      "candidate_sha256": "93656f1c3a522bec5b81d24b012051e2a3ad39f28c8ef35889d437a25b2208c1",
+      "original_sha256": "93656f1c3a522bec5b81d24b012051e2a3ad39f28c8ef35889d437a25b2208c1",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/__init__.py"
+    },
+    {
+      "candidate_sha256": "af7cab04ea0473ddcb357c7fb1d2fc5848329a2fc73b7650df37443275e39298",
+      "original_sha256": "af7cab04ea0473ddcb357c7fb1d2fc5848329a2fc73b7650df37443275e39298",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py"
+    },
+    {
+      "candidate_sha256": "c43e96946f6343fc51ac79dfed38deba4d1a44d64913b20de6e6bb2391a8023e",
+      "original_sha256": "c43e96946f6343fc51ac79dfed38deba4d1a44d64913b20de6e6bb2391a8023e",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/dynamic_occupancy_certificate.py"
+    },
+    {
+      "candidate_sha256": "397acb09e5839fff1af600dc6f140ab79c5fde7d7caa0eec3a43222a9f634a42",
+      "original_sha256": "8f58cb8ee54d64d2ca46498e34e5428a7d27550a6b234de85c2b30ec49a5f3b3",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/node.py"
+    },
+    {
+      "candidate_sha256": "5c9f371da4cfc8a282916498eefe3d69c8d5d5c41a10a8ff1d4fa0c4357062a3",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/post_abort_freshness.py"
+    },
+    {
+      "candidate_sha256": "92e04488acf9d5d0e3fef81a6b0308d7bf6f63e1758e5693871e6b677dae6710",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/runtime_environment.py"
+    },
+    {
+      "candidate_sha256": "3123f7add57a15213f091eb8a7f67328eeaf8cb5b9637751545bafa291fdd85d",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/state_input_contract.py"
+    },
+    {
+      "candidate_sha256": "720541694db091f0c5e4615f3645b2c601e5824b7fddb91b8971fb48bf31e944",
+      "original_sha256": "de4513247d4791f80fc668462666a08e37ee03ae51e5f0820dc69671dccd094e",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py"
+    },
+    {
+      "candidate_sha256": "a0b0841e8111590fb892becf2db80bbfd075f1c3060459a75227ad2c3414e4ec",
+      "original_sha256": "24f07ea7247dc28e677083207723a7c15ada1291ec0a875dc1fb9fe94c491bbd",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py"
+    },
+    {
+      "candidate_sha256": "01b9b4724d4fd0ebf1e089039b389fc9482be65eb453dc9686ae0e31330bcf10",
+      "original_sha256": "01b9b4724d4fd0ebf1e089039b389fc9482be65eb453dc9686ae0e31330bcf10",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/resource/f1tenth_racing_overtaking"
+    },
+    {
+      "candidate_sha256": "6dfa676927741bb7c159b2975f1d43b6043518d5d369dc37f6a274fca5e207dc",
+      "original_sha256": "6dfa676927741bb7c159b2975f1d43b6043518d5d369dc37f6a274fca5e207dc",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/setup.cfg"
+    },
+    {
+      "candidate_sha256": "065852d45257e41c078abe9cb78b6a538109ddd48ef1e292296ebc2311621171",
+      "original_sha256": "065852d45257e41c078abe9cb78b6a538109ddd48ef1e292296ebc2311621171",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/setup.py"
+    },
+    {
+      "candidate_sha256": "6f3d90dd9259c27fde94dc4c81364cc3b9533ee831cc2d8b8c9554b30f378f92",
+      "original_sha256": "",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_abort_handoff_v5.py"
+    },
+    {
+      "candidate_sha256": "d36b8d922ff105aadedc4dec69142a53f090fc5c5e703a1f70a4b47f038e602b",
+      "original_sha256": "d36b8d922ff105aadedc4dec69142a53f090fc5c5e703a1f70a4b47f038e602b",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_entry_trackability.py"
+    },
+    {
+      "candidate_sha256": "75dac721d2ccc4d1203249618462b373df66a7391d349840072cd9d86e29421c",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_firstpass_receipt_assembly.py"
+    },
+    {
+      "candidate_sha256": "7997b25213c2ad5d3fceb47b2ea02792fe1fd723857ea973587c385f34d90dd2",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_g8_real_retry_gate_firstpass.py"
+    },
+    {
+      "candidate_sha256": "e9baf412b18513794c33553cd21282546b3b98d3f4f143342285b52beddde25c",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_moving_emergency_rejoin.py"
+    },
+    {
+      "candidate_sha256": "1fa403e522600d2aa6ca9b0a11168f571646f8f333b7a8ff9d323150d5261043",
+      "original_sha256": "1fa403e522600d2aa6ca9b0a11168f571646f8f333b7a8ff9d323150d5261043",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py"
+    },
+    {
+      "candidate_sha256": "9643a303a80da60fecfc3cfd6efd7869a82c6a72afb29d05c42ec7ece696a65e",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_post_abort_red_epoch_firstpass.py"
+    },
+    {
+      "candidate_sha256": "daaa27f0e1c2c33a8e56cd71e14f8839f3975c1e5fe8fb509dbf7a1da8b971a1",
+      "original_sha256": "",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_red_witness_integrity_final.py"
+    },
+    {
+      "candidate_sha256": "8030ab48c7239fe402b32a2840d2f69c9c95df84cd6e871aab30f6f40eacd397",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_runtime_environment_contract_v8.py"
+    },
+    {
+      "candidate_sha256": "c1d5aa503a42c39e9f2aa15d7936afca749cddc6c61619b16daa380d25875b23",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_state_input_contract_v8.py"
+    },
+    {
+      "candidate_sha256": "835ad17e0b4dce4d74041a3611e7afabc7c05bd9fb3ca1dac85a235603b93858",
+      "original_sha256": "835ad17e0b4dce4d74041a3611e7afabc7c05bd9fb3ca1dac85a235603b93858",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_contract.py"
+    },
+    {
+      "candidate_sha256": "7a40bcab086d59018ea4b8277b680676d5305f701b31c1891f5de2c41cc2461c",
+      "original_sha256": "7a40bcab086d59018ea4b8277b680676d5305f701b31c1891f5de2c41cc2461c",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_finite_geometry_1b.py"
+    },
+    {
+      "candidate_sha256": "3f245eecc3dc9ec3b4fbff70362d820025f43ad3e16a103603521ced51c4c752",
+      "original_sha256": "3f245eecc3dc9ec3b4fbff70362d820025f43ad3e16a103603521ced51c4c752",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_freshness_1c1.py"
+    },
+    {
+      "candidate_sha256": "a199bfab7e1b82bc4fba66e001a7d0be2ced1b1215086c8a7c9e267ac84425ae",
+      "original_sha256": "a199bfab7e1b82bc4fba66e001a7d0be2ced1b1215086c8a7c9e267ac84425ae",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_longitudinal_1a.py"
+    },
+    {
+      "candidate_sha256": "7dfb8ff8d35c1f84ab1685ab5b41c205def6f17b51c6984cea2f99a39b123ce0",
+      "original_sha256": "1a0222d5840c5bd1612b6f90d1e2d962d117f500cb5d76e9e5ccbb0b3d9a2a57",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_q0.py"
+    },
+    {
+      "candidate_sha256": "a456c41c6f30a97c5f2982cf0674453e11584491c875abcefa5d7fce8d1caf59",
+      "original_sha256": "a456c41c6f30a97c5f2982cf0674453e11584491c875abcefa5d7fce8d1caf59",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_runtime_contract.py"
+    },
+    {
+      "candidate_sha256": "266098c952cf30ec603399c699c0a3eb64635904c721b38f6d3608735261c4dc",
+      "original_sha256": "266098c952cf30ec603399c699c0a3eb64635904c721b38f6d3608735261c4dc",
+      "path": "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_safe_approach_1c2.py"
+    },
+    {
+      "candidate_sha256": "6836b523f03da69dd8a5bd51306ff0482bc117a9d1e68ed2c8c875639a3414ad",
+      "original_sha256": "6836b523f03da69dd8a5bd51306ff0482bc117a9d1e68ed2c8c875639a3414ad",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/config/perception.yaml"
+    },
+    {
+      "candidate_sha256": "7aa9986c21b76fb685601464b8d87c2e35ab7be745d5751e149168465b2b801e",
+      "original_sha256": "7aa9986c21b76fb685601464b8d87c2e35ab7be745d5751e149168465b2b801e",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/f1tenth_racing_perception/__init__.py"
+    },
+    {
+      "candidate_sha256": "a7b226960237b4e0071d01225cf187856e6eae5e5e44fdfde425979be3b84049",
+      "original_sha256": "a7b226960237b4e0071d01225cf187856e6eae5e5e44fdfde425979be3b84049",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/f1tenth_racing_perception/core.py"
+    },
+    {
+      "candidate_sha256": "c61a03be32ba6a662a13af69a14993704ca6f9f711c7bf9825764cf9736925e3",
+      "original_sha256": "c61a03be32ba6a662a13af69a14993704ca6f9f711c7bf9825764cf9736925e3",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/f1tenth_racing_perception/expected_scan.py"
+    },
+    {
+      "candidate_sha256": "caab40fd0421ce300c605dc969990a4988517952b4ead39ccd981e82b2c532d9",
+      "original_sha256": "caab40fd0421ce300c605dc969990a4988517952b4ead39ccd981e82b2c532d9",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/f1tenth_racing_perception/node.py"
+    },
+    {
+      "candidate_sha256": "15094ad15e70ee945b58990590527c8bbf40d4d5b542ddc6065fa58a1e4525c2",
+      "original_sha256": "15094ad15e70ee945b58990590527c8bbf40d4d5b542ddc6065fa58a1e4525c2",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/resource/f1tenth_racing_perception"
+    },
+    {
+      "candidate_sha256": "c6880bf6a42f7a8d0caea07f8849c4e6ad9ab19dad0953e5db35f63a468e640b",
+      "original_sha256": "c6880bf6a42f7a8d0caea07f8849c4e6ad9ab19dad0953e5db35f63a468e640b",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/setup.cfg"
+    },
+    {
+      "candidate_sha256": "b9f675ba7b642e6e3d8ededd4f7ae22f03ed5aada640ebd60c3eab137337d719",
+      "original_sha256": "b9f675ba7b642e6e3d8ededd4f7ae22f03ed5aada640ebd60c3eab137337d719",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/setup.py"
+    },
+    {
+      "candidate_sha256": "716b1efd0329ddbda5659620f3cdbe990b923ca4068ffd95d28fa4668af45153",
+      "original_sha256": "716b1efd0329ddbda5659620f3cdbe990b923ca4068ffd95d28fa4668af45153",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/test/golden_expected_scan.json"
+    },
+    {
+      "candidate_sha256": "b87f80bb8dc77f9ff2d0f90157898ef620d54f2bbd959b1110d2fa62576f00dd",
+      "original_sha256": "b87f80bb8dc77f9ff2d0f90157898ef620d54f2bbd959b1110d2fa62576f00dd",
+      "path": "src/driving/algorithms/f1tenth_racing_perception/test/test_perception.py"
+    },
+    {
+      "candidate_sha256": "c4db64ff35ea565e27f75587622a1fe8d1b0ce1cdd0625536dfcde3158f32289",
+      "original_sha256": "c4db64ff35ea565e27f75587622a1fe8d1b0ce1cdd0625536dfcde3158f32289",
+      "path": "src/driving/algorithms/f1tenth_racing_prediction/config/prediction.yaml"
+    },
+    {
+      "candidate_sha256": "443131ef56ba7a9e34d71afb73e30dc5f6357a9f234aecaf2683fcfcfc9cba12",
+      "original_sha256": "443131ef56ba7a9e34d71afb73e30dc5f6357a9f234aecaf2683fcfcfc9cba12",
+      "path": "src/driving/algorithms/f1tenth_racing_prediction/f1tenth_racing_prediction/__init__.py"
+    },
+    {
+      "candidate_sha256": "58dcb87a965978017ab91d9bb65545cfc625afdae5cdab921f8cbb86a8d0f4ec",
+      "original_sha256": "58dcb87a965978017ab91d9bb65545cfc625afdae5cdab921f8cbb86a8d0f4ec",
+      "path": "src/driving/algorithms/f1tenth_racing_prediction/f1tenth_racing_prediction/core.py"
+    },
+    {
+      "candidate_sha256": "9f4d4b839a30ee3f8e5880c22f0a852089cd444e8f8b545aee62ac57b6a657af",
+      "original_sha256": "9f4d4b839a30ee3f8e5880c22f0a852089cd444e8f8b545aee62ac57b6a657af",
+      "path": "src/driving/algorithms/f1tenth_racing_prediction/f1tenth_racing_prediction/node.py"
+    },
+    {
+      "candidate_sha256": "40a2653344aa3b2fcb8a152cd827c2e48fdd5f3995f91388c77c4c2acc2b13cc",
+      "original_sha256": "40a2653344aa3b2fcb8a152cd827c2e48fdd5f3995f91388c77c4c2acc2b13cc",
+      "path": "src/driving/algorithms/f1tenth_racing_prediction/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/driving/algorithms/f1tenth_racing_prediction/resource/f1tenth_racing_prediction"
+    },
+    {
+      "candidate_sha256": "81066552d61ad94f18f72ec84ef568a0d2dbf6aee49afa5d50a92ef88308f804",
+      "original_sha256": "81066552d61ad94f18f72ec84ef568a0d2dbf6aee49afa5d50a92ef88308f804",
+      "path": "src/driving/algorithms/f1tenth_racing_prediction/setup.cfg"
+    },
+    {
+      "candidate_sha256": "b2666f28545c8d21ec64fc1f72a468c2dce7f75918cac8860d526b88c9a9d912",
+      "original_sha256": "b2666f28545c8d21ec64fc1f72a468c2dce7f75918cac8860d526b88c9a9d912",
+      "path": "src/driving/algorithms/f1tenth_racing_prediction/setup.py"
+    },
+    {
+      "candidate_sha256": "50b3f76b45d10d4f0ff5715da486b9e6a144cc71a96f0792156ad57927738d2f",
+      "original_sha256": "50b3f76b45d10d4f0ff5715da486b9e6a144cc71a96f0792156ad57927738d2f",
+      "path": "src/driving/algorithms/f1tenth_racing_prediction/test/test_prediction.py"
+    },
+    {
+      "candidate_sha256": "ec7903e4d97fd55beb3cf6fc3b00cdae23f657648f57564644a601739310fbe2",
+      "original_sha256": "ec7903e4d97fd55beb3cf6fc3b00cdae23f657648f57564644a601739310fbe2",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/config/r_a0_baseline.json"
+    },
+    {
+      "candidate_sha256": "b6d98a6b400135759df941e7f440c2c9cfe13ea907860a0be043e7c5c1c7eb95",
+      "original_sha256": "b6d98a6b400135759df941e7f440c2c9cfe13ea907860a0be043e7c5c1c7eb95",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/config/r_a1_speed_profile.json"
+    },
+    {
+      "candidate_sha256": "55c0dc4772f1eebc87dc044126582acc60cd9f66a47f576a831d648c0557afaf",
+      "original_sha256": "55c0dc4772f1eebc87dc044126582acc60cd9f66a47f576a831d648c0557afaf",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/config/r_a3_scp.json"
+    },
+    {
+      "candidate_sha256": "73a1b668a5c5f8b941853dfe56085648d7c133c15e33027a0485e4ea5a94642b",
+      "original_sha256": "73a1b668a5c5f8b941853dfe56085648d7c133c15e33027a0485e4ea5a94642b",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/config/r_a3_scp_true_joint_experimental.json"
+    },
+    {
+      "candidate_sha256": "b65a70cf1ee7d747816e8a8379e6c68198e28d40e1824846344f22d4755624f8",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/config/spielberg_r_a3_scp_sparse_offline.json"
+    },
+    {
+      "candidate_sha256": "de55ca1012a406c0c67113278054f4e75126be634e47a42e5ef70a99c8578f5b",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/config/spielberg_r_a3_true_joint_sparse_offline.json"
+    },
+    {
+      "candidate_sha256": "38e5a070066d5a7f37832029ae256ba12ec044979ac3d4cd24fc49eb1f34aa9c",
+      "original_sha256": "38e5a070066d5a7f37832029ae256ba12ec044979ac3d4cd24fc49eb1f34aa9c",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a0_baseline.csv"
+    },
+    {
+      "candidate_sha256": "e8b65f8aeff538509e665d25f3f3ce07d869febf71b61731a681d40ad9d136b8",
+      "original_sha256": "e8b65f8aeff538509e665d25f3f3ce07d869febf71b61731a681d40ad9d136b8",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a0_baseline.json"
+    },
+    {
+      "candidate_sha256": "4737fcb60b31b965197b442576726f7d800e2247466f539c7619d31ef218ffc8",
+      "original_sha256": "4737fcb60b31b965197b442576726f7d800e2247466f539c7619d31ef218ffc8",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a1_speed_profile.csv"
+    },
+    {
+      "candidate_sha256": "b5bd79f88834639571fad0f7b9ba0ba851ab14a7a29933eecd152e6abe306896",
+      "original_sha256": "b5bd79f88834639571fad0f7b9ba0ba851ab14a7a29933eecd152e6abe306896",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a1_speed_profile.json"
+    },
+    {
+      "candidate_sha256": "db78b0d29539c2630a4ac71832f3617314ac18e9bd141d0dd42febee0fa01847",
+      "original_sha256": "db78b0d29539c2630a4ac71832f3617314ac18e9bd141d0dd42febee0fa01847",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a2_racing_trajectory.csv"
+    },
+    {
+      "candidate_sha256": "97fb1c1ea1897cd2f9f2af96ba9d58ffc88bd5dd645f2024727c62c8c19c33e1",
+      "original_sha256": "97fb1c1ea1897cd2f9f2af96ba9d58ffc88bd5dd645f2024727c62c8c19c33e1",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a2_racing_trajectory.json"
+    },
+    {
+      "candidate_sha256": "59c68bfdfb4fec1066ce134873e07040a728c6fe28d4e05f2fa0b19cf2dd11e8",
+      "original_sha256": "59c68bfdfb4fec1066ce134873e07040a728c6fe28d4e05f2fa0b19cf2dd11e8",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a3_scp_racing_trajectory.csv"
+    },
+    {
+      "candidate_sha256": "f012aefca5a58af08e9391c718641c647fd8f97909b841b80c1ae46d81af8b96",
+      "original_sha256": "f012aefca5a58af08e9391c718641c647fd8f97909b841b80c1ae46d81af8b96",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a3_scp_racing_trajectory.json"
+    },
+    {
+      "candidate_sha256": "3f369ba3372f799f27126033ba258fa0413c2fcb1f31764afa914ffefc66dd6f",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.csv"
+    },
+    {
+      "candidate_sha256": "e7002cd8998bd73c4c3593f7086e0397f5c4079a0dde275d4c0f336d67b994fa",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.json"
+    },
+    {
+      "candidate_sha256": "b340ac912298cac11e3db9057143b28d57b970238d81a69081c8d166ad6bf9b3",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a0_baseline.csv"
+    },
+    {
+      "candidate_sha256": "dc73894610e0ed0bdd108ecc38393a5da6658b9fc2af75a47d2ed5e846bb663c",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a0_baseline.json"
+    },
+    {
+      "candidate_sha256": "b041570f743fd7aa1f4e39d4cdcae494bf4933f12ee909816482012234a15734",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a1_speed_profile.csv"
+    },
+    {
+      "candidate_sha256": "b374d395fd1c835d113b0d5f1045fa0a608f2a038e49bf58b43442360a09e4f9",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a1_speed_profile.json"
+    },
+    {
+      "candidate_sha256": "f08559fcbc945af3d5bdab286c3523a09bde13f96c48e8851676a6c68064505b",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a2_racing_trajectory.csv"
+    },
+    {
+      "candidate_sha256": "4c123fff7734740ce224d2cede860178621e5cf13be2a113a3be0b7ad775c685",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a2_racing_trajectory.json"
+    },
+    {
+      "candidate_sha256": "2c62c10571964d0ca53d89647b31e1ffa5c5559509b4aed2c2d75e3f7734d37b",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_scp_racing_trajectory.csv"
+    },
+    {
+      "candidate_sha256": "d12b1db2aeef7b079c0039f5d13c45a8a19765db893a199b539d129e7b8aeacf",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_scp_racing_trajectory.json"
+    },
+    {
+      "candidate_sha256": "a6a52668e674a45e20146381729eb98fcb9c53b8a82e5cbc8b76ad720660a9ef",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_true_joint_experimental_racing_trajectory.csv"
+    },
+    {
+      "candidate_sha256": "defedb71d21de7deb13a1c21c3b00e7431c7f37cbc58f590568ad05949ca751c",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_true_joint_experimental_racing_trajectory.json"
+    },
+    {
+      "candidate_sha256": "4399d998fef7ab0b943c8e6b1946ee6e00f35fb0b4b4cf3e8cf65c0e8bfbc666",
+      "original_sha256": "4399d998fef7ab0b943c8e6b1946ee6e00f35fb0b4b4cf3e8cf65c0e8bfbc666",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/__init__.py"
+    },
+    {
+      "candidate_sha256": "d724b9e4e86e591bb5c288eda6c98adee302099937444fb73ef3009b75dee12e",
+      "original_sha256": "d724b9e4e86e591bb5c288eda6c98adee302099937444fb73ef3009b75dee12e",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/artifacts.py"
+    },
+    {
+      "candidate_sha256": "5810cac8db85a670b27d350b1ecfc800259324f3d0a32235ab9f25976b140b99",
+      "original_sha256": "5810cac8db85a670b27d350b1ecfc800259324f3d0a32235ab9f25976b140b99",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/cli.py"
+    },
+    {
+      "candidate_sha256": "8a67196159b6e3645f669a0699db0509c301f33795b3663aa67a7bce1da33bd7",
+      "original_sha256": "b4769b7292481b334280018772281af2e1fb1dbbfa899025f4d63ee11bf36d58",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/foundation_adapter.py"
+    },
+    {
+      "candidate_sha256": "fd7ce226eb7af18dea42833bdd135b5b58a08a3f7df2874d641e1b05d3818b55",
+      "original_sha256": "fd7ce226eb7af18dea42833bdd135b5b58a08a3f7df2874d641e1b05d3818b55",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/raceline.py"
+    },
+    {
+      "candidate_sha256": "a9059de684b0f652e3f2042332761d69f7d6fc2935e81d880ddc73e7dc415889",
+      "original_sha256": "a9059de684b0f652e3f2042332761d69f7d6fc2935e81d880ddc73e7dc415889",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/scp.py"
+    },
+    {
+      "candidate_sha256": "bcd0a34b994282e5b6feec522b67fb88876bed291c36acabbd08ddbeef44b8e1",
+      "original_sha256": "bcd0a34b994282e5b6feec522b67fb88876bed291c36acabbd08ddbeef44b8e1",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/scp_adapter.py"
+    },
+    {
+      "candidate_sha256": "dbcdfc33e6b75904551af1c8904b58f1f424b1806e659eb84ef0c0f2d8993963",
+      "original_sha256": "dbcdfc33e6b75904551af1c8904b58f1f424b1806e659eb84ef0c0f2d8993963",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/scp_cli.py"
+    },
+    {
+      "candidate_sha256": "7405b9b71b89de05e55c2ba916b74dd89585d214a1c6b25167df118d7ff5a5e6",
+      "original_sha256": "7405b9b71b89de05e55c2ba916b74dd89585d214a1c6b25167df118d7ff5a5e6",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/sparse_joint.py"
+    },
+    {
+      "candidate_sha256": "5d4c74d1ce138cd0414dcf042b06429e65b2030fc4a481450b60120bfbd9927a",
+      "original_sha256": "5d4c74d1ce138cd0414dcf042b06429e65b2030fc4a481450b60120bfbd9927a",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/sparse_scp_backend.py"
+    },
+    {
+      "candidate_sha256": "51bcf49d2f9869823f0d73ac714fc96a4652838e8357b9301cecf49db27304d7",
+      "original_sha256": "51bcf49d2f9869823f0d73ac714fc96a4652838e8357b9301cecf49db27304d7",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/speed_adapter.py"
+    },
+    {
+      "candidate_sha256": "b725126fef89219c917036acbff9471cf50b273ea13f76c697e8bd7493103039",
+      "original_sha256": "b725126fef89219c917036acbff9471cf50b273ea13f76c697e8bd7493103039",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/speed_cli.py"
+    },
+    {
+      "candidate_sha256": "49778ee97d887876d2542485afd80736bc4a77f8f49d09258ec3a3759b1c9385",
+      "original_sha256": "49778ee97d887876d2542485afd80736bc4a77f8f49d09258ec3a3759b1c9385",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/speed_profile.py"
+    },
+    {
+      "candidate_sha256": "a7963830092d455c923f9bd460d77e6311ea7e8c7e383899a40f8fae0a3a550b",
+      "original_sha256": "a7963830092d455c923f9bd460d77e6311ea7e8c7e383899a40f8fae0a3a550b",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/trajectory.py"
+    },
+    {
+      "candidate_sha256": "b30ba730d259f796364f843851225d99671bfc1669dd9d3d86117b8deede0e92",
+      "original_sha256": "b30ba730d259f796364f843851225d99671bfc1669dd9d3d86117b8deede0e92",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/trajectory_cli.py"
+    },
+    {
+      "candidate_sha256": "184b83fc638cc2e10f501c2629deedb8ad178b973a14d150b811ffc6ab9bb485",
+      "original_sha256": "184b83fc638cc2e10f501c2629deedb8ad178b973a14d150b811ffc6ab9bb485",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/resource/f1tenth_racing_raceline"
+    },
+    {
+      "candidate_sha256": "060bd5c088dc91a5981d3003560e77ef747e2f551cf5193e998baa1817acd7d5",
+      "original_sha256": "060bd5c088dc91a5981d3003560e77ef747e2f551cf5193e998baa1817acd7d5",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/setup.cfg"
+    },
+    {
+      "candidate_sha256": "d93e39229f7b14344b2a138981394524ecf02168067360cd9c48975fa815413f",
+      "original_sha256": "d93e39229f7b14344b2a138981394524ecf02168067360cd9c48975fa815413f",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/setup.py"
+    },
+    {
+      "candidate_sha256": "efd978d42742981a93f90086bc05812624e8ab970ac6d9aa0f5c7f4d2460b85b",
+      "original_sha256": "efd978d42742981a93f90086bc05812624e8ab970ac6d9aa0f5c7f4d2460b85b",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/test/test_raceline.py"
+    },
+    {
+      "candidate_sha256": "461c564b30d354272621da4e38c4369730e6e16b07aea132b0149c0ccdc1f97d",
+      "original_sha256": "461c564b30d354272621da4e38c4369730e6e16b07aea132b0149c0ccdc1f97d",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/test/test_scp.py"
+    },
+    {
+      "candidate_sha256": "9d6ab6f6f3c57d7e58eaf1ea94c03f380588fe9f807f5c861f965940f702540c",
+      "original_sha256": "9d6ab6f6f3c57d7e58eaf1ea94c03f380588fe9f807f5c861f965940f702540c",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/test/test_speed_profile.py"
+    },
+    {
+      "candidate_sha256": "6302d79952e67cb1138210e503f7fbdbc710910ce54d0c7377a016d9aba5eefb",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/test/test_spielberg_r_a3_firstpass.py"
+    },
+    {
+      "candidate_sha256": "f8b023e3d7b05e9c877b91b5d190ecb3a454b9881bb27378f72c9bfcd57a39c0",
+      "original_sha256": null,
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/test/test_spielberg_source_secondpass.py"
+    },
+    {
+      "candidate_sha256": "7c28d78bfe31dc6621595fa5f73052a1f5d274333441a43e51a9098dd12b45d4",
+      "original_sha256": "7c28d78bfe31dc6621595fa5f73052a1f5d274333441a43e51a9098dd12b45d4",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/test/test_trajectory.py"
+    },
+    {
+      "candidate_sha256": "8525d22e89269ebe95e4b49b417e87f9b794f8eea580c4b58467fbcf36426c65",
+      "original_sha256": "8525d22e89269ebe95e4b49b417e87f9b794f8eea580c4b58467fbcf36426c65",
+      "path": "src/driving/algorithms/f1tenth_racing_raceline/test/test_true_joint_repair.py"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/driving/f1tenth_racing_opponent/f1tenth_racing_opponent/__init__.py"
+    },
+    {
+      "candidate_sha256": "9539cdddc76d1812a52ae557d699ef06c1ebfe566ec9210b996c757c3ca7acdd",
+      "original_sha256": "9539cdddc76d1812a52ae557d699ef06c1ebfe566ec9210b996c757c3ca7acdd",
+      "path": "src/driving/f1tenth_racing_opponent/f1tenth_racing_opponent/controller.py"
+    },
+    {
+      "candidate_sha256": "247d3cc6e0c6f585e9f45e8d924b7bc77b27340534019ed9beb8e17a420678f8",
+      "original_sha256": "247d3cc6e0c6f585e9f45e8d924b7bc77b27340534019ed9beb8e17a420678f8",
+      "path": "src/driving/f1tenth_racing_opponent/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/driving/f1tenth_racing_opponent/resource/f1tenth_racing_opponent"
+    },
+    {
+      "candidate_sha256": "4f5fc5eff1d2140c0db31f027b8f10ba212eefff0180e75026978826f84ad219",
+      "original_sha256": "4f5fc5eff1d2140c0db31f027b8f10ba212eefff0180e75026978826f84ad219",
+      "path": "src/driving/f1tenth_racing_opponent/setup.cfg"
+    },
+    {
+      "candidate_sha256": "4eedae10b37e36c54e5f698917b95ca9b983f0ee6db7a50580df06f0a074dadd",
+      "original_sha256": "4eedae10b37e36c54e5f698917b95ca9b983f0ee6db7a50580df06f0a074dadd",
+      "path": "src/driving/f1tenth_racing_opponent/setup.py"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/driving/foundation_baseline/foundation_baseline/__init__.py"
+    },
+    {
+      "candidate_sha256": "a8e56d6262fe6802e478799e00c6e0c9add3a28cda2ab25851a74804d6ec0e8a",
+      "original_sha256": "a8e56d6262fe6802e478799e00c6e0c9add3a28cda2ab25851a74804d6ec0e8a",
+      "path": "src/driving/foundation_baseline/foundation_baseline/controller.py"
+    },
+    {
+      "candidate_sha256": "a767ee9bf763afce221aa41c352981a9d5ed0fe5d5dd96d9bab454dfbcff60ad",
+      "original_sha256": "a767ee9bf763afce221aa41c352981a9d5ed0fe5d5dd96d9bab454dfbcff60ad",
+      "path": "src/driving/foundation_baseline/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/driving/foundation_baseline/resource/foundation_baseline"
+    },
+    {
+      "candidate_sha256": "81703369c56be71428ca50353a3e36399b6d5b30e37d44eb2c6f7954942a9a7e",
+      "original_sha256": "81703369c56be71428ca50353a3e36399b6d5b30e37d44eb2c6f7954942a9a7e",
+      "path": "src/driving/foundation_baseline/setup.cfg"
+    },
+    {
+      "candidate_sha256": "4ad98188828fd2d782d95a7046f475f5fe90e981060efbaadce8eea8b1cf8ba0",
+      "original_sha256": "4ad98188828fd2d782d95a7046f475f5fe90e981060efbaadce8eea8b1cf8ba0",
+      "path": "src/driving/foundation_baseline/setup.py"
+    },
+    {
+      "candidate_sha256": "19afff7759f2f1caace41c4781a28c6f01d85c95fff00345aa157e5e3c25c509",
+      "original_sha256": "19afff7759f2f1caace41c4781a28c6f01d85c95fff00345aa157e5e3c25c509",
+      "path": "src/environment/f1tenth_racing_description/CMakeLists.txt"
+    },
+    {
+      "candidate_sha256": "bdfe2a13b9e6cfd1fd96a778244d39c991aed3b5940e7f6c29e5ffee810b8f82",
+      "original_sha256": "bdfe2a13b9e6cfd1fd96a778244d39c991aed3b5940e7f6c29e5ffee810b8f82",
+      "path": "src/environment/f1tenth_racing_description/package.xml"
+    },
+    {
+      "candidate_sha256": "334dd4d637f623a07430fd675ce35c2d51cca6ece25bf47530d6fb1e21a5ffcf",
+      "original_sha256": "334dd4d637f623a07430fd675ce35c2d51cca6ece25bf47530d6fb1e21a5ffcf",
+      "path": "src/environment/f1tenth_racing_description/urdf/vehicle.urdf.xacro"
+    },
+    {
+      "candidate_sha256": "94892e369cd050c0c9060eedd427ed1405c9a7c64ba6a1694aa8269561ee3798",
+      "original_sha256": "94892e369cd050c0c9060eedd427ed1405c9a7c64ba6a1694aa8269561ee3798",
+      "path": "src/environment/f1tenth_racing_sim/config/competition_environment.yaml"
+    },
+    {
+      "candidate_sha256": "58401761f4bf4c2ee73640fd77af3b1282fa0c5900bae6d2ed5c5d2cee717afe",
+      "original_sha256": "58401761f4bf4c2ee73640fd77af3b1282fa0c5900bae6d2ed5c5d2cee717afe",
+      "path": "src/environment/f1tenth_racing_sim/config/spielberg_environment.yaml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/__init__.py"
+    },
+    {
+      "candidate_sha256": "7c8ebe739e03f921e08ba5e65920699448347b01544c699cc443cd9751c5c221",
+      "original_sha256": "7c8ebe739e03f921e08ba5e65920699448347b01544c699cc443cd9751c5c221",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/asset_integrity.py"
+    },
+    {
+      "candidate_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/common/__init__.py"
+    },
+    {
+      "candidate_sha256": "3ed30a5f4625704b346ad33c29fb6458ebc6f9c212c3af6cf1658903c52ee20d",
+      "original_sha256": "3ed30a5f4625704b346ad33c29fb6458ebc6f9c212c3af6cf1658903c52ee20d",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/common/geometry.py"
+    },
+    {
+      "candidate_sha256": "83ec6b8f1f1bf5465129d17d4126cf02d66f29200e05e8fe28d2f5fd66ca8df3",
+      "original_sha256": null,
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py"
+    },
+    {
+      "candidate_sha256": "15881e4f98f7664d29574de3c1973d5a3de1b8b5231d56789256b2f5c94c8175",
+      "original_sha256": null,
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py"
+    },
+    {
+      "candidate_sha256": "53c5238ca114bfc26392a12a6b1018b4f39f54b8b149642fa193228b91b99d11",
+      "original_sha256": null,
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guarded_actuation_contract.py"
+    },
+    {
+      "candidate_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/physics/__init__.py"
+    },
+    {
+      "candidate_sha256": "f1fe3b4019c653c4e1d8c6984af39ee6f8c74ff1027b589c5a3d7c8bbc2a0a36",
+      "original_sha256": "f1fe3b4019c653c4e1d8c6984af39ee6f8c74ff1027b589c5a3d7c8bbc2a0a36",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/physics/pacejka.py"
+    },
+    {
+      "candidate_sha256": "68abf966e1ca8b97209640770bf52daa50c18a23990200b667370655378222f1",
+      "original_sha256": "68abf966e1ca8b97209640770bf52daa50c18a23990200b667370655378222f1",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/physics/vehicle.py"
+    },
+    {
+      "candidate_sha256": "97545a8038ca35413ab6bcb6a9e0ce43157a7837ae867c7966762996ea333a50",
+      "original_sha256": "97545a8038ca35413ab6bcb6a9e0ce43157a7837ae867c7966762996ea333a50",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety/__init__.py"
+    },
+    {
+      "candidate_sha256": "e736968b4965c2ee26f0776642f9d70a33fc93d9fa6bda2122db04143b2489b2",
+      "original_sha256": "607928b2248bb3a6f828da6311f7da431f8138c6b76ded70f88d6c517d597970",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety/native_stop_proof.cpp"
+    },
+    {
+      "candidate_sha256": "c325aacff129bfbf1e59b8d573497883029818c6314fbf6767567450fc9f8d6f",
+      "original_sha256": "5762809eeb49076515c37b86609799de17215174977de5da6cff735e8b0373aa",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety/native_stop_proof.py"
+    },
+    {
+      "candidate_sha256": "13f6ed05446ed4438076345a0db37f819472c7ca16f38041c3d71ffbab4fb151",
+      "original_sha256": "b6a5bddf5a53b9342042683e2508219c1a9305272ba315c975c5c8a78ab030f5",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety/stopping_envelope.py"
+    },
+    {
+      "candidate_sha256": "27bee362a64511671fba582323e309eaf7df3d6ab82ecdda7d145029bc712ad4",
+      "original_sha256": "27bee362a64511671fba582323e309eaf7df3d6ab82ecdda7d145029bc712ad4",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety_deadman.py"
+    },
+    {
+      "candidate_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/sensing/__init__.py"
+    },
+    {
+      "candidate_sha256": "8adf16ecdc11118e6463bc73a6157a37b73e88ef62fa531aa1858d38be9e22e0",
+      "original_sha256": "8adf16ecdc11118e6463bc73a6157a37b73e88ef62fa531aa1858d38be9e22e0",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/sensing/lidar.py"
+    },
+    {
+      "candidate_sha256": "3ffcf650312bb48cd3a3124bc67987e5ed49b2529f6b189781f035fe0325b4e7",
+      "original_sha256": "3ffcf650312bb48cd3a3124bc67987e5ed49b2529f6b189781f035fe0325b4e7",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/sensing/raycast.py"
+    },
+    {
+      "candidate_sha256": "6f6f38cf3d50de57acd580d04422877fad0587688bb3c3789be8be938fe44ba1",
+      "original_sha256": "92ae55d67741fad4f43cb3bf53deb97de9db585e208423ccbdcfdea9aec8a915",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py"
+    },
+    {
+      "candidate_sha256": "f33e726c6f879d8931dc5d19814257c9ace42d59f90eab6b2d60e434d59d01da",
+      "original_sha256": "f33e726c6f879d8931dc5d19814257c9ace42d59f90eab6b2d60e434d59d01da",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/track_preflight.py"
+    },
+    {
+      "candidate_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/world/__init__.py"
+    },
+    {
+      "candidate_sha256": "ea184d1cb3a5d8e51ddb1f8978dced73f6dc7db53e7e8565021b169b58d18eb8",
+      "original_sha256": "3d7aec0f06b07d9593b91aa0c36b07292967fc3a64615a330e00ff83ec4403b6",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/world/collision.py"
+    },
+    {
+      "candidate_sha256": "ef08d442cb99781104c59afc1a38636777996ae91deaf00a494af48e2b78452e",
+      "original_sha256": "ef08d442cb99781104c59afc1a38636777996ae91deaf00a494af48e2b78452e",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/world/map.py"
+    },
+    {
+      "candidate_sha256": "d377dd42becaeecc76b2f3caf06a2bebe69258a83282018d468a7268364f899c",
+      "original_sha256": "d377dd42becaeecc76b2f3caf06a2bebe69258a83282018d468a7268364f899c",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/world/swept_collision.py"
+    },
+    {
+      "candidate_sha256": "0fb5382130c4684780ebf0218b5f400bb923edb312ec22e2f447046acd3c8ec3",
+      "original_sha256": "0fb5382130c4684780ebf0218b5f400bb923edb312ec22e2f447046acd3c8ec3",
+      "path": "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/world/track.py"
+    },
+    {
+      "candidate_sha256": "a4d07292b7a265fe68e27f5691fabd4ff8b4e9548a8d349bde03895e12b3f623",
+      "original_sha256": "a4d07292b7a265fe68e27f5691fabd4ff8b4e9548a8d349bde03895e12b3f623",
+      "path": "src/environment/f1tenth_racing_sim/maps/iccas2025/iccas2025_centerline.csv"
+    },
+    {
+      "candidate_sha256": "471a7c09112458358a4e1b8b540622ea4341abf931c5cfc009ed4d9a9af2350d",
+      "original_sha256": "471a7c09112458358a4e1b8b540622ea4341abf931c5cfc009ed4d9a9af2350d",
+      "path": "src/environment/f1tenth_racing_sim/maps/iccas2025/iccas2025_map.pgm"
+    },
+    {
+      "candidate_sha256": "e19770f26d669d25c19d1fd706301efc4baa827a0891d0856e5ace67d93dcce4",
+      "original_sha256": "e19770f26d669d25c19d1fd706301efc4baa827a0891d0856e5ace67d93dcce4",
+      "path": "src/environment/f1tenth_racing_sim/maps/iccas2025/iccas2025_map.yaml"
+    },
+    {
+      "candidate_sha256": "c712fd1ecce1b548b5579fa01da3ea6bbdcc91de4f28877deb34d11e9e003c2d",
+      "original_sha256": "c712fd1ecce1b548b5579fa01da3ea6bbdcc91de4f28877deb34d11e9e003c2d",
+      "path": "src/environment/f1tenth_racing_sim/maps/spielberg/Spielberg_map.pgm"
+    },
+    {
+      "candidate_sha256": "f8d6c032123fdd75f9ff9cbd097a294d35cde8a8b06b256784fc945eb6b5410e",
+      "original_sha256": "f8d6c032123fdd75f9ff9cbd097a294d35cde8a8b06b256784fc945eb6b5410e",
+      "path": "src/environment/f1tenth_racing_sim/maps/spielberg/Spielberg_map.yaml"
+    },
+    {
+      "candidate_sha256": "4bcaf1658902e3e976d82049e6009e352c25124cba9bd0cc1d8b06f3a35a9c97",
+      "original_sha256": "4bcaf1658902e3e976d82049e6009e352c25124cba9bd0cc1d8b06f3a35a9c97",
+      "path": "src/environment/f1tenth_racing_sim/maps/spielberg/spielberg_centerline.csv"
+    },
+    {
+      "candidate_sha256": "2167e3f69531323a7f552e5680b2268fc709655018424a774c831e66fdb4549f",
+      "original_sha256": "2167e3f69531323a7f552e5680b2268fc709655018424a774c831e66fdb4549f",
+      "path": "src/environment/f1tenth_racing_sim/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/environment/f1tenth_racing_sim/resource/f1tenth_racing_sim"
+    },
+    {
+      "candidate_sha256": "274f7aca502554e490bd26db7e574514d58fc2a1725a0a7788dee6d5dc52df17",
+      "original_sha256": "274f7aca502554e490bd26db7e574514d58fc2a1725a0a7788dee6d5dc52df17",
+      "path": "src/environment/f1tenth_racing_sim/setup.cfg"
+    },
+    {
+      "candidate_sha256": "d0182318d268f2285f2da9e178e07c04b4980e13136b7aac21b3ee58bbc1abe4",
+      "original_sha256": "eb8b4212053428d64c5436f9c2dc7c8aeb7628ab9e4659b96296207c22426226",
+      "path": "src/environment/f1tenth_racing_sim/setup.py"
+    },
+    {
+      "candidate_sha256": "bcb537d054433ff04da9413e585e17f43c92ef8d1ec4374ac7c2428145c275d9",
+      "original_sha256": "bcb537d054433ff04da9413e585e17f43c92ef8d1ec4374ac7c2428145c275d9",
+      "path": "src/environment/f1tenth_racing_sim/test/test_core.py"
+    },
+    {
+      "candidate_sha256": "48cc6efee3948760f6a179851f1cba28791f8a35ccca0ad7f68598a671e40a04",
+      "original_sha256": null,
+      "path": "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py"
+    },
+    {
+      "candidate_sha256": "6da8dbc90a635ae03d5cab796e6b45078e41c29e9cd19ff30484884fbbd4144e",
+      "original_sha256": null,
+      "path": "src/environment/f1tenth_racing_sim/test/test_guard_status_lease_v3.py"
+    },
+    {
+      "candidate_sha256": "223d87bf5a6a9dadee16a1db7a35202ea8bbe3aff3f2569a1c904013ef7182ed",
+      "original_sha256": "223d87bf5a6a9dadee16a1db7a35202ea8bbe3aff3f2569a1c904013ef7182ed",
+      "path": "src/environment/f1tenth_racing_sim/test/test_map_yaw_surgery.py"
+    },
+    {
+      "candidate_sha256": "d187f820ef08e47decbea00fb3b16b044545682178c875acc29ac99912b15f11",
+      "original_sha256": null,
+      "path": "src/environment/f1tenth_racing_sim/test/test_minimum_risk_brake_reconciliation_20261019.py"
+    },
+    {
+      "candidate_sha256": "04fcec2dbcf2b8d8c45ebb1a285c71407d2fe77f8e78c3853d2323912d8d0898",
+      "original_sha256": "04fcec2dbcf2b8d8c45ebb1a285c71407d2fe77f8e78c3853d2323912d8d0898",
+      "path": "src/environment/f1tenth_racing_sim/test/test_safety_deadman_surgery.py"
+    },
+    {
+      "candidate_sha256": "caf31a61bce56b3555692d863de96ac2ebc83958854713571e09b3cf24cbd05b",
+      "original_sha256": "5a06b061ddd93248ebb6cbf48be611ee1de8e3472aee4877989cac3f0b4a9210",
+      "path": "src/interfaces/control_msgs/CMakeLists.txt"
+    },
+    {
+      "candidate_sha256": "9439e7285530e015cd1361edacff90ceca9aa57d997a3ffc0c80fb37ed4807d0",
+      "original_sha256": "9439e7285530e015cd1361edacff90ceca9aa57d997a3ffc0c80fb37ed4807d0",
+      "path": "src/interfaces/control_msgs/msg/ActiveTargetTrajectory.msg"
+    },
+    {
+      "candidate_sha256": "c6f52279eac9a1dc3aa186ede67b0baae335c4477bf5ad95fd8d39b326e1a367",
+      "original_sha256": "c6f52279eac9a1dc3aa186ede67b0baae335c4477bf5ad95fd8d39b326e1a367",
+      "path": "src/interfaces/control_msgs/msg/ActuatorGuardStatus.msg"
+    },
+    {
+      "candidate_sha256": "e2cfdffe2267d8aa6a7a43a269feb11a60da09fab48cd48592c8777b87ed053d",
+      "original_sha256": "e2cfdffe2267d8aa6a7a43a269feb11a60da09fab48cd48592c8777b87ed053d",
+      "path": "src/interfaces/control_msgs/msg/ActuatorIntent.msg"
+    },
+    {
+      "candidate_sha256": "bc09589fd234711c6f33aeeaa94ee0ba42ce6e6f18f5a931072dfebe3a89e7dc",
+      "original_sha256": "bc09589fd234711c6f33aeeaa94ee0ba42ce6e6f18f5a931072dfebe3a89e7dc",
+      "path": "src/interfaces/control_msgs/msg/CarState.msg"
+    },
+    {
+      "candidate_sha256": "ff2ad768ce11d4e14a7cd42e3d4578e3a8ad757777397b16951a670216278035",
+      "original_sha256": "ff2ad768ce11d4e14a7cd42e3d4578e3a8ad757777397b16951a670216278035",
+      "path": "src/interfaces/control_msgs/msg/ControllerStatus.msg"
+    },
+    {
+      "candidate_sha256": "7d59e667d8b09ab30a916d4c6f445a9ead08b228136b651c4bcc22ae654ab325",
+      "original_sha256": null,
+      "path": "src/interfaces/control_msgs/msg/GuardedActuatorCommand.msg"
+    },
+    {
+      "candidate_sha256": "5e020432c9fe2ea55ec4b7ff899c62c26c6305b9263124c514a3590b49873d92",
+      "original_sha256": "5e020432c9fe2ea55ec4b7ff899c62c26c6305b9263124c514a3590b49873d92",
+      "path": "src/interfaces/control_msgs/msg/OpponentPrediction.msg"
+    },
+    {
+      "candidate_sha256": "524792c1029fe7b64f3601000c3c234ff0fe9b29d8cc325972981f2bdf7d9c38",
+      "original_sha256": "524792c1029fe7b64f3601000c3c234ff0fe9b29d8cc325972981f2bdf7d9c38",
+      "path": "src/interfaces/control_msgs/msg/OpponentPredictionSample.msg"
+    },
+    {
+      "candidate_sha256": "cfa5578c649a4b9f6e34e1bdca8dcc82b6ecc85e7687a7ef467ecc8bdddf7c43",
+      "original_sha256": "cfa5578c649a4b9f6e34e1bdca8dcc82b6ecc85e7687a7ef467ecc8bdddf7c43",
+      "path": "src/interfaces/control_msgs/msg/OpponentState.msg"
+    },
+    {
+      "candidate_sha256": "0b23dff6e55a68e4d8b74bb80457b2f9ded1549ed64c3f2497533c22190efbbb",
+      "original_sha256": "0b23dff6e55a68e4d8b74bb80457b2f9ded1549ed64c3f2497533c22190efbbb",
+      "path": "src/interfaces/control_msgs/msg/OvertakingPlan.msg"
+    },
+    {
+      "candidate_sha256": "319b0338f91952420c56c2e2e833b9342ad7096756c7024906d8656fe215cf10",
+      "original_sha256": "319b0338f91952420c56c2e2e833b9342ad7096756c7024906d8656fe215cf10",
+      "path": "src/interfaces/control_msgs/msg/RacingTrajectorySample.msg"
+    },
+    {
+      "candidate_sha256": "54eea105e4f7ebb437900c4aaa23eba846ef64f2ae1f926789c6ff9e2fb5d3b9",
+      "original_sha256": "54eea105e4f7ebb437900c4aaa23eba846ef64f2ae1f926789c6ff9e2fb5d3b9",
+      "path": "src/interfaces/control_msgs/package.xml"
+    },
+    {
+      "candidate_sha256": "219b2c3371374345c26632491489756853cd087c418977fac2b2ccd70aba4913",
+      "original_sha256": "8f08c3a16acc59936ab30f5c69677b450b0ad745f2a244416b0b632d32883eef",
+      "path": "src/platform/f1tenth_racing_bringup/CMakeLists.txt"
+    },
+    {
+      "candidate_sha256": "99f8f00681fd8962f7b9bf331e5d320d9e54d23a02496deae89ffdbda62e28e2",
+      "original_sha256": "99f8f00681fd8962f7b9bf331e5d320d9e54d23a02496deae89ffdbda62e28e2",
+      "path": "src/platform/f1tenth_racing_bringup/config/foundation.yaml"
+    },
+    {
+      "candidate_sha256": "59bd2f75efb848f27c9d3daf31f8f43a6261d7ba8d643fb3bf66fa6a717e581b",
+      "original_sha256": "dc99c88ac094695223f3b84f6b3073db4b596f9b21776876441f40b8e00dc23a",
+      "path": "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py"
+    },
+    {
+      "candidate_sha256": "f29891ca62000092c8d0df94ac99dcdb6e54dfdecc0d99712549b81b55a87c94",
+      "original_sha256": "f29891ca62000092c8d0df94ac99dcdb6e54dfdecc0d99712549b81b55a87c94",
+      "path": "src/platform/f1tenth_racing_bringup/launch/standalone_environment.launch.py"
+    },
+    {
+      "candidate_sha256": "a84bcb628448254e7f9ecc4b7102a47d1a1fc54fea52496fe89a46305a4667f7",
+      "original_sha256": "a84bcb628448254e7f9ecc4b7102a47d1a1fc54fea52496fe89a46305a4667f7",
+      "path": "src/platform/f1tenth_racing_bringup/package.xml"
+    },
+    {
+      "candidate_sha256": "79700f05a3e6e3a2143520b3d0811c94aa36e1bc8c1538d8669daf6b681f95ec",
+      "original_sha256": "79700f05a3e6e3a2143520b3d0811c94aa36e1bc8c1538d8669daf6b681f95ec",
+      "path": "src/platform/f1tenth_racing_bringup/rviz/foundation.rviz"
+    },
+    {
+      "candidate_sha256": "d9110cb2f62781609f34e5bf41e2216eb8d4c8ae968e977b563a734538308eca",
+      "original_sha256": "d9110cb2f62781609f34e5bf41e2216eb8d4c8ae968e977b563a734538308eca",
+      "path": "src/platform/f1tenth_racing_bringup/rviz/h2h_spectator.rviz"
+    },
+    {
+      "candidate_sha256": "e16c12e66106da43ef74b1aad4a60c6275552666cfe70c6634539b92432ff665",
+      "original_sha256": "e16c12e66106da43ef74b1aad4a60c6275552666cfe70c6634539b92432ff665",
+      "path": "src/platform/f1tenth_racing_bringup/scripts/race_coordinator.py"
+    },
+    {
+      "candidate_sha256": "ecdc4ef340c37169819e8da0b4aad7d073db58a4599a500bf0c7a96f0263d974",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_bringup/test/test_capture_offline_preflight.py"
+    },
+    {
+      "candidate_sha256": "ca334c7d47b8d0c6036546dc0dd8d419deabd3b6d67605d41bcda84b0b999f3b",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_bringup/test/test_capture_workspace_contract.py"
+    },
+    {
+      "candidate_sha256": "19c8588a74e1ac17c7b2a22a483a405c1c3df34a5c083c582bf732ef3524aaf9",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_bringup/test/test_evidence_root_contract.py"
+    },
+    {
+      "candidate_sha256": "b1702833fa8014ea2612a163fe8a57c48d049e64266488ee10db962446892323",
+      "original_sha256": "b1702833fa8014ea2612a163fe8a57c48d049e64266488ee10db962446892323",
+      "path": "src/platform/f1tenth_racing_bringup/test/test_readiness.py"
+    },
+    {
+      "candidate_sha256": "3da52edacb609ad8716eba3cb0dcd9ae143b1a71c8968d6a02b37da582deec2c",
+      "original_sha256": "3da52edacb609ad8716eba3cb0dcd9ae143b1a71c8968d6a02b37da582deec2c",
+      "path": "src/platform/f1tenth_racing_bringup/test/test_spectator_rviz.py"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/platform/f1tenth_racing_evaluator/f1tenth_racing_evaluator/__init__.py"
+    },
+    {
+      "candidate_sha256": "ebbfc5ad8b51858e0ea0c48d789ac1ad3ed1b6a02fbba357fbd0623e66539509",
+      "original_sha256": "ebbfc5ad8b51858e0ea0c48d789ac1ad3ed1b6a02fbba357fbd0623e66539509",
+      "path": "src/platform/f1tenth_racing_evaluator/f1tenth_racing_evaluator/evaluator.py"
+    },
+    {
+      "candidate_sha256": "b9abee8fc57da8969541d3d73aa8d11030e09ff17f1bd6910b5758c19941ec2f",
+      "original_sha256": "b9abee8fc57da8969541d3d73aa8d11030e09ff17f1bd6910b5758c19941ec2f",
+      "path": "src/platform/f1tenth_racing_evaluator/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/platform/f1tenth_racing_evaluator/resource/f1tenth_racing_evaluator"
+    },
+    {
+      "candidate_sha256": "af63b578e73a9b66dd8e0d6f170b6784f9beedddb361d275bab68497afee57c1",
+      "original_sha256": "af63b578e73a9b66dd8e0d6f170b6784f9beedddb361d275bab68497afee57c1",
+      "path": "src/platform/f1tenth_racing_evaluator/setup.cfg"
+    },
+    {
+      "candidate_sha256": "d370733f8e197809d3292a14fab682fec8d4568acf0ce08f3431fe52a943ed2f",
+      "original_sha256": "d370733f8e197809d3292a14fab682fec8d4568acf0ce08f3431fe52a943ed2f",
+      "path": "src/platform/f1tenth_racing_evaluator/setup.py"
+    },
+    {
+      "candidate_sha256": "66096249f5d14fff3462b2f63c1494c5746bb27d619bf837b88b483fb11cc030",
+      "original_sha256": "66096249f5d14fff3462b2f63c1494c5746bb27d619bf837b88b483fb11cc030",
+      "path": "src/platform/f1tenth_racing_geometry/f1tenth_racing_geometry/__init__.py"
+    },
+    {
+      "candidate_sha256": "8616aaea6bd6135a6517f1df0790477aa9c57fbc2bdb22ffd0854bba37089736",
+      "original_sha256": "8616aaea6bd6135a6517f1df0790477aa9c57fbc2bdb22ffd0854bba37089736",
+      "path": "src/platform/f1tenth_racing_geometry/f1tenth_racing_geometry/closed_track.py"
+    },
+    {
+      "candidate_sha256": "c037818a45f0d83e94586fbb1382ef56acd3ca9ef0d1c840ce536b99024b6165",
+      "original_sha256": "c037818a45f0d83e94586fbb1382ef56acd3ca9ef0d1c840ce536b99024b6165",
+      "path": "src/platform/f1tenth_racing_geometry/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/platform/f1tenth_racing_geometry/resource/f1tenth_racing_geometry"
+    },
+    {
+      "candidate_sha256": "23f236808070c479577082e5c4ab4e888093657b023fbc5697a81ce362ec6480",
+      "original_sha256": "23f236808070c479577082e5c4ab4e888093657b023fbc5697a81ce362ec6480",
+      "path": "src/platform/f1tenth_racing_geometry/setup.cfg"
+    },
+    {
+      "candidate_sha256": "9552dc537b97bac77ff45c34f596cdab3bb32f2f76ad05aae2350e61999be75f",
+      "original_sha256": "9552dc537b97bac77ff45c34f596cdab3bb32f2f76ad05aae2350e61999be75f",
+      "path": "src/platform/f1tenth_racing_geometry/setup.py"
+    },
+    {
+      "candidate_sha256": "b8ac96ca14d3c4795901ef422a22b560c4244e74afbdec3a3bff52d88aac0044",
+      "original_sha256": "b8ac96ca14d3c4795901ef422a22b560c4244e74afbdec3a3bff52d88aac0044",
+      "path": "src/platform/f1tenth_racing_geometry/test/test_closed_track.py"
+    },
+    {
+      "candidate_sha256": "73eb5baddba4800bc352a26427ac07142c6174210517e9a7f7a59e05555f2581",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_native_proof/CMakeLists.txt"
+    },
+    {
+      "candidate_sha256": "7f1dc6b9a19eee237147858ec38ecf9d78530c4f90b99aa212348bca0821f2ea",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/platform/f1tenth_racing_native_proof/CREATE_NATIVE_GUARD_LAUNCH_PARAMS.py"
+    },
+    {
+      "candidate_sha256": "2ffa597a062678e44d4255b4637c133b9ff95cf49fd835976cc0097220cbfd78",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_native_proof/package.xml"
+    },
+    {
+      "candidate_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_native_proof/resource/f1tenth_racing_native_proof"
+    },
+    {
+      "path": "src/platform/f1tenth_racing_native_proof/src/native_guard_intent_bounds.hpp",
+      "original_sha256": null,
+      "candidate_sha256": "01a84f6288a76d1230cfb549cc465f31caa6dabb07e77562a0eb4e0ea2be77af"
+    },
+    {
+      "candidate_sha256": "44692b6faf6a6f3d3d2001d401a5c00512d90001d0ec5f31882a682e94955e84",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/platform/f1tenth_racing_native_proof/src/native_guard_ros.cpp"
+    },
+    {
+      "candidate_sha256": "e736968b4965c2ee26f0776642f9d70a33fc93d9fa6bda2122db04143b2489b2",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_native_proof/src/native_stop_proof.cpp"
+    },
+    {
+      "candidate_sha256": "f097764c601a5ea5040c7bd5acb20b298313c7fd375715f0dd514b461f98a9e9",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_native_proof/test/test_native_binary_contract.py"
+    },
+    {
+      "path": "src/platform/f1tenth_racing_native_proof/test/test_native_guard_bounds_fourlayer.py",
+      "original_sha256": null,
+      "candidate_sha256": "9247e8d987adb9adf272413f181e6b480e90fec34a4093facbfbbdf96b14471c"
+    },
+    {
+      "candidate_sha256": "08ea1477cc201206ea996fbfa2cc71688da2684c00e643379c2cc7ea287ce792",
+      "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "src/platform/f1tenth_racing_native_proof/test/test_native_guard_humble_api_secondpass.py"
+    },
+    {
+      "candidate_sha256": "e4c499c376343877eaa2ca218ef62abb18eac578e7cc03297447ad5f4fff6735",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_native_proof/test/test_native_guard_identity_thirdpass.py"
+    },
+    {
+      "candidate_sha256": "b660af02c177da0a63220e603e3c438a920ef63a1cc23af6995a9a6f7e5d73c7",
+      "original_sha256": "b660af02c177da0a63220e603e3c438a920ef63a1cc23af6995a9a6f7e5d73c7",
+      "path": "src/platform/f1tenth_racing_reference/config/nominal_reference.json"
+    },
+    {
+      "candidate_sha256": "c10c494c3c929ce4a84e924e5f69bb436cbb5daac0384077c15a203e0601286e",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_reference/config/spielberg_nominal_reference.json"
+    },
+    {
+      "candidate_sha256": "0a9d0dde9462fbad497087616e5d8e4e191398ec1e0143e3a2ca7b9c93fd2408",
+      "original_sha256": "0a9d0dde9462fbad497087616e5d8e4e191398ec1e0143e3a2ca7b9c93fd2408",
+      "path": "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/__init__.py"
+    },
+    {
+      "candidate_sha256": "315ff8862f8bd5cd4f782840cd77d4f4d9c05f12fb2a6e19dd11f3cf679218b4",
+      "original_sha256": "",
+      "path": "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/abort_recovery_gate.py"
+    },
+    {
+      "candidate_sha256": "c9141bb277dd922cc9ba3d0727fbe830e446c0477342cdddd45bc33a3fcfef7d",
+      "original_sha256": "8f2abf50310a65759f428ec1bb69b3930409733454faa7d60c6381e34c3c5367",
+      "path": "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/contract_guard.py"
+    },
+    {
+      "candidate_sha256": "9f73a219497c85845bcb7a911937e089cc34dc59962b0ed72bf1a41388767870",
+      "original_sha256": "34a87a393fc6b4e541c90f024b73766f626a770aaecc9573e2c716d3a614872e",
+      "path": "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/core.py"
+    },
+    {
+      "candidate_sha256": "126df8ab18a260362251048f9bf3b6fe0d1edab4859ef45250c1802dad121c85",
+      "original_sha256": "f164ae3a696534644e968c097a679b02908ca259dc58dd8462f57808e18d7d08",
+      "path": "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py"
+    },
+    {
+      "candidate_sha256": "3b658a51a3f3a08acb651e3629834752e6a59c0d38bcfa51bdc5e0066dda9189",
+      "original_sha256": "3b658a51a3f3a08acb651e3629834752e6a59c0d38bcfa51bdc5e0066dda9189",
+      "path": "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/qualification_surgery.py"
+    },
+    {
+      "candidate_sha256": "8a98a4d29a3f9aa83769e9302d6455136ad4647bd7ebe32902b8793490286def",
+      "original_sha256": "8a98a4d29a3f9aa83769e9302d6455136ad4647bd7ebe32902b8793490286def",
+      "path": "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/transport.py"
+    },
+    {
+      "candidate_sha256": "f7ddc74ad101fd9ab4d137de988e6042ae709b140abda2ddfd584603831dd8ca",
+      "original_sha256": "02c493cbf17057bbb4907ef432af2d96e2b9236f0741ec687ddc62aaad0548e2",
+      "path": "src/platform/f1tenth_racing_reference/package.xml"
+    },
+    {
+      "candidate_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "src/platform/f1tenth_racing_reference/resource/f1tenth_racing_reference"
+    },
+    {
+      "candidate_sha256": "794b5758d8dfe8089c157d2058088c41072a496cb61a48a76af751b756384ce2",
+      "original_sha256": "794b5758d8dfe8089c157d2058088c41072a496cb61a48a76af751b756384ce2",
+      "path": "src/platform/f1tenth_racing_reference/setup.cfg"
+    },
+    {
+      "candidate_sha256": "e34cf2a2922aaf1fbb615cd6cd054adfb546296766b3d97c4db815093ba7d511",
+      "original_sha256": "e34cf2a2922aaf1fbb615cd6cd054adfb546296766b3d97c4db815093ba7d511",
+      "path": "src/platform/f1tenth_racing_reference/setup.py"
+    },
+    {
+      "candidate_sha256": "4879c5f0ff3ba9509482c45ec49373f942060ce6ebf46fcb4e3101d0f5bf87ed",
+      "original_sha256": "",
+      "path": "src/platform/f1tenth_racing_reference/test/test_abort_recovery_gate_v5.py"
+    },
+    {
+      "candidate_sha256": "b5c7d819c50724cdc0af574e60d79ce8ea3ec07c660f8d4dc51f0ae41d41c044",
+      "original_sha256": "b5c7d819c50724cdc0af574e60d79ce8ea3ec07c660f8d4dc51f0ae41d41c044",
+      "path": "src/platform/f1tenth_racing_reference/test/test_contract_guard_surgery.py"
+    },
+    {
+      "candidate_sha256": "523d0e778dbb159c2135e1b477842d3422444ae7aa800507b9275b09de3d48d3",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_reference/test/test_nested_stage_provenance_fix.py"
+    },
+    {
+      "candidate_sha256": "63c997902df0dad60a3dd4b630ba416055eb53f001ebd2dfd231637d780fb589",
+      "original_sha256": "9d453d294ed35c83608919b2201e49b99ab725e6715d37cec6e033ec156b4a5f",
+      "path": "src/platform/f1tenth_racing_reference/test/test_reference.py"
+    },
+    {
+      "candidate_sha256": "eb0c7653aa75e61275b7ea3b104d4499d8b020d01cbee6460840052e89032e8d",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_reference/test/test_spielberg_ra2_registration.py"
+    },
+    {
+      "candidate_sha256": "d152d475672cd9b03bb18c61509a85213dfe8db0640aaa96b30f257ae0fcd615",
+      "original_sha256": "d152d475672cd9b03bb18c61509a85213dfe8db0640aaa96b30f257ae0fcd615",
+      "path": "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/__init__.py"
+    },
+    {
+      "candidate_sha256": "59b9902830bf6cfacfea2bb68486237baf4c740579591004e21897138a275298",
+      "original_sha256": "59b9902830bf6cfacfea2bb68486237baf4c740579591004e21897138a275298",
+      "path": "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/analyzer.py"
+    },
+    {
+      "candidate_sha256": "e9b04bb2b60371d8f2e3c5aac8a1c45a9e89e83468873683a2402f856677a54e",
+      "original_sha256": "e9b04bb2b60371d8f2e3c5aac8a1c45a9e89e83468873683a2402f856677a54e",
+      "path": "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/hud.py"
+    },
+    {
+      "candidate_sha256": "703c17c8626ef0c1009f42d47200ced9e5b01bfaf12abf4e8ddd836f76f231cd",
+      "original_sha256": "703c17c8626ef0c1009f42d47200ced9e5b01bfaf12abf4e8ddd836f76f231cd",
+      "path": "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/recorder.py"
+    },
+    {
+      "candidate_sha256": "5b0744cbdd108da254579d0f9e3aea30ef0bd30f5742f5a2ef213e5632f76cc4",
+      "original_sha256": "5b0744cbdd108da254579d0f9e3aea30ef0bd30f5742f5a2ef213e5632f76cc4",
+      "path": "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/review_validity.py"
+    },
+    {
+      "candidate_sha256": "70c6359e13a911824600905eedacb57b1c181a7a70112d4d94dbe859b11f710b",
+      "original_sha256": "70c6359e13a911824600905eedacb57b1c181a7a70112d4d94dbe859b11f710b",
+      "path": "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/storage.py"
+    },
+    {
+      "candidate_sha256": "6b41682255b60cb87c6837fe040eeccd0f63c2f7b80007c576ffad24416eba31",
+      "original_sha256": "6b41682255b60cb87c6837fe040eeccd0f63c2f7b80007c576ffad24416eba31",
+      "path": "src/platform/f1tenth_racing_telemetry/package.xml"
+    },
+    {
+      "candidate_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "original_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "path": "src/platform/f1tenth_racing_telemetry/resource/f1tenth_racing_telemetry"
+    },
+    {
+      "candidate_sha256": "4f92f2aa473fc47044bca97f406f180a56c47d34bebbf815771dd42df094272e",
+      "original_sha256": "4f92f2aa473fc47044bca97f406f180a56c47d34bebbf815771dd42df094272e",
+      "path": "src/platform/f1tenth_racing_telemetry/setup.cfg"
+    },
+    {
+      "candidate_sha256": "da5a9a0563c3e69d92429926b71942a7fe02d8224a686da5c31fc522556fd280",
+      "original_sha256": "da5a9a0563c3e69d92429926b71942a7fe02d8224a686da5c31fc522556fd280",
+      "path": "src/platform/f1tenth_racing_telemetry/setup.py"
+    },
+    {
+      "candidate_sha256": "4873be8e3de9004cc276b7969960de3a57efea8b8a270c11d43d348bdfa30d01",
+      "original_sha256": "4873be8e3de9004cc276b7969960de3a57efea8b8a270c11d43d348bdfa30d01",
+      "path": "src/platform/f1tenth_racing_telemetry/test/test_analyzer.py"
+    },
+    {
+      "candidate_sha256": "34581209fe2a81db60b490086f5a494fec85c92534740230611c568a8197832d",
+      "original_sha256": "34581209fe2a81db60b490086f5a494fec85c92534740230611c568a8197832d",
+      "path": "src/platform/f1tenth_racing_telemetry/test/test_hud.py"
+    },
+    {
+      "candidate_sha256": "5f6320a934307aad5f017326e5eecabf90c28231217375af28a9fd82d40f0b0d",
+      "original_sha256": "5f6320a934307aad5f017326e5eecabf90c28231217375af28a9fd82d40f0b0d",
+      "path": "src/platform/f1tenth_racing_telemetry/test/test_recorder_contract.py"
+    },
+    {
+      "candidate_sha256": "d98bdb0da04f30cda6ee20eb4de9a2cdbaf71121a90673c9d7cf4c04857353fd",
+      "original_sha256": "d98bdb0da04f30cda6ee20eb4de9a2cdbaf71121a90673c9d7cf4c04857353fd",
+      "path": "src/platform/f1tenth_racing_telemetry/test/test_storage.py"
+    },
+    {
+      "candidate_sha256": "6668052d71daad7f66d513625a6835c72eff494eeddba227ef9f92ef65ec058a",
+      "original_sha256": "3435c0cf4dce8da660e80c7c5b065143dd3352925379e01f3bf465ae29f61667",
+      "path": "src/platform/f1tenth_racing_tools/CMakeLists.txt"
+    },
+    {
+      "candidate_sha256": "72595eb49e5618a8a9162e1b83aed78b6e5cc4a16d4143845cc4ea0b2126de94",
+      "original_sha256": "72595eb49e5618a8a9162e1b83aed78b6e5cc4a16d4143845cc4ea0b2126de94",
+      "path": "src/platform/f1tenth_racing_tools/package.xml"
+    },
+    {
+      "candidate_sha256": "e99f7c8932291ce82de399cc423c0797f7c7415adf91eaf4556c37857df96e8d",
+      "original_sha256": "e99f7c8932291ce82de399cc423c0797f7c7415adf91eaf4556c37857df96e8d",
+      "path": "src/platform/f1tenth_racing_tools/scripts/f1fast"
+    },
+    {
+      "candidate_sha256": "61a3d350e1514cdae3b23c30377a7049a6b5e2ab67512c23226a58ce60274e14",
+      "original_sha256": "61a3d350e1514cdae3b23c30377a7049a6b5e2ab67512c23226a58ce60274e14",
+      "path": "src/platform/f1tenth_racing_tools/scripts/f1go"
+    },
+    {
+      "candidate_sha256": "357b9bfb12f962786e352ca97b3dadb962ccc17569a9727164f65d5deb0e6fea",
+      "original_sha256": null,
+      "path": "src/platform/f1tenth_racing_tools/scripts/f1h2h"
+    },
+    {
+      "candidate_sha256": "316b8344475a4f444ce57e5946c2e87146cfc9e0f847fb950183baba6852e6b7",
+      "original_sha256": "47f2a87722b0dfe3374782ebbc2e874c4e6f3a068037fc8e4a71c2bf88e73c8d",
+      "path": "src/platform/f1tenth_racing_tools/scripts/f1safe"
+    },
+    {
+      "candidate_sha256": "453aa42df0150bb3fc66c19d0c92e4ca6a8cf6843da5a06ce4da665e98f2b2f7",
+      "original_sha256": "85839e5fbf41061cb0ba241144c42afba919f0e277b9608940ddcabc9979462d",
+      "path": "src/platform/f1tenth_racing_tools/scripts/f1sim"
+    },
+    {
+      "candidate_sha256": "5c31426faf47d905715c5989728757c5dce599cfaa4b54c85f86a8241521913b",
+      "original_sha256": "103056c9196ed572dcd036943489e52a9ce3ff9784d8bf07d5b9bd01b5fb6d98",
+      "path": "src/platform/f1tenth_racing_tools/scripts/f1solo"
+    },
+    {
+      "candidate_sha256": "52bbf6141e2f21abd0dbac3989ff08d2ebb308075e8a8df08d13578a2d2e2a82",
+      "original_sha256": "52bbf6141e2f21abd0dbac3989ff08d2ebb308075e8a8df08d13578a2d2e2a82",
+      "path": "src/platform/f1tenth_racing_tools/scripts/race_start.py"
+    },
+    {
+      "candidate_sha256": "e631b749fc0c50a19270d4dd102da5e652db154850bf8e0d1de5f836f467f2d8",
+      "original_sha256": "e631b749fc0c50a19270d4dd102da5e652db154850bf8e0d1de5f836f467f2d8",
+      "path": "src/verification/foundation/qualify_foundation.py"
+    },
+    {
+      "candidate_sha256": "9e45f9020b3f3d13274cc4ccd0eae37433f8c075f0db17eec45c052eea92d08a",
+      "original_sha256": "9e45f9020b3f3d13274cc4ccd0eae37433f8c075f0db17eec45c052eea92d08a",
+      "path": "src/verification/h2h_champion/observe_active_reference.py"
+    },
+    {
+      "candidate_sha256": "8535cb68cbdd0cd90b0db3f30ae083e06ea6824b4995d90e797ea85b6fc8e6b9",
+      "original_sha256": "0a46ac413d38653fe02c060c59d9ec6633e17ad1d6027414dde927d2991cbace",
+      "path": "src/verification/h2h_champion/qualify_h2h.py"
+    },
+    {
+      "candidate_sha256": "db999b0b4024c9dcde0fadd5adfa94c7a50b473f6da6505fbcfcaedb8b1951ab",
+      "original_sha256": "db999b0b4024c9dcde0fadd5adfa94c7a50b473f6da6505fbcfcaedb8b1951ab",
+      "path": "src/verification/h2h_champion/recompute_h2h_metrics.py"
+    },
+    {
+      "candidate_sha256": "dbdf6035a7beef6ece70c7a723d04b2faa160483b72f6d5af7843766c756f3eb",
+      "original_sha256": "dbdf6035a7beef6ece70c7a723d04b2faa160483b72f6d5af7843766c756f3eb",
+      "path": "src/verification/h2h_champion/resource_preflight.py"
+    },
+    {
+      "candidate_sha256": "5e8128e6eba710bdff055dd9e9b5140b702bc712aedc9928e7ffcf7e32e9a179",
+      "original_sha256": "5e8128e6eba710bdff055dd9e9b5140b702bc712aedc9928e7ffcf7e32e9a179",
+      "path": "src/verification/h2h_champion/test_qualification.py"
+    },
+    {
+      "candidate_sha256": "6ad3e045ecc2c046e2d3759a228557ab16b9cfdc2564807a4c67feda86f8d249",
+      "original_sha256": "6ad3e045ecc2c046e2d3759a228557ab16b9cfdc2564807a4c67feda86f8d249",
+      "path": "src/verification/h2h_champion/test_resource_preflight.py"
+    },
+    {
+      "candidate_sha256": "30069dabe74a9ad9f78051fc1529f55271240eab22bf8b54edbc920cbca4bf34",
+      "original_sha256": "30069dabe74a9ad9f78051fc1529f55271240eab22bf8b54edbc920cbca4bf34",
+      "path": "src/verification/h2h_max_performance/analyze_host_attribution.py"
+    },
+    {
+      "candidate_sha256": "7894f47d8f784564776a20732315f582198709f1e41049457d58eb06c3428d8a",
+      "original_sha256": "7894f47d8f784564776a20732315f582198709f1e41049457d58eb06c3428d8a",
+      "path": "src/verification/h2h_max_performance/capture_host_attribution.py"
+    },
+    {
+      "candidate_sha256": "a6f25ddf16829b595e74b1bd26150616519c37fceba934ea06ef2d6830c3dae1",
+      "original_sha256": "a6f25ddf16829b595e74b1bd26150616519c37fceba934ea06ef2d6830c3dae1",
+      "path": "src/verification/h2h_max_performance/profile_rc_replay.py"
+    },
+    {
+      "candidate_sha256": "dcb5a0ec15cf5ae38519153f577824cb73a94e7c0a0be9566e570740c9362187",
+      "original_sha256": "dcb5a0ec15cf5ae38519153f577824cb73a94e7c0a0be9566e570740c9362187",
+      "path": "src/verification/h2h_max_performance/test_attribution_tools.py"
+    },
+    {
+      "candidate_sha256": "5f6a3c6e793b8486924c7cb1e11ffbcb824ef4921ad4982d2e27d8452fcb842d",
+      "original_sha256": "5f6a3c6e793b8486924c7cb1e11ffbcb824ef4921ad4982d2e27d8452fcb842d",
+      "path": "src/verification/h2h_repair/fault_inject_reference.py"
+    },
+    {
+      "candidate_sha256": "b771d213787a4db9aff69b297a1dca8adc8ae114eb48687838758f94359b0092",
+      "original_sha256": "b771d213787a4db9aff69b297a1dca8adc8ae114eb48687838758f94359b0092",
+      "path": "src/verification/opponent_prediction/qualify_perception.py"
+    },
+    {
+      "candidate_sha256": "14e8692a2159bf36970851c34e4c294e41b21d9170fdc4a59256ea2e59dabff5",
+      "original_sha256": null,
+      "path": "src/verification/qualification_gates/applied_lineage.py"
+    },
+    {
+      "candidate_sha256": "2fa9c2fdd29fc03e22faec406d48276bb2e148b7dda139f9c78576a65068572a",
+      "original_sha256": null,
+      "path": "src/verification/qualification_gates/gate_model.py"
+    },
+    {
+      "candidate_sha256": "3ba3a595bb34ed6ce9dc238fca49a172c1235af2dd3be0ad295cc9bcbb529baf",
+      "original_sha256": "3ba3a595bb34ed6ce9dc238fca49a172c1235af2dd3be0ad295cc9bcbb529baf",
+      "path": "src/verification/r_b0/qualify_degradation.py"
+    },
+    {
+      "candidate_sha256": "74ecb5ddb6d42e9b684f3c40d9d87cbc92ded3a58e6c497f76d805a6bfac71a1",
+      "original_sha256": "74ecb5ddb6d42e9b684f3c40d9d87cbc92ded3a58e6c497f76d805a6bfac71a1",
+      "path": "src/verification/r_b0/qualify_r_b0.py"
+    },
+    {
+      "candidate_sha256": "b18f9c6affd195fbc41f83321460a7fe5abefb7dd03c6751a00cc9592e393c42",
+      "original_sha256": "b18f9c6affd195fbc41f83321460a7fe5abefb7dd03c6751a00cc9592e393c42",
+      "path": "src/verification/s0_r/qualify_s0_r.py"
+    },
+    {
+      "candidate_sha256": "40a40bc1b01fa69adb6d3096f5cdb962502402222a054b95bd7a7c5e1e54f6a9",
+      "original_sha256": "40a40bc1b01fa69adb6d3096f5cdb962502402222a054b95bd7a7c5e1e54f6a9",
+      "path": "src/verification/solo_champion/analyze_r_b_run.py"
+    },
+    {
+      "candidate_sha256": "21a0f5fd1d08ce04c6eb8a992caec9c5a273447583b5327cb2db9d5e01fd903a",
+      "original_sha256": "21a0f5fd1d08ce04c6eb8a992caec9c5a273447583b5327cb2db9d5e01fd903a",
+      "path": "src/verification/solo_champion/nmpc_timing_gate.py"
+    },
+    {
+      "candidate_sha256": "774052c29fe06216c41033f512bed14758cf4625572ce5f529e6e53017e0a5e7",
+      "original_sha256": "774052c29fe06216c41033f512bed14758cf4625572ce5f529e6e53017e0a5e7",
+      "path": "src/verification/solo_champion/physical_lap_oracle.py"
+    },
+    {
+      "candidate_sha256": "d33dab3af8c54200e8a7bb26c995778698f3b20f9591967cba4667f879342996",
+      "original_sha256": "0b1804bb4af4e2b4f541cd9f75768d52e50746182ddbbf9f22d475b7e901dee0",
+      "path": "src/verification/solo_champion/qualify_solo.py"
+    },
+    {
+      "candidate_sha256": "2e0813aad3419de119ef1f0fb01627cce67bd2a474f1faef94f1323a08f6a6ac",
+      "original_sha256": "2e0813aad3419de119ef1f0fb01627cce67bd2a474f1faef94f1323a08f6a6ac",
+      "path": "src/verification/solo_champion/test_tournament_tools.py"
+    }
+  ],
+  "firstpass_8_parent_release_sha256": "1e9ca203e92d6e88fe10c8f474094028af5e9e223df23b74c9320713dfc5f6b9",
+  "four_pass_parent_release_sha256": "9568578d9aa5e72f1a2dc9a2c2fb9f44bd107bab97ba3975efa83f8d9b998e15",
+  "modified_files": [
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_contract.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/control_worker.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/execution_speed_authority.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/fast_stop_proof.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/final_preflight.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/forensic_trace.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/guard_ahead.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/guard_state_integrity.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_core.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/primary_worker.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/process_primary_worker.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/rb_state_qos_contract.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/red_dynamic_guard.py",
+    "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/reference_admission.py",
+    "src/driving/algorithms/f1tenth_racing_control/package.xml",
+    "src/driving/algorithms/f1tenth_racing_control/setup.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_control_worker_v6.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_forensic_trace_async_20261019.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_ga_scheduler_metrics_20261019.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_guard_ahead_v6_nonfinite.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_guard_finite_state_final.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_guarded_atomic_wire.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_mpc_timing_input_hardening_final.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_nmpc_nonlinear_candidate_final.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_primary_worker_secondpass.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_process_primary_channel_fourlayer.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_process_primary_recovery_thirdpass.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_process_primary_worker_firstpass.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_rb_state_qos_regression_20261019.py",
+    "src/driving/algorithms/f1tenth_racing_control/test/test_red_confidence_secondpass.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/config/successor_v0.yaml",
+    "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/node.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/post_abort_freshness.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/runtime_environment.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/state_input_contract.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/test/test_abort_handoff_v5.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/test/test_firstpass_receipt_assembly.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/test/test_g8_real_retry_gate_firstpass.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/test/test_moving_emergency_rejoin.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/test/test_post_abort_red_epoch_firstpass.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/test/test_red_witness_integrity_final.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/test/test_runtime_environment_contract_v8.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/test/test_state_input_contract_v8.py",
+    "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_q0.py",
+    "src/driving/algorithms/f1tenth_racing_raceline/config/spielberg_r_a3_scp_sparse_offline.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/config/spielberg_r_a3_true_joint_sparse_offline.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a0_baseline.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a0_baseline.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a1_speed_profile.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a1_speed_profile.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a2_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a2_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_scp_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_scp_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_true_joint_experimental_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_true_joint_experimental_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/f1tenth_racing_raceline/foundation_adapter.py",
+    "src/driving/algorithms/f1tenth_racing_raceline/test/test_spielberg_r_a3_firstpass.py",
+    "src/driving/algorithms/f1tenth_racing_raceline/test/test_spielberg_source_secondpass.py",
+    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guard_status_lease.py",
+    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/guarded_actuation_contract.py",
+    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety/native_stop_proof.cpp",
+    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety/native_stop_proof.py",
+    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/safety/stopping_envelope.py",
+    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+    "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/world/collision.py",
+    "src/environment/f1tenth_racing_sim/setup.py",
+    "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+    "src/environment/f1tenth_racing_sim/test/test_guard_status_lease_v3.py",
+    "src/environment/f1tenth_racing_sim/test/test_minimum_risk_brake_reconciliation_20261019.py",
+    "src/interfaces/control_msgs/CMakeLists.txt",
+    "src/interfaces/control_msgs/msg/GuardedActuatorCommand.msg",
+    "src/platform/f1tenth_racing_bringup/CMakeLists.txt",
+    "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+    "src/platform/f1tenth_racing_bringup/test/test_capture_offline_preflight.py",
+    "src/platform/f1tenth_racing_bringup/test/test_capture_workspace_contract.py",
+    "src/platform/f1tenth_racing_bringup/test/test_evidence_root_contract.py",
+    "src/platform/f1tenth_racing_native_proof/CMakeLists.txt",
+    "src/platform/f1tenth_racing_native_proof/CREATE_NATIVE_GUARD_LAUNCH_PARAMS.py",
+    "src/platform/f1tenth_racing_native_proof/package.xml",
+    "src/platform/f1tenth_racing_native_proof/resource/f1tenth_racing_native_proof",
+    "src/platform/f1tenth_racing_native_proof/src/native_guard_intent_bounds.hpp",
+    "src/platform/f1tenth_racing_native_proof/src/native_guard_ros.cpp",
+    "src/platform/f1tenth_racing_native_proof/src/native_stop_proof.cpp",
+    "src/platform/f1tenth_racing_native_proof/test/test_native_binary_contract.py",
+    "src/platform/f1tenth_racing_native_proof/test/test_native_guard_bounds_fourlayer.py",
+    "src/platform/f1tenth_racing_native_proof/test/test_native_guard_humble_api_secondpass.py",
+    "src/platform/f1tenth_racing_native_proof/test/test_native_guard_identity_thirdpass.py",
+    "src/platform/f1tenth_racing_reference/config/spielberg_nominal_reference.json",
+    "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/abort_recovery_gate.py",
+    "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/contract_guard.py",
+    "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/core.py",
+    "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/node.py",
+    "src/platform/f1tenth_racing_reference/package.xml",
+    "src/platform/f1tenth_racing_reference/test/test_abort_recovery_gate_v5.py",
+    "src/platform/f1tenth_racing_reference/test/test_nested_stage_provenance_fix.py",
+    "src/platform/f1tenth_racing_reference/test/test_reference.py",
+    "src/platform/f1tenth_racing_reference/test/test_spielberg_ra2_registration.py",
+    "src/platform/f1tenth_racing_tools/CMakeLists.txt",
+    "src/platform/f1tenth_racing_tools/scripts/f1h2h",
+    "src/platform/f1tenth_racing_tools/scripts/f1safe",
+    "src/platform/f1tenth_racing_tools/scripts/f1sim",
+    "src/platform/f1tenth_racing_tools/scripts/f1solo",
+    "src/verification/h2h_champion/qualify_h2h.py",
+    "src/verification/qualification_gates/applied_lineage.py",
+    "src/verification/qualification_gates/gate_model.py",
+    "src/verification/solo_champion/qualify_solo.py"
+  ],
+  "pass2_native_humble_patch": "RAB_PASS2_HUMBLE_NATIVE_ONLY_PATCH_20261019",
+  "pass3_mpc_recovery": "TIMEOUT_GENERATION_REPLACEMENT_FAIL_CLOSED_OFFLINE_5_PASS_UBUNTU_PENDING",
+  "pass3_scope": "CXX_GUARD_SINGLE_PUBLISHER_NODE_IDENTITY_MATCH_ALL_SAFETY_CONSUMERS; NATIVE_RUNTIME_UNQUALIFIED",
+  "qos_closure_parent_zip_sha256": "6c56636a6152839603cf963820da24a179454ae1b2a97849a7a0f66cf30124de",
+  "schema": "RAB_STRUCTURAL_IMPLEMENTATION_V1",
+  "second_pass_parent_sha256": "2482564702fb9acfe3aaebd80cc53052417f6e6454cea6e1ec99ff9d58692922",
+  "source_parent_zip_sha256": "47c539b2647225d629024f0bf23ae6b2b6671e7a6056349d84e9abada0a72c00",
+  "v6_parent_release_zip_sha256": "417abb1cc34dfd70f66abd9077f816c4295bfd76b2a43c38036fb322e29f9905",
+  "v7_parent_release_zip_sha256": "86e12dc3a2da2ab6edb2443f3ea95deb375ba9d2bac725740aaf0653a10d40c0",
+  "four_layer_code_audit": {
+    "based_on_previous_ros_regression": 698,
+    "new_checks": "native bounds and MPC IPC failures",
+    "new_ros_regression_status": "PENDING_UBUNTU",
+    "no_canonical_merge": true
+  }
+}

@@ -1,0 +1,11 @@
+float64 dt_s
+float64 x_m
+float64 y_m
+float64 vx_mps
+float64 vy_mps
+float64 heading_rad
+float64 s_m
+float64 d_m
+float64[4] covariance_xy
+float64 occupancy_half_length_m
+float64 occupancy_half_width_m
