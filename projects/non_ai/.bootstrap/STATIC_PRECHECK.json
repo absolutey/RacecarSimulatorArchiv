@@ -1,0 +1,1795 @@
+{
+  "ros_packages": [
+    "src/interfaces/control_msgs/package.xml",
+    "src/driving/foundation_baseline/package.xml",
+    "src/driving/algorithms/f1tenth_racing_perception/package.xml",
+    "src/driving/algorithms/f1tenth_racing_overtaking/package.xml",
+    "src/driving/algorithms/f1tenth_racing_prediction/package.xml",
+    "src/driving/algorithms/f1tenth_racing_control/package.xml",
+    "src/driving/algorithms/f1tenth_racing_raceline/package.xml",
+    "src/driving/f1tenth_racing_opponent/package.xml",
+    "src/platform/f1tenth_racing_geometry/package.xml",
+    "src/platform/f1tenth_racing_reference/package.xml",
+    "src/platform/f1tenth_racing_evaluator/package.xml",
+    "src/platform/f1tenth_racing_native_proof/package.xml",
+    "src/platform/f1tenth_racing_telemetry/package.xml",
+    "src/platform/f1tenth_racing_bringup/package.xml",
+    "src/platform/f1tenth_racing_tools/package.xml",
+    "src/environment/f1tenth_racing_sim/package.xml",
+    "src/environment/f1tenth_racing_description/package.xml"
+  ],
+  "python_files": 221,
+  "syntax_errors": [],
+  "named_map_files": [
+    "src/driving/algorithms/f1tenth_racing_raceline/test/test_spielberg_source_secondpass.py",
+    "src/driving/algorithms/f1tenth_racing_raceline/test/test_spielberg_r_a3_firstpass.py",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a2_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a2_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_scp_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a2_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_centerline_preliminary_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a1_speed_profile.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a0_baseline.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a3_scp_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_true_joint_experimental_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a0_baseline.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a3_scp_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a0_baseline.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a1_speed_profile.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a1_speed_profile.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_scp_racing_trajectory.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a2_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a1_speed_profile.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/spielberg_r_a3_true_joint_experimental_racing_trajectory.csv",
+    "src/driving/algorithms/f1tenth_racing_raceline/data/iccas2025_r_a0_baseline.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/config/spielberg_r_a3_true_joint_sparse_offline.json",
+    "src/driving/algorithms/f1tenth_racing_raceline/config/spielberg_r_a3_scp_sparse_offline.json",
+    "src/platform/f1tenth_racing_reference/test/test_spielberg_ra2_registration.py",
+    "src/platform/f1tenth_racing_reference/config/spielberg_nominal_reference.json",
+    "src/environment/f1tenth_racing_sim/maps/spielberg/Spielberg_map.yaml",
+    "src/environment/f1tenth_racing_sim/maps/spielberg/Spielberg_map.pgm",
+    "src/environment/f1tenth_racing_sim/maps/spielberg/spielberg_centerline.csv",
+    "src/environment/f1tenth_racing_sim/maps/iccas2025/iccas2025_map.yaml",
+    "src/environment/f1tenth_racing_sim/maps/iccas2025/iccas2025_map.pgm",
+    "src/environment/f1tenth_racing_sim/maps/iccas2025/iccas2025_centerline.csv",
+    "src/environment/f1tenth_racing_sim/config/spielberg_environment.yaml"
+  ],
+  "speed_guard_review_hits": [
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/node.py",
+      30,
+      "self.declare_parameter(\"qualified_speed_cap_mps\", 3.0)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/node.py",
+      31,
+      "self.declare_parameter(\"racing_speed_cap_mps\", 3.0)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/node.py",
+      62,
+      "\"candidate_speed_cap_mps\": self.get_parameter(\"qualified_speed_cap_mps\").value,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/node.py",
+      63,
+      "\"racing_speed_cap_mps\": self.get_parameter(\"racing_speed_cap_mps\").value,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      130,
+      "def build_successor_config(settings, environment, execution_speed_cap_mps):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      142,
+      "# This is a planner limit, not actuation approval. Historical 5.0m/s"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      146,
+      "if not (math.isfinite(execution_speed_cap_mps) and 0.0 < execution_speed_cap_mps <="
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      192,
+      "execution_speed_cap_mps=float(execution_speed_cap_mps),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      226,
+      "standalone_cap=runtime[\"standalone_default_speed_cap_mps\"]"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      229,
+      "self.declare_parameter(\"qualified_speed_cap_mps\", standalone_cap)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      230,
+      "execution_speed_cap = float("
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      231,
+      "self.get_parameter(\"qualified_speed_cap_mps\").value"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      236,
+      "execution_speed_cap,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_node.py",
+      297,
+      "f\"qualification_cap={execution_speed_cap:.3f}m/s\""
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+      113,
+      "execution_speed_cap_mps: float"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+      145,
+      "self.execution_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+      176,
+      "if self.execution_speed_cap_mps <= 0.0:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+      566,
+      "entry_length_m + c.execution_speed_cap_mps * c.pass_timeout_s"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+      723,
+      "c.execution_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+      1049,
+      "cap = min(current.target_speed_mps, c.execution_speed_cap_mps)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+      1251,
+      "cap = self.config.execution_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+      1559,
+      "ceiling = min(c.execution_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/successor_core.py",
+      1601,
+      "follow_speed = min(red_speed, self.config.execution_speed_cap_mps)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      37,
+      "candidate_speed_cap_mps: float"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      38,
+      "racing_speed_cap_mps: float"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      296,
+      "source.target_speed_mps, self.config.candidate_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      299,
+      "0.0 if source.target_speed_mps > self.config.candidate_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      357,
+      "def _abort_candidate(self, nominal_samples, start_s, current_d, speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      370,
+      "target_speed_mps=min(source.target_speed_mps, speed_cap_mps),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      395,
+      "generated, speed_ceiling_mps=self.config.racing_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      424,
+      "generated, speed_ceiling_mps=self.config.racing_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      551,
+      "containment_speed = min(red_speed, self.config.candidate_speed_cap_mps)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      628,
+      "eligibility_speed = max(blue_speed, self.config.candidate_speed_cap_mps)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      663,
+      "max(blue_speed, self.config.racing_speed_cap_mps),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      730,
+      "sample.target_speed_mps > self.config.candidate_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      785,
+      "sample.target_speed_mps > self.config.candidate_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      791,
+      "self.config.racing_speed_cap_mps if tracking_lost and speed_released else"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      862,
+      "max(blue_speed, self.config.racing_speed_cap_mps),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      873,
+      "max(blue_speed, self.config.racing_speed_cap_mps),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/f1tenth_racing_overtaking/core.py",
+      996,
+      "samples, blue_s, max(blue_speed, self.config.candidate_speed_cap_mps), prediction,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_finite_geometry_1b.py",
+      34,
+      "execution_speed_cap_mps=5., longitudinal_acceleration_max_mps2=1.,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      106,
+      "assert max(sample.target_speed_mps for sample in plan.samples) <= supervisor.config.candidate_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      133,
+      "assert checked == [supervisor.config.candidate_speed_cap_mps] * 2"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      138,
+      "supervisor.config = replace(supervisor.config, candidate_speed_cap_mps=4.0)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      139,
+      "samples = tuple(replace(sample, target_speed_mps=5.0) for sample in samples)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      153,
+      "assert max(sample.target_speed_mps for sample in plan.samples) == 5.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      158,
+      "supervisor.config = replace(supervisor.config, candidate_speed_cap_mps=4.0)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      159,
+      "samples = tuple(replace(sample, target_speed_mps=5.0) for sample in samples)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      174,
+      "assert max(sample.target_speed_mps for sample in plan.samples) == 5.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      181,
+      "assert max(sample.target_speed_mps for sample in recovery.samples) == 5.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      187,
+      "supervisor.config, candidate_speed_cap_mps=4.0, racing_speed_cap_mps=5.0,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      189,
+      "samples = tuple(replace(sample, target_speed_mps=5.0) for sample in samples)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      208,
+      "assert max(sample.target_speed_mps for sample in plan.samples) == 5.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      214,
+      "supervisor.config, candidate_speed_cap_mps=4.0, racing_speed_cap_mps=5.0,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      216,
+      "samples = tuple(replace(sample, target_speed_mps=5.0) for sample in samples)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      231,
+      "assert max(sample.target_speed_mps for sample in plan.samples) == 5.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      237,
+      "supervisor.config, candidate_speed_cap_mps=4.0, racing_speed_cap_mps=5.0,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      239,
+      "samples = tuple(replace(sample, target_speed_mps=5.0) for sample in samples)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      256,
+      "assert max(sample.target_speed_mps for sample in parity_plan.samples) == 5.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      265,
+      "assert max(sample.target_speed_mps for sample in merge.samples) == 5.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      323,
+      "def test_downward_speed_cap_does_not_keep_higher_speed_feedforward_acceleration():"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      332,
+      "assert all(sample.target_speed_mps == supervisor.config.candidate_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      712,
+      "assert 0.0 < red_speed <= supervisor.config.candidate_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      768,
+      "samples = tuple(replace(sample, target_speed_mps=5.0) for sample in samples)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      806,
+      "samples = tuple(replace(sample, target_speed_mps=5.0) for sample in samples)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      826,
+      "assert min(sample.target_speed_mps for sample in recovered.samples) == 5.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      831,
+      "samples = tuple(replace(sample, target_speed_mps=5.0) for sample in samples)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_overtaking.py",
+      856,
+      "samples = tuple(replace(sample, target_speed_mps=5.0) for sample in samples)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_q0.py",
+      21,
+      "execution_speed=5.0,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_q0.py",
+      76,
+      "execution_speed_cap_mps=execution_speed,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_q0.py",
+      159,
+      "minimum_executable_speed_mps=5.0,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_q0.py",
+      255,
+      "def test_execution_speed_cap_is_applied_to_candidate_payload():"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_q0.py",
+      296,
+      "\"minimum_ego_speed_mps\": 5.0,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_safe_approach_1c2.py",
+      48,
+      "def test_speed_cap_and_config_validation():"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_safe_approach_1c2.py",
+      52,
+      "assert target <= p.config.execution_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_overtaking/test/test_successor_longitudinal_1a.py",
+      30,
+      "lateral_acceleration_max_mps2=30., execution_speed_cap_mps=5.,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/setup.py",
+      27,
+      "\"independent_guard_watchdog = f1tenth_racing_control.independent_watchdog_node:main\","
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_prestart_readiness.py",
+      21,
+      "assert status.local_speed_limit_reason == \"PRESTART_READY\""
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_postop_integrated_safety.py",
+      64,
+      "\"qualified_speed_cap_mps\":8.5,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_control.py",
+      23,
+      "\"qualified_speed_cap_mps\": 2.0,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_control.py",
+      69,
+      "def test_straight_centered_and_speed_cap_are_deterministic():"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_control.py",
+      78,
+      "assert first.mode == \"LOCAL_SPEED_CAPPED\""
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_control.py",
+      148,
+      "{\"qualified_speed_cap_mps\": 0.0},"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_mpc.py",
+      104,
+      ")._local_speed_limit(curved, 1.0, 20.0)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_mpc.py",
+      150,
+      "assert bounded.scalar(\"target_speed_mps\", 1.0) <= 5.6"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py",
+      1,
+      "\"\"\"Separately scheduled watchdog's deterministic, authority-free core.\"\"\""
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py",
+      5,
+      "from f1tenth_racing_control.independent_watchdog_core import IndependentWatchdogCore"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py",
+      9,
+      "return IndependentWatchdogCore(guard_lease=GuardStatusLease(run_epoch='e1',producer='R_B'))"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py",
+      39,
+      "def test_healthy_fresh_guard_and_state_remove_watchdog_veto():"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_independent_watchdog_core_v4.py",
+      83,
+      "IndependentWatchdogCore(guard_lease=None,max_state_age_ns=500_000_000)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/test/test_final_preflight_unified.py",
+      16,
+      "target_speed_mps: float = 5.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/guard_state_integrity.py",
+      5,
+      "watchdog brakes by lease expiry, rather than using poisoned kinematics."
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/process_primary_worker.py",
+      168,
+      "speed_cap, deadline_ns):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/process_primary_worker.py",
+      182,
+      "previous, speed_cap, deadline))"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      62,
+      "status.local_speed_limit_reason = \"PRESTART_READY\""
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      69,
+      "# Serializes controller history, reference adoption, START and watchdog"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      90,
+      "self.declare_parameter(\"fallback_speed_cap_mps\", 0.0)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      108,
+      "\"qualified_speed_cap_mps\", settings[\"qualified_speed_cap_mps\"]"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      136,
+      "self.primary_speed_cap_mps = float(self.get_parameter(\"qualified_speed_cap_mps\").value)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      139,
+      "if not math.isfinite(self.primary_speed_cap_mps) or not (0 < self.primary_speed_cap_mps <= self.sim_online_speed_bound_mps):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      146,
+      "if self.primary_speed_cap_mps > 5.8 and not self.sim_online_adaptive:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      154,
+      "controller_kind=self.controller_kind, proposed_cap=self.primary_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      161,
+      "configured_fallback=float(self.get_parameter(\"fallback_speed_cap_mps\").value)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      164,
+      "fallback_cap=(self.primary_speed_cap_mps if self.controller_kind=='pursuit' or"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      173,
+      "qualified_speed_cap_mps=fallback_cap,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      374,
+      "self.create_timer(0.025, self.watchdog)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      457,
+      "requested_cap_mps=self.primary_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      544,
+      "\"qualified_speed_cap_mps\":float(self.primary_speed_cap_mps),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      674,
+      "self.reference, self.primary_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      686,
+      "local_speed_limit, local_speed_reason = decision.target_speed_mps, decision.reason"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      704,
+      "primary_cap = self.primary_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      788,
+      "self.primary_speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      800,
+      "local_speed_limit = primary.target_speed_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      801,
+      "local_speed_reason = primary.speed_limit_reason"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      827,
+      "reason=f\"MPC_VALID_ON_TIME:{primary.speed_limit_reason}\","
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      951,
+      "local_speed_limit = decision.target_speed_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      984,
+      "local_speed_limit = recovery_command.target_speed_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1007,
+      "local_speed_limit = 0.0"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1051,
+      "local_speed_limit, local_speed_reason,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1106,
+      "self.reference, self.primary_speed_cap_mps)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1161,
+      "def watchdog(self):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1163,
+      "return self._watchdog_locked()"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1165,
+      "def _watchdog_locked(self):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1181,
+      "local_speed_limit=math.nan, local_speed_reason=\"\","
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1242,
+      "local_speed_limit_mps=(decision.target_speed_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1243,
+      "if not math.isfinite(local_speed_limit)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1244,
+      "else local_speed_limit),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1245,
+      "local_speed_limit_reason=local_speed_reason or decision.reason,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1258,
+      "fallback_cap_mps=(self.controller.config.qualified_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1333,
+      "_rb_original_watchdog = RacingPursuitController.watchdog"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1334,
+      "def _rb_observed_watchdog(self):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1339,
+      "_trace('RB_WATCHDOG_ENTER', source_sequence=int(getattr(self,'last_source_state_sequence',-1)),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1342,
+      "return _rb_original_watchdog(self)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/node.py",
+      1343,
+      "RacingPursuitController.watchdog = _rb_observed_watchdog"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      59,
+      "speed_limit_reason: str"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      92,
+      "def __init__(self, reference, speed_cap_mps, lateral_acceleration_mps2,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      95,
+      "self.speed_cap_mps = speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      103,
+      "for v in (speed_cap_mps, lateral_acceleration_mps2,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      112,
+      "self.r_a = tuple(min(float(sample.target_speed_mps), speed_cap_mps)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      502,
+      "def speed_envelope(self, reference, speed_cap_mps):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      503,
+      "key = (id(reference), speed_cap_mps)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      506,
+      "reference, speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      571,
+      "def _local_speed_limit(self, reference, station, speed_cap_mps):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      572,
+      "point = self.speed_envelope(reference, speed_cap_mps).at(station)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      575,
+      "def _reference_horizon(self, reference, current_station, speed_cap_mps, yaw_anchor):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      584,
+      "envelope = self.speed_envelope(reference, speed_cap_mps)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      605,
+      "def solve(self, reference, state_message, current_station, previous_control, speed_cap_mps,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      622,
+      "reference, current_station, speed_cap_mps, state[2]"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      631,
+      "envelope_point = self.speed_envelope(reference, speed_cap_mps).at(current_station)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      772,
+      "speed_cap_mps, deadline_ns=None):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      787,
+      "if not math.isfinite(speed_cap_mps) or speed_cap_mps <= 0.:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      790,
+      "reference, current_station, speed_cap_mps, measured[2])"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      791,
+      "envelope = self.speed_envelope(reference, speed_cap_mps).at(current_station)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/mpc.py",
+      829,
+      "speed_cap_mps-abs(float(actual[3])),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      47,
+      "self.declare_parameter('dynamic_red_guard_enabled',False)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      48,
+      "self.declare_parameter('max_speed_cap_mps',0.0)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      60,
+      "proposed_cap=float(self.get_parameter('max_speed_cap_mps').value)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      62,
+      "(proposed_cap>5.8 and not self.sim_online_adaptive)):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      65,
+      "self.red_guard_enabled=bool(self.get_parameter('dynamic_red_guard_enabled').value)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      66,
+      "if not self.solo and not self.red_guard_enabled:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      68,
+      "if self.solo and self.red_guard_enabled:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      184,
+      "self.watchdog_gap_diagnostic_emitted=False"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      206,
+      "if self.red_guard_enabled:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      209,
+      "self.timer=self.create_timer(0.025,self.watchdog)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      435,
+      "if abs(self.last_state.v)>self.get_parameter('max_speed_cap_mps').value+0.05:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      652,
+      "'max_speed_cap_mps':float(self.get_parameter('max_speed_cap_mps').value),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      696,
+      "# The V2 first-six-intents failure was a STATE WATCHDOG gap after"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      709,
+      "recoverable_gap=planned_h2h_abort or (reason in ('STATE_WATCHDOG_TIMEOUT','INITIAL_INTENT_TIMEOUT') and"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      723,
+      "# the stale state that caused the watchdog failure."
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      940,
+      "def watchdog(self):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      974,
+      "watchdog_report=None"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      975,
+      "if not self.watchdog_gap_diagnostic_emitted:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      976,
+      "self.watchdog_gap_diagnostic_emitted=True"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      977,
+      "watchdog_report={"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      988,
+      "self._brake('STATE_WATCHDOG_TIMEOUT')"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      989,
+      "if watchdog_report is not None:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      990,
+      "self.get_logger().error('F1TENTH_GUARD_FIRST_STATE_WATCHDOG='+json.dumps("
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      991,
+      "watchdog_report,sort_keys=True))"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      1003,
+      "# RUNNING heartbeat on the first 25ms watchdog tick."
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      1029,
+      "# Existing post-first-intent 100ms watchdog, or a moving,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      1032,
+      "self._brake('INTENT_WATCHDOG_TIMEOUT')"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      1038,
+      "# Readiness and reported reason belong to the same watchdog snapshot."
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      1099,
+      "_guard_original_watchdog=IndependentActuatorGuard.watchdog"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      1100,
+      "def _guard_observed_watchdog(self):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      1101,
+      "_trace('GUARD_WATCHDOG_ENTER', contract_state=str(self.contract.state),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      1104,
+      "return _guard_original_watchdog(self)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/actuator_guard_node.py",
+      1105,
+      "IndependentActuatorGuard.watchdog=_guard_observed_watchdog"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+      5,
+      "fault, missing watchdog messages themselves expire the authorization."
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+      16,
+      "from .independent_watchdog_core import IndependentWatchdogCore"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+      23,
+      "class IndependentGuardWatchdog(Node):"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+      25,
+      "super().__init__('independent_guard_watchdog0')"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+      31,
+      "raise ValueError('WATCHDOG_RUN_IDENTITY_MISSING')"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+      34,
+      "self.core=IndependentWatchdogCore(guard_lease=GuardStatusLease("
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+      45,
+      "self.verdict_pub=self.create_publisher(String,'independent_guard_watchdog_lease0',"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py",
+      91,
+      "node=IndependentGuardWatchdog()"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/execution_contract.py",
+      78,
+      "cap=float(proposed_cap); qualified=float(data[\"qualified_speed_cap_mps\"])"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_core.py",
+      18,
+      "class IndependentWatchdogCore:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_core.py",
+      21,
+      "raise ValueError('INVALID_WATCHDOG_STATE_MAX_AGE')"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/fallback_safety.py",
+      346,
+      "headroom / max(float(envelope.speed_cap_mps), 0.5),"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/stability.py",
+      163,
+      "\"speed_cap_mps\": 4.079008912173433,"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/stability.py",
+      288,
+      "p[\"speed_cap_mps\"],"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/forensic_trace.py",
+      4,
+      "state, watchdog, intent or safety verdict. Trace loss is explicitly counted;"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/reference_admission.py",
+      17,
+      "if cap>5.8:"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/execution_speed_authority.py",
+      9,
+      "historical arbitrary fixed 5.0/5.6/5.8 m/s qualification caps."
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/core.py",
+      25,
+      "qualified_speed_cap_mps: float"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/core.py",
+      218,
+      "target_speed = min(desired_speed, c.qualified_speed_cap_mps)"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/core.py",
+      219,
+      "capped = desired_speed > c.qualified_speed_cap_mps"
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/core.py",
+      245,
+      "mode=\"LOCAL_SPEED_CAPPED\" if capped else \"NORMAL_TRACKING\","
+    ],
+    [
+      "src/driving/algorithms/f1tenth_racing_raceline/test/test_true_joint_repair.py",
+      34,
+      "zeros, zeros, 1.0, 3.0, 4.0, jerk_limit=25.0)"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      5,
+      "def __init__(self, *, require_external_watchdog=False):"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      8,
+      "self.require_external_watchdog=bool(require_external_watchdog)"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      9,
+      "self.watchdog_checked_certified_ticks=0"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      35,
+      "if self.require_external_watchdog:"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      36,
+      "if value.get('independent_watchdog_live') is not True or \\"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      37,
+      "value.get('independent_watchdog_reason')!='INDEPENDENT_WATCHDOG_LIVE':"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      38,
+      "raise ValueError('INDEPENDENT_WATCHDOG_CERTIFIED_APPLIED_UNPROVEN')"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      39,
+      "self.watchdog_checked_certified_ticks+=1"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      64,
+      "'external_watchdog_required':self.require_external_watchdog,"
+    ],
+    [
+      "src/verification/qualification_gates/applied_lineage.py",
+      65,
+      "'external_watchdog_checked_ticks':self.watchdog_checked_certified_ticks,"
+    ],
+    [
+      "src/verification/opponent_prediction/qualify_perception.py",
+      64,
+      "f\"speed_cap_mps:={args.blue_cap}\", \"use_opponent_perception:=true\","
+    ],
+    [
+      "src/verification/r_b0/qualify_degradation.py",
+      67,
+      "normal = spin_until(node, statuses, lambda s: s.mode == \"LOCAL_SPEED_CAPPED\")"
+    ],
+    [
+      "src/verification/r_b0/qualify_degradation.py",
+      77,
+      "recovered = spin_until(node, statuses, lambda s: s.mode == \"LOCAL_SPEED_CAPPED\")"
+    ],
+    [
+      "src/verification/h2h_champion/test_qualification.py",
+      61,
+      "assert \"speed_low\" in qualify_h2h.qualification_failures(split, 5, 5.0)"
+    ],
+    [
+      "src/verification/h2h_champion/test_qualification.py",
+      187,
+      "[script, \"speed_cap_mps:=1.0\"], capture_output=True, text=True, check=False,"
+    ],
+    [
+      "src/verification/h2h_champion/test_qualification.py",
+      207,
+      "assert \"speed_cap_mps:=5.0\" in text"
+    ],
+    [
+      "src/verification/h2h_champion/test_qualification.py",
+      208,
+      "assert \"interaction_speed_cap_mps\" not in text"
+    ],
+    [
+      "src/verification/h2h_champion/test_qualification.py",
+      217,
+      "assert \"speed_cap_mps:=3.0\" not in text"
+    ],
+    [
+      "src/verification/h2h_champion/test_qualification.py",
+      225,
+      "assert \"speed_cap_mps:=3.0\" in safe"
+    ],
+    [
+      "src/verification/h2h_champion/test_qualification.py",
+      226,
+      "assert \"interaction_speed_cap_mps\" not in safe"
+    ],
+    [
+      "src/verification/h2h_champion/qualify_h2h.py",
+      377,
+      "\"dynamic_red_guard_enabled:=true\","
+    ],
+    [
+      "src/verification/h2h_champion/qualify_h2h.py",
+      379,
+      "f\"speed_cap_mps:={args.blue_cap}\","
+    ],
+    [
+      "src/verification/h2h_champion/qualify_h2h.py",
+      380,
+      "f\"interaction_speed_cap_mps:={interaction_cap}\","
+    ],
+    [
+      "src/verification/h2h_champion/qualify_h2h.py",
+      397,
+      "\"use_rviz:=false\", f\"speed_cap_mps:={args.blue_cap}\","
+    ],
+    [
+      "src/verification/h2h_champion/qualify_h2h.py",
+      398,
+      "f\"interaction_speed_cap_mps:={interaction_cap}\"]"
+    ],
+    [
+      "src/verification/h2h_champion/qualify_h2h.py",
+      417,
+      "atomic_lineage=AppliedLineageAudit(require_external_watchdog=True)"
+    ],
+    [
+      "src/verification/h2h_champion/qualify_h2h.py",
+      634,
+      "[\"ros2\", \"node\", \"list\"], capture_output=True, text=True, timeout=5.0,"
+    ],
+    [
+      "src/verification/solo_champion/qualify_solo.py",
+      72,
+      "if args.speed_cap <= 0.0:"
+    ],
+    [
+      "src/verification/solo_champion/qualify_solo.py",
+      106,
+      "\"solo:=true\", \"use_rviz:=false\", f\"speed_cap_mps:={args.speed_cap}\","
+    ],
+    [
+      "src/verification/solo_champion/qualify_solo.py",
+      142,
+      "atomic_lineage=AppliedLineageAudit(require_external_watchdog=True)"
+    ],
+    [
+      "src/verification/solo_champion/qualify_solo.py",
+      204,
+      "check=False, capture_output=True, text=True, timeout=15.0,"
+    ],
+    [
+      "src/verification/solo_champion/qualify_solo.py",
+      260,
+      "\"speed_cap_mps\": args.speed_cap,"
+    ],
+    [
+      "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/qualification_surgery.py",
+      30,
+      "speed_cap = float(limits['speed_abs_max_m_s'])"
+    ],
+    [
+      "src/platform/f1tenth_racing_reference/f1tenth_racing_reference/qualification_surgery.py",
+      43,
+      "np.max(v) <= speed_cap + tol and"
+    ],
+    [
+      "src/platform/f1tenth_racing_native_proof/CREATE_NATIVE_GUARD_LAUNCH_PARAMS.py",
+      10,
+      "def build_native_guard_parameters(env, map_file, *, epoch, producer, speed_cap):"
+    ],
+    [
+      "src/platform/f1tenth_racing_native_proof/CREATE_NATIVE_GUARD_LAUNCH_PARAMS.py",
+      37,
+      "solo=True,max_speed_cap_mps=float(speed_cap),use_sim_time=True)"
+    ],
+    [
+      "src/platform/f1tenth_racing_native_proof/test/test_native_guard_bounds_fourlayer.py",
+      45,
+      "def test_guard_uses_trusted_limits_and_progress_watchdog():"
+    ],
+    [
+      "src/platform/f1tenth_racing_native_proof/test/test_native_guard_humble_api_secondpass.py",
+      21,
+      "'speed_cap_=max_speed;',"
+    ],
+    [
+      "src/platform/f1tenth_racing_native_proof/test/test_native_guard_humble_api_secondpass.py",
+      30,
+      "assert 'native_actuator_guard' in s and 'independent_guard_watchdog' in s"
+    ],
+    [
+      "src/platform/f1tenth_racing_native_proof/test/test_native_guard_identity_thirdpass.py",
+      10,
+      "VETO = (WS/'driving/algorithms/f1tenth_racing_control/f1tenth_racing_control/independent_watchdog_node.py').read_text()"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/test/test_analyzer.py",
+      11,
+      "\"s0_r_source\": source, \"r_b_mode\": \"LOCAL_SPEED_CAPPED\", \"r_e_reason\": \"CLEARANCE\","
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/test/test_storage.py",
+      26,
+      "\"r_a_nominal_accel_mps2\": 0.5, \"execution_speed_cap_mps\": 5.0,"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/test/test_storage.py",
+      27,
+      "\"r_b_requested_speed_mps\": 5.0, \"blue_actual_speed_mps\": 4.9,"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/test/test_storage.py",
+      89,
+      "\"r_b_fallback_cap_mps\": 5.6,"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/test/test_hud.py",
+      99,
+      "SimpleNamespace(s_m=5.0, target_speed_mps=8.0),"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/hud.py",
+      86,
+      "\"LOCAL_SPEED_CAPPED\": \"SPEED CAPPED\","
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/hud.py",
+      158,
+      "self.declare_parameter(\"execution_speed_cap_mps\", 2.0)"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/hud.py",
+      168,
+      "self.execution_speed_cap_mps = self.get_parameter(\"execution_speed_cap_mps\").value"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/hud.py",
+      537,
+      "(14, \"LIMIT\",         compact_hud_status(None if self.controller is None else self.controller.local_speed_limit_reason), \"\"),"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/hud.py",
+      551,
+      "(7,  \"EXEC CAP\",   f\"{self.execution_speed_cap_mps:.1f}\", \"m/s\"),"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/storage.py",
+      182,
+      "\"r_a_nominal_accel_mps2\", \"execution_speed_cap_mps\","
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/recorder.py",
+      120,
+      "self.declare_parameter(\"execution_speed_cap_mps\", 2.0)"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/recorder.py",
+      121,
+      "self.declare_parameter(\"fallback_speed_cap_mps\", 5.6)"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/recorder.py",
+      167,
+      "\"execution_speed_cap_mps\": self.get_parameter(\"execution_speed_cap_mps\").value,"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/recorder.py",
+      168,
+      "\"fallback_speed_cap_mps\": self.get_parameter(\"fallback_speed_cap_mps\").value,"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/recorder.py",
+      208,
+      "self.execution_speed_cap_mps = self.get_parameter(\"execution_speed_cap_mps\").value"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/recorder.py",
+      639,
+      "\"execution_speed_cap_mps\": self.execution_speed_cap_mps,"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/recorder.py",
+      643,
+      "\"r_b_local_target_speed_mps\": message.local_speed_limit_mps,"
+    ],
+    [
+      "src/platform/f1tenth_racing_telemetry/f1tenth_racing_telemetry/recorder.py",
+      644,
+      "\"r_b_local_speed_reason\": message.local_speed_limit_reason,"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      96,
+      "if not flag(\"solo\") and not flag(\"dynamic_red_guard_enabled\"):"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      126,
+      "speed_cap=physical_cap('speed_cap_mps')"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      127,
+      "fallback_speed_cap=physical_cap('fallback_speed_cap_mps')"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      128,
+      "interaction_speed_cap=physical_cap('interaction_speed_cap_mps')"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      176,
+      "speed_cap=speed_cap)"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      178,
+      "Node(package=\"f1tenth_racing_sim\", executable=\"simulator\", name=\"competition_simulator0\", output=\"screen\", parameters=[{\"car_id\": 0, \"guard_run_epoch\": guard_epoch, \"guard_producer"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      197,
+      "\"max_speed_cap_mps\": speed_cap,"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      198,
+      "\"dynamic_red_guard_enabled\": LaunchConfiguration(\"dynamic_red_guard_enabled\"),"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      211,
+      "Node(package=\"f1tenth_racing_control\", executable=\"independent_guard_watchdog\","
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      212,
+      "name=\"independent_guard_watchdog0\", output=\"screen\", parameters=[{"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      227,
+      "Node(package=\"f1tenth_racing_control\", executable=\"r_b0_controller\", output=\"screen\", parameters=[{\"qualified_speed_cap_mps\": speed_cap, \"fallback_speed_cap_mps\": fallback_speed_ca"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      249,
+      "Node(package=\"f1tenth_racing_overtaking\", executable=LaunchConfiguration(\"overtaking_executable\"), output=\"screen\", parameters=[{\"qualified_speed_cap_mps\": interaction_speed_cap,\"e"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      262,
+      "\"execution_speed_cap_mps\": speed_cap,"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      263,
+      "\"fallback_speed_cap_mps\": fallback_speed_cap,"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      284,
+      "\"execution_speed_cap_mps\": speed_cap,"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      315,
+      "DeclareLaunchArgument(\"speed_cap_mps\", default_value=\"AUTO\"),"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      316,
+      "DeclareLaunchArgument(\"fallback_speed_cap_mps\", default_value=\"AUTO\"),"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      328,
+      "DeclareLaunchArgument(\"interaction_speed_cap_mps\", default_value=\"AUTO\"),"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/launch/race_foundation.launch.py",
+      329,
+      "DeclareLaunchArgument(\"dynamic_red_guard_enabled\", default_value=\"false\"),"
+    ],
+    [
+      "src/platform/f1tenth_racing_bringup/test/test_spectator_rviz.py",
+      45,
+      "assert '\"execution_speed_cap_mps\": speed_cap' in launch"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_safety_deadman_surgery.py",
+      23,
+      "state=State(speed=5.0,vx=5.0)"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      6,
+      "from f1tenth_racing_sim.external_watchdog_lease import ExternalWatchdogLease"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      17,
+      "def lease():return ExternalWatchdogLease(run_epoch='epoch1',producer='R_B')"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      29,
+      "def test_no_watchdog_means_no_certified():"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      33,
+      "def test_fresh_matching_watchdog_removes_only_its_own_veto():"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      49,
+      "def test_watchdog_process_death_revokes_via_steady_clock():"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      54,
+      "def test_watchdog_ros_clock_age_revokes():"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      100,
+      "def test_no_egovehicle_watchdog_disable_escape_hatch():"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      102,
+      "assert \"raise ValueError('EGO_EXTERNAL_WATCHDOG_MANDATORY')\" in text"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      103,
+      "assert \"'independent_guard_watchdog_lease0'\" in text"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      104,
+      "assert 'def receive_external_watchdog' in text"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      105,
+      "assert 'not watchdog_live or not heartbeat_live' in text"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      106,
+      "assert 'self.external_watchdog_lease.permits_certified' in text"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      119,
+      "assert 'independent_guard_watchdog = ' in setup"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      120,
+      "assert 'executable=\"independent_guard_watchdog\"' in launch"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/test/test_external_watchdog_v4.py",
+      121,
+      "assert '\"independent_watchdog_required\": True' in launch"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      1,
+      "\"\"\"Cross-process independent-watchdog VETO lease (never actuation authority)."
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      11,
+      "class ExternalWatchdogVerdict:"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      23,
+      "class ExternalWatchdogLease:"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      28,
+      "raise ValueError('INVALID_EXTERNAL_WATCHDOG_LEASE')"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      62,
+      "self.latest=ExternalWatchdogVerdict("
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      77,
+      "return False,'INDEPENDENT_WATCHDOG_MISSING'"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      83,
+      "return False,'INDEPENDENT_WATCHDOG_STALE'"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      85,
+      "return False,'INDEPENDENT_WATCHDOG_REVOKED:' + h.reason"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      89,
+      "return False,'INDEPENDENT_WATCHDOG_FUTURE_STATE'"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      91,
+      "return False,'INDEPENDENT_WATCHDOG_NO_PROVENANCE'"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      92,
+      "return True,'INDEPENDENT_WATCHDOG_LIVE'"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/external_watchdog_lease.py",
+      94,
+      "return False,'INDEPENDENT_WATCHDOG_CLOCK_INVALID'"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      16,
+      "from .external_watchdog_lease import ExternalWatchdogLease"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      53,
+      "self.declare_parameter(\"independent_watchdog_required\", True)"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      99,
+      "self.watchdog_required=(self.guard_required and"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      100,
+      "bool(self.get_parameter('independent_watchdog_required').value))"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      101,
+      "if self.guard_required and not self.watchdog_required:"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      102,
+      "raise ValueError('EGO_EXTERNAL_WATCHDOG_MANDATORY')"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      103,
+      "self.external_watchdog_lease=(ExternalWatchdogLease("
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      105,
+      "if self.watchdog_required else None)"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      128,
+      "# Watchdog publishes RELIABLE/VOLATILE. Subscriber MUST NOT"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      130,
+      "self.external_watchdog_sub=self.create_subscription("
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      131,
+      "String,'independent_guard_watchdog_lease0',"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      132,
+      "self.receive_external_watchdog,state_qos)"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      207,
+      "def receive_external_watchdog(self, message):"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      210,
+      "'/independent_guard_watchdog_lease0')"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      212,
+      "publishers[0].node_name!='independent_guard_watchdog0'):"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      213,
+      "self.external_watchdog_lease.revoke()"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      214,
+      "self._revoke_guarded_lease('EXTERNAL_WATCHDOG_PUBLISHER_MISMATCH')"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      216,
+      "accepted=self.external_watchdog_lease.observe(message.data,"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      219,
+      "allowed,_=self.external_watchdog_lease.permits_certified("
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      224,
+      "self._revoke_guarded_lease('EXTERNAL_WATCHDOG_REVOKED')"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      238,
+      "external_live,external_reason=self.external_watchdog_lease.permits_certified("
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      243,
+      "self.get_logger().error('ATOMIC_EXTERNAL_WATCHDOG_REJECT:'+external_reason)"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      336,
+      "if self.external_watchdog_lease is not None:"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      337,
+      "self.external_watchdog_lease.revoke()"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      360,
+      "watchdog_live=True"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      361,
+      "watchdog_reason='NOT_REQUIRED'"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      362,
+      "if (self.watchdog_required and self.command_origin_identity is not None and"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      364,
+      "watchdog_live,watchdog_reason=self.external_watchdog_lease.permits_certified("
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      367,
+      "stale=(not watchdog_live or not heartbeat_live or"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      406,
+      "\"independent_watchdog_live\": watchdog_live,"
+    ],
+    [
+      "src/environment/f1tenth_racing_sim/f1tenth_racing_sim/simulator.py",
+      407,
+      "\"independent_watchdog_reason\": watchdog_reason,"
+    ]
+  ]
+}
